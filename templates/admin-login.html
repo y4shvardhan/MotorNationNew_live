@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block title %}
+MotorNation Owner Login
+{% endblock %}
+
+{% block content %}
+
+<section class="admin-login-page">
+
+    <div class="admin-login-card">
+
+        <div class="admin-logo">
+            Motor<span>Nation</span>
+        </div>
+
+        <span class="eyebrow">
+            OWNER AREA
+        </span>
+
+        <h1>
+            Dashboard Login
+        </h1>
+
+        <p>
+            Sign in to manage MotorNation vehicle data.
+        </p>
+
+        {% if error %}
+
+        <div class="admin-error">
+            {{ error }}
+        </div>
+
+        {% endif %}
+
+        <form
+            method="POST"
+            action="{{ url_for('admin_login') }}"
+        >
+
+            <label for="password">
+                Owner Password
+            </label>
+
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter owner password"
+                required
+                autofocus
+            >
+
+            <button
+                type="submit"
+                class="admin-primary-btn"
+            >
+                Login to Dashboard
+            </button>
+
+        </form>
+
+        <a
+            href="{{ url_for('home') }}"
+            class="admin-back-link"
+        >
+            ← Back to MotorNation
+        </a>
+
+    </div>
+
+</section>
+
+<style>
+
+.admin-login-page {
+    min-height: 75vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 70px 20px;
+    background: #f5f6f8;
+}
+
+.admin-login-card {
+    width: 100%;
+    max-width: 480px;
+    padding: 45px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.08);
+}
+
+.admin-logo {
+    font-size: 2rem;
+    font-weight: 900;
+    margin-bottom: 35px;
+}
+
+.admin-logo span {
+    color: #e11d2e;
+}
+
+.admin-login-card h1 {
+    margin: 8px 0 12px;
+}
+
+.admin-login-card p {
+    color: #6b7280;
+    margin-bottom: 30px;
+}
+
+.admin-login-card label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.admin-login-card input {
+    width: 100%;
+    min-height: 50px;
+    padding: 0 15px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    margin-bottom: 18px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.admin-primary-btn {
+    width: 100%;
+    min-height: 52px;
+    border: none;
+    border-radius: 10px;
+    background: #e11d2e;
+    color: white;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.admin-error {
+    margin-bottom: 20px;
+    padding: 12px 15px;
+    border-radius: 10px;
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.admin-back-link {
+    display: block;
+    margin-top: 25px;
+    color: #6b7280;
+    text-decoration: none;
+}
+
+</style>
+
+{% endblock %}

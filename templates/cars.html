@@ -1,0 +1,419 @@
+{% extends "base.html" %}
+
+{% block title %}
+MotorNation — Explore Cars
+{% endblock %}
+
+{% block content %}
+
+<!-- =========================================================
+     CARS PAGE HERO
+========================================================= -->
+
+<section class="cars-page-hero">
+
+    <div class="container">
+
+        <div class="cars-page-hero-inner">
+
+            <div>
+
+                <span class="eyebrow">
+                    MOTOR NATION CATALOG
+                </span>
+
+                <h1>
+                    Explore Cars
+                </h1>
+
+                <p>
+                    Browse, filter and compare vehicles from the
+                    MotorNation 2026 U.S. vehicle catalog.
+                </p>
+
+            </div>
+
+            <div class="cars-page-stat">
+                <strong id="results-count">0</strong>
+                <span>Vehicles</span>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     CARS CONTENT
+========================================================= -->
+
+<section class="cars-catalog-section">
+
+    <div class="container">
+
+        <div class="cars-layout">
+
+
+            <!-- =================================================
+                 FILTER SIDEBAR
+            ================================================= -->
+
+            <aside class="cars-filters">
+
+                <div class="filters-header">
+
+                    <div>
+
+                        <span class="filter-label">
+                            FILTERS
+                        </span>
+
+                        <h2>
+                            Find Your Car
+                        </h2>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        id="clear-filters"
+                        class="clear-filters-btn"
+                    >
+                        Clear
+                    </button>
+
+                </div>
+
+
+                <!-- SEARCH -->
+
+                <div class="filter-group filter-search">
+
+                    <label for="search-input">
+                        Search
+                    </label>
+
+                    <div class="filter-search-box">
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                        >
+                            <path
+                                d="M21 21l-4.35-4.35m2.35-5.65a8 8 0 11-16 0 8 8 0 0116 0z"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                            />
+                        </svg>
+
+                        <input
+                            type="search"
+                            id="search-input"
+                            placeholder="Make or model..."
+                            autocomplete="off"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- MAKE -->
+
+                <div class="filter-group">
+
+                    <label for="make-filter">
+                        Make
+                    </label>
+
+                    <select id="make-filter">
+
+                        <option value="">
+                            All Makes
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- BODY TYPE -->
+
+                <div class="filter-group">
+
+                    <label for="body-filter">
+                        Body Type
+                    </label>
+
+                    <select id="body-filter">
+
+                        <option value="">
+                            All Body Types
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- FUEL -->
+
+                <div class="filter-group">
+
+                    <label for="fuel-filter">
+                        Fuel Type
+                    </label>
+
+                    <select id="fuel-filter">
+
+                        <option value="">
+                            All Fuel Types
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- PRICE -->
+
+                <div class="filter-group">
+
+                    <label for="price-filter">
+                        Maximum Price
+                    </label>
+
+                    <select id="price-filter">
+
+                        <option value="">
+                            Any Price
+                        </option>
+
+                        <option value="30000">
+                            Under $30,000
+                        </option>
+
+                        <option value="40000">
+                            Under $40,000
+                        </option>
+
+                        <option value="50000">
+                            Under $50,000
+                        </option>
+
+                        <option value="75000">
+                            Under $75,000
+                        </option>
+
+                        <option value="100000">
+                            Under $100,000
+                        </option>
+
+                        <option value="150000">
+                            Under $150,000
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- SORT -->
+
+                <div class="filter-group">
+
+                    <label for="sort-filter">
+                        Sort By
+                    </label>
+
+                    <select id="sort-filter">
+
+                        <option value="">
+                            Recommended
+                        </option>
+
+                        <option value="price-asc">
+                            Price: Low to High
+                        </option>
+
+                        <option value="price-desc">
+                            Price: High to Low
+                        </option>
+
+                        <option value="hp-desc">
+                            Horsepower: High to Low
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- ACTIVE FILTERS -->
+
+                <div
+                    id="active-filters"
+                    class="active-filters"
+                    hidden
+                >
+
+                    <div class="active-filters-heading">
+                        Active Filters
+                    </div>
+
+                    <div
+                        id="active-filter-list"
+                        class="active-filter-list"
+                    ></div>
+
+                </div>
+
+            </aside>
+
+
+            <!-- =================================================
+                 RESULTS
+            ================================================= -->
+
+            <main class="cars-results-area">
+
+
+                <!-- RESULTS TOOLBAR -->
+
+                <div class="cars-results-toolbar">
+
+                    <div>
+
+                        <span class="results-eyebrow">
+                            VEHICLES
+                        </span>
+
+                        <h2>
+                            Available Cars
+                        </h2>
+
+                    </div>
+
+                    <div class="results-toolbar-right">
+
+                        <span
+                            id="results-count-toolbar"
+                            class="results-count-label"
+                        >
+                            0 vehicles
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- LOADING -->
+
+                <div
+                    id="cars-loading"
+                    class="cars-loading"
+                >
+
+                    <div class="loading-spinner"></div>
+
+                    <p>
+                        Loading vehicles...
+                    </p>
+
+                </div>
+
+
+                <!-- ERROR -->
+
+                <div
+                    id="cars-error"
+                    class="cars-error"
+                    hidden
+                >
+
+                    <div class="error-icon">
+                        !
+                    </div>
+
+                    <h3>
+                        Unable to load vehicles
+                    </h3>
+
+                    <p>
+                        Something went wrong while loading
+                        the MotorNation vehicle catalog.
+                    </p>
+
+                    <button
+                        type="button"
+                        id="retry-cars"
+                        class="primary-btn"
+                    >
+                        Try Again
+                    </button>
+
+                </div>
+
+
+                <!-- CAR RESULTS -->
+
+                <div
+                    id="cars-results"
+                    class="cars-results-grid"
+                ></div>
+
+
+                <!-- NO RESULTS -->
+
+                <div
+                    id="no-results"
+                    class="cars-no-results"
+                    hidden
+                >
+
+                    <div class="no-results-icon">
+                        🚗
+                    </div>
+
+                    <h3>
+                        No vehicles found
+                    </h3>
+
+                    <p>
+                        Try changing your search or filters
+                        to find more vehicles.
+                    </p>
+
+                    <button
+                        type="button"
+                        id="no-results-clear"
+                        class="secondary-btn"
+                    >
+                        Clear Filters
+                    </button>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     PAGE JAVASCRIPT
+========================================================= -->
+
+<script
+    src="{{ url_for('static', filename='js/cars.js') }}"
+></script>
+
+{% endblock %}

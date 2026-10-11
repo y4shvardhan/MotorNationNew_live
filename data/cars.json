@@ -1,0 +1,188 @@
+[
+    {
+        "id": 1,
+        "make": "Toyota",
+        "model": "Camry",
+        "year": 2026,
+        "bodyType": "Sedan",
+        "fuelType": "Gasoline",
+        "price": 28400,
+        "horsepower": 225,
+        "mpg": "53 City / 50 Hwy",
+        "image": "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb",
+        "description": "A practical midsize sedan focused on comfort, efficiency, everyday usability, and a smooth driving experience.",
+        "pros": [
+            "Comfortable interior",
+            "Strong fuel economy",
+            "Good everyday practicality",
+            "Easy to live with"
+        ],
+        "cons": [
+            "Not the sportiest sedan",
+            "Interior design can feel conservative",
+            "Higher trims can become expensive"
+        ],
+        "finalWord": "The Camry is designed to be a dependable everyday sedan with a strong balance of comfort, efficiency, and practicality.",
+        "engine": "2.5L 4-Cylinder",
+        "transmission": "Automatic",
+        "drivetrain": "Front-Wheel Drive",
+        "seating": 5,
+        "cargo": "15.1 cu ft",
+        "range": "Gasoline"
+    },
+    {
+        "id": 2,
+        "make": "Honda",
+        "model": "CR-V",
+        "year": 2026,
+        "bodyType": "SUV",
+        "fuelType": "Gasoline",
+        "price": 31900,
+        "horsepower": 190,
+        "mpg": "28 City / 34 Hwy",
+        "image": "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6",
+        "description": "A compact SUV built around practicality, passenger comfort, useful cargo space, and everyday versatility.",
+        "pros": [
+            "Spacious cabin",
+            "Practical cargo area",
+            "Comfortable ride",
+            "Strong everyday usability"
+        ],
+        "cons": [
+            "Can get expensive with options",
+            "Acceleration is not class-leading",
+            "Some road noise at highway speeds"
+        ],
+        "finalWord": "The CR-V offers a well-rounded SUV package for drivers who prioritize practicality, comfort, and everyday versatility.",
+        "engine": "1.5L Turbocharged 4-Cylinder",
+        "transmission": "CVT",
+        "drivetrain": "Front-Wheel Drive",
+        "seating": 5,
+        "cargo": "Approx. 39 cu ft",
+        "range": "Gasoline"
+    },
+    {
+        "id": 3,
+        "make": "Ford",
+        "model": "Mustang",
+        "year": 2026,
+        "bodyType": "Coupe",
+        "fuelType": "Gasoline",
+        "price": 32400,
+        "horsepower": 315,
+        "mpg": "21 City / 29 Hwy",
+        "image": "https://images.unsplash.com/photo-1584345604476-8ec5e12e42dd",
+        "description": "A performance-oriented sports coupe combining rear-wheel-drive dynamics, modern technology, and classic Mustang character.",
+        "pros": [
+            "Strong performance",
+            "Distinctive styling",
+            "Engaging driving experience",
+            "Wide range of configurations"
+        ],
+        "cons": [
+            "Rear seats are limited",
+            "Fuel economy varies by configuration",
+            "Ride can be firm"
+        ],
+        "finalWord": "The Mustang remains focused on performance and driving enjoyment while adding modern technology and everyday usability.",
+        "engine": "2.3L Turbocharged 4-Cylinder",
+        "transmission": "Automatic",
+        "drivetrain": "Rear-Wheel Drive",
+        "seating": 4,
+        "cargo": "13.5 cu ft",
+        "range": "Gasoline"
+    },
+    {
+        "id": 4,
+        "make": "Tesla",
+        "model": "Model 3",
+        "year": 2026,
+        "bodyType": "Sedan",
+        "fuelType": "Electric",
+        "price": 38990,
+        "horsepower": 394,
+        "mpg": "138 MPGe",
+        "image": "https://images.unsplash.com/photo-1560958089-b8a1929cea89",
+        "description": "A fully electric sedan emphasizing efficiency, technology, responsive performance, and a minimalist cabin.",
+        "pros": [
+            "Fully electric powertrain",
+            "Strong acceleration",
+            "Modern technology",
+            "Minimalist interior"
+        ],
+        "cons": [
+            "Charging requires planning on longer trips",
+            "Touchscreen controls take adjustment",
+            "Build and ride preferences vary by driver"
+        ],
+        "finalWord": "The Model 3 combines electric efficiency with strong performance and a technology-focused driving experience.",
+        "engine": "Dual Electric Motor",
+        "transmission": "Single-Speed",
+        "drivetrain": "All-Wheel Drive",
+        "seating": 5,
+        "cargo": "Front and rear cargo areas",
+        "range": "Electric"
+    },
+    {
+        "id": 5,
+        "make": "BMW",
+        "model": "X3",
+        "year": 2026,
+        "bodyType": "SUV",
+        "fuelType": "Gasoline",
+        "price": 51200,
+        "horsepower": 255,
+        "mpg": "24 City / 29 Hwy",
+        "image": "https://images.unsplash.com/photo-1555215695-3004980ad54e",
+        "description": "A premium compact SUV combining upscale features, performance, technology, and practical daily usability.",
+        "pros": [
+            "Premium interior",
+            "Strong driving dynamics",
+            "Modern technology",
+            "Useful cargo space"
+        ],
+        "cons": [
+            "Higher starting price",
+            "Options can become expensive",
+            "Maintenance costs may be higher"
+        ],
+        "finalWord": "The X3 blends premium comfort and technology with a driving experience aimed at buyers who want more performance from a compact SUV.",
+        "engine": "2.0L Turbocharged 4-Cylinder",
+        "transmission": "Automatic",
+        "drivetrain": "All-Wheel Drive",
+        "seating": 5,
+        "cargo": "Approx. 31 cu ft",
+        "range": "Gasoline"
+    },
+    {
+        "id": 6,
+        "make": "Hyundai",
+        "model": "Ioniq 5",
+        "year": 2026,
+        "bodyType": "SUV",
+        "fuelType": "Electric",
+        "price": 39900,
+        "horsepower": 225,
+        "mpg": "113 MPGe",
+        "image": "https://images.unsplash.com/photo-1593941707882-a5bba14938c7",
+        "description": "A distinctive electric crossover combining futuristic styling, a spacious cabin, and fast-charging-focused EV technology.",
+        "pros": [
+            "Distinctive design",
+            "Spacious interior",
+            "Electric powertrain",
+            "Fast-charging capability"
+        ],
+        "cons": [
+            "Large exterior dimensions",
+            "Charging access matters for road trips",
+            "Higher trims can become expensive"
+        ],
+        "finalWord": "The Ioniq 5 provides a practical electric crossover format with distinctive styling, interior space, and modern EV technology.",
+        "engine": "Electric Motor",
+        "transmission": "Single-Speed",
+        "drivetrain": "Rear-Wheel Drive",
+        "seating": 5,
+        "cargo": "Approx. 27 cu ft",
+        "range": "Electric"
+    }
+]

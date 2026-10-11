@@ -1,0 +1,458 @@
+{% extends "base.html" %}
+
+{% block title %}
+MotorNation — Reviews
+{% endblock %}
+
+{% block content %}
+
+<section class="reviews-page">
+
+    <div class="reviews-hero">
+
+        <div class="reviews-hero-content">
+
+            <span class="reviews-eyebrow">
+                MOTOR NATION REVIEWS
+            </span>
+
+            <h1>
+                Car Reviews & Insights
+            </h1>
+
+            <p>
+                Explore expert vehicle information, specifications,
+                strengths, weaknesses and important things to know
+                before choosing your next car.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <section class="reviews-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <span class="section-eyebrow">
+                    EXPLORE
+                </span>
+
+                <h2>
+                    Vehicle Reviews
+                </h2>
+
+                <p>
+                    Browse vehicles from the MotorNation database
+                    and explore their specifications, pros, cons
+                    and final verdict.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="car-grid"
+            id="reviews-cars"
+        >
+
+            <div class="reviews-loading">
+                Loading reviews...
+            </div>
+
+        </div>
+
+    </section>
+
+</section>
+
+
+<style>
+
+.reviews-page {
+    width: 100%;
+}
+
+.reviews-hero {
+    min-height: 360px;
+    display: flex;
+    align-items: center;
+    padding: 70px 6%;
+    background:
+        linear-gradient(
+            135deg,
+            #0b0d10,
+            #181d23
+        );
+}
+
+.reviews-hero-content {
+    max-width: 850px;
+}
+
+.reviews-eyebrow,
+.section-eyebrow {
+    display: inline-block;
+    margin-bottom: 12px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #e11d2e;
+}
+
+.reviews-hero h1 {
+    margin: 0 0 18px;
+    font-size: clamp(
+        40px,
+        6vw,
+        72px
+    );
+    line-height: 1.05;
+    color: #fff;
+}
+
+.reviews-hero p {
+    max-width: 700px;
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.7;
+    color: #cbd5e1;
+}
+
+.reviews-section {
+    width: min(
+        1200px,
+        calc(100% - 40px)
+    );
+    margin: 0 auto;
+    padding: 70px 0;
+}
+
+.section-heading {
+    margin-bottom: 35px;
+}
+
+.section-heading h2 {
+    margin: 0 0 10px;
+    font-size: 38px;
+    color: #111827;
+}
+
+.section-heading p {
+    max-width: 700px;
+    margin: 0;
+    color: #6b7280;
+    line-height: 1.7;
+}
+
+#reviews-cars {
+    display: grid;
+    grid-template-columns:
+        repeat(
+            3,
+            minmax(0, 1fr)
+        );
+    gap: 24px;
+}
+
+.review-car-card {
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow:
+        0 8px 25px
+        rgba(
+            0,
+            0,
+            0,
+            0.07
+        );
+}
+
+.review-car-image {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+    background: #f3f4f6;
+}
+
+.review-car-content {
+    padding: 22px;
+}
+
+.review-car-year {
+    font-size: 13px;
+    font-weight: 700;
+    color: #6b7280;
+}
+
+.review-car-title {
+    margin: 5px 0 10px;
+    font-size: 22px;
+    font-weight: 800;
+    color: #111827;
+}
+
+.review-car-price {
+    margin-bottom: 16px;
+    font-size: 19px;
+    font-weight: 800;
+    color: #e11d2e;
+}
+
+.review-car-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 44px;
+    border-radius: 8px;
+    background: #111827;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    transition: 0.2s ease;
+}
+
+.review-car-button:hover {
+    background: #e11d2e;
+}
+
+.reviews-loading {
+    grid-column: 1 / -1;
+    padding: 50px;
+    text-align: center;
+    color: #6b7280;
+}
+
+@media (
+    max-width: 900px
+) {
+
+    #reviews-cars {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+    }
+
+}
+
+@media (
+    max-width: 600px
+) {
+
+    .reviews-hero {
+        min-height: 300px;
+        padding: 50px 25px;
+    }
+
+    .reviews-section {
+        width: min(
+            100% - 30px,
+            1200px
+        );
+        padding: 50px 0;
+    }
+
+    #reviews-cars {
+        grid-template-columns:
+            1fr;
+    }
+
+}
+
+</style>
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    async function () {
+
+        const container =
+            document.getElementById(
+                "reviews-cars"
+            );
+
+        if (!container) {
+            return;
+        }
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/cars"
+                );
+
+            if (!response.ok) {
+                throw new Error(
+                    "Unable to load vehicles"
+                );
+            }
+
+            const data =
+                await response.json();
+
+            const cars =
+                Array.isArray(data.cars)
+                    ? data.cars
+                    : [];
+
+            if (!cars.length) {
+
+                container.innerHTML =
+                    `
+                    <div class="reviews-loading">
+                        No vehicle reviews available.
+                    </div>
+                    `;
+
+                return;
+            }
+
+            container.innerHTML =
+                cars
+                    .slice(0, 12)
+                    .map(
+                        function (car) {
+
+                            const image =
+                                car.image
+                                    ? car.image
+                                    : "";
+
+                            const year =
+                                car.year || "";
+
+                            const make =
+                                car.make || "";
+
+                            const model =
+                                car.model || "";
+
+                            const price =
+                                car?.price?.msrp ||
+                                car?.msrp ||
+                                0;
+
+                            const formattedPrice =
+                                price
+                                    ? "$" +
+                                      Number(
+                                          price
+                                      ).toLocaleString(
+                                          "en-US"
+                                      )
+                                    : "Price unavailable";
+
+                            return `
+                                <article
+                                    class="review-car-card"
+                                >
+
+                                    ${
+                                        image
+                                        ?
+                                        `
+                                        <img
+                                            class="review-car-image"
+                                            src="${image}"
+                                            alt="${make} ${model}"
+                                            loading="lazy"
+                                            onerror="this.style.display='none'"
+                                        >
+                                        `
+                                        :
+                                        `
+                                        <div
+                                            class="review-car-image"
+                                        ></div>
+                                        `
+                                    }
+
+                                    <div
+                                        class="review-car-content"
+                                    >
+
+                                        <div
+                                            class="review-car-year"
+                                        >
+                                            ${year}
+                                        </div>
+
+                                        <h3
+                                            class="review-car-title"
+                                        >
+                                            ${make}
+                                            ${model}
+                                        </h3>
+
+                                        <div
+                                            class="review-car-price"
+                                        >
+                                            ${formattedPrice}
+                                        </div>
+
+                                        <a
+                                            class="review-car-button"
+                                            href="/car/${car.id}"
+                                        >
+                                            Read Review
+                                        </a>
+
+                                        <button
+                                            type="button"
+                                            class="compare-button"
+                                            data-compare-id="${car.id}"
+                                            onclick="window.MotorNationCompare && window.MotorNationCompare.toggle('${car.id}')"
+                                        >
+                                            + Compare
+                                        </button>
+
+                                    </div>
+
+                                </article>
+                            `;
+
+                        }
+                    )
+                    .join("");
+
+            if (window.MotorNationCompare) {
+                window.MotorNationCompare.updateAllButtons();
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Reviews error:",
+                error
+            );
+
+            container.innerHTML =
+                `
+                <div class="reviews-loading">
+                    Unable to load reviews.
+                </div>
+                `;
+
+        }
+
+    }
+);
+
+</script>
+
+{% endblock %}

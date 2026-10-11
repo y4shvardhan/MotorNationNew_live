@@ -1,0 +1,619 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ car.year|default('2026') }} {{ car.make|default('') }} {{ car.model|default('') }} — MotorNation
+{% endblock %}
+
+{% block content %}
+
+<main class="mn-car-page">
+
+    <!-- HERO -->
+    <section class="mn-car-hero">
+
+        <div class="mn-car-hero-inner">
+
+            <!-- IMAGE -->
+            <div class="mn-car-image">
+
+                {% if car.image %}
+
+                    <img
+                        src="{{ car.image }}"
+                        alt="{{ car.make }} {{ car.model }}"
+                        loading="eager"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                    >
+
+                    <div class="mn-car-placeholder" style="display:none;">
+                        <span>
+                            {{ car.make }} {{ car.model }}
+                        </span>
+                    </div>
+
+                {% else %}
+
+                    <div class="mn-car-placeholder">
+                        <span>
+                            {{ car.make }} {{ car.model }}
+                        </span>
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- INFORMATION -->
+            <div class="mn-car-info">
+
+                <a href="{{ url_for('cars') }}" class="mn-back-link">
+                    ← Back to Cars
+                </a>
+
+                <div class="mn-car-eyebrow">
+                    {{ car.year|default('2026') }}
+
+                    {% if car.bodyType %}
+                        · {{ car.bodyType }}
+                    {% endif %}
+                </div>
+
+                <h1>
+                    {{ car.make|default('Unknown Make') }}
+                    {{ car.model|default('Unknown Model') }}
+                </h1>
+
+                {% if car.trim %}
+                    <div class="mn-car-trim">
+                        {{ car.trim }}
+                    </div>
+                {% endif %}
+
+                {% if car.description %}
+
+                    <p class="mn-car-description">
+                        {{ car.description }}
+                    </p>
+
+                {% elif car.sourceData and car.sourceData.get('Review Summary / Verdict') %}
+
+                    <p class="mn-car-description">
+                        {{ car.sourceData.get('Review Summary / Verdict') }}
+                    </p>
+
+                {% else %}
+
+                    <p class="mn-car-description">
+                        Explore specifications, pricing and key
+                        information for this vehicle.
+                    </p>
+
+                {% endif %}
+
+                <!-- PRICE -->
+                <div class="mn-car-price">
+
+                    <span>Starting MSRP</span>
+
+                    {% if car.msrp is not none and car.msrp != '' %}
+
+                        <strong>
+                            ${{ "{:,.0f}".format(car.msrp|float) }}
+                        </strong>
+
+                    {% elif car.price and car.price.msrp is not none %}
+
+                        <strong>
+                            ${{ "{:,.0f}".format(car.price.msrp|float) }}
+                        </strong>
+
+                    {% else %}
+
+                        <strong>
+                            Price unavailable
+                        </strong>
+
+                    {% endif %}
+
+                </div>
+
+                <div class="mn-car-actions">
+
+                    <a
+                        href="#specifications"
+                        class="mn-primary-btn"
+                    >
+                        View Specifications
+                    </a>
+
+                    <button
+                        type="button"
+                        class="mn-compare-btn"
+                        id="detail-compare-btn"
+                        data-compare-id="{{ car.vehicle_id or car.id }}"
+                        onclick="window.MotorNationCompare && window.MotorNationCompare.toggle('{{ car.vehicle_id or car.id }}')"
+                    >
+                        + Compare
+                    </button>
+
+                    <a
+                        href="{{ url_for('cars') }}"
+                        class="mn-secondary-btn"
+                    >
+                        Explore More Cars
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- QUICK SPECS -->
+    <section class="mn-section mn-quick-section">
+
+        <div class="mn-section-inner">
+
+            <div class="mn-quick-grid">
+
+                <div class="mn-quick-card">
+                    <span>Horsepower</span>
+                    <strong>
+                        {% if car.horsepower is not none %}
+                            {{ car.horsepower|int }} hp
+                        {% else %}
+                            —
+                        {% endif %}
+                    </strong>
+                </div>
+
+                <div class="mn-quick-card">
+                    <span>Fuel Type</span>
+                    <strong>
+                        {{ car.fuelType|default('—') }}
+                    </strong>
+                </div>
+
+                <div class="mn-quick-card">
+                    <span>Transmission</span>
+                    <strong>
+                        {{ car.transmission|default('—') }}
+                    </strong>
+                </div>
+
+                <div class="mn-quick-card">
+                    <span>Drivetrain</span>
+                    <strong>
+                        {{ car.drivetrain|default('—') }}
+                    </strong>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- OVERVIEW -->
+    <section class="mn-section">
+
+        <div class="mn-section-inner">
+
+            <div class="mn-overview-grid">
+
+                <div>
+
+                    <span class="mn-label">
+                        OVERVIEW
+                    </span>
+
+                    <h2>
+                        About the
+                        {{ car.make|default('Vehicle') }}
+                        {{ car.model|default('') }}
+                    </h2>
+
+                    {% if car.description %}
+
+                        <p class="mn-body-text">
+                            {{ car.description }}
+                        </p>
+
+                    {% elif car.sourceData and car.sourceData.get('Review Summary / Verdict') %}
+
+                        <p class="mn-body-text">
+                            {{ car.sourceData.get('Review Summary / Verdict') }}
+                        </p>
+
+                    {% else %}
+
+                        <p class="mn-body-text">
+                            Detailed information about this vehicle
+                            will be added to the MotorNation database.
+                        </p>
+
+                    {% endif %}
+
+                </div>
+
+                <div class="mn-summary-grid">
+
+                    <div>
+                        <span>Engine</span>
+                        <strong>
+                            {{ car.engine|default('—') }}
+                        </strong>
+                    </div>
+
+                    <div>
+                        <span>Seating</span>
+                        <strong>
+                            {{ car.seating|default('—') }}
+                        </strong>
+                    </div>
+
+                    <div>
+                        <span>Cargo</span>
+                        <strong>
+                            {{ car.cargo|default('—') }}
+                        </strong>
+                    </div>
+
+                    <div>
+                        <span>Efficiency</span>
+                        <strong>
+                            {{ car.mpg|default('—') }}
+                        </strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- PROS & CONS -->
+    <section class="mn-section mn-light-section">
+
+        <div class="mn-section-inner">
+
+            <span class="mn-label">
+                MOTOR NATION ANALYSIS
+            </span>
+
+            <h2>
+                Pros & Cons
+            </h2>
+
+            <div class="mn-pros-cons">
+
+                <!-- PROS -->
+                <div class="mn-pros">
+
+                    <div class="mn-analysis-icon">
+                        +
+                    </div>
+
+                    <h3>
+                        Pros
+                    </h3>
+
+                    {% if car.pros %}
+
+                        <ul>
+
+                            {% for pro in car.pros %}
+
+                                {% if pro %}
+
+                                    <li>
+                                        {{ pro }}
+                                    </li>
+
+                                {% endif %}
+
+                            {% endfor %}
+
+                        </ul>
+
+                    {% elif car.sourceData and car.sourceData.get('Pros (Highs)') %}
+
+                        <ul>
+
+                            {% for pro in car.sourceData.get('Pros (Highs)') %}
+
+                                {% if pro %}
+
+                                    <li>
+                                        {{ pro }}
+                                    </li>
+
+                                {% endif %}
+
+                            {% endfor %}
+
+                        </ul>
+
+                    {% else %}
+
+                        <p>
+                            Pros information is not currently available.
+                        </p>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- CONS -->
+                <div class="mn-cons">
+
+                    <div class="mn-analysis-icon">
+                        −
+                    </div>
+
+                    <h3>
+                        Cons
+                    </h3>
+
+                    {% if car.cons %}
+
+                        <ul>
+
+                            {% for con in car.cons %}
+
+                                {% if con %}
+
+                                    <li>
+                                        {{ con }}
+                                    </li>
+
+                                {% endif %}
+
+                            {% endfor %}
+
+                        </ul>
+
+                    {% elif car.sourceData and car.sourceData.get('Cons (Lows)') %}
+
+                        <ul>
+
+                            {% for con in car.sourceData.get('Cons (Lows)') %}
+
+                                {% if con %}
+
+                                    <li>
+                                        {{ con }}
+                                    </li>
+
+                                {% endif %}
+
+                            {% endfor %}
+
+                        </ul>
+
+                    {% else %}
+
+                        <p>
+                            Cons information is not currently available.
+                        </p>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- SPECIFICATIONS -->
+    <section class="mn-section" id="specifications">
+
+        <div class="mn-section-inner">
+
+            <span class="mn-label">
+                SPECIFICATIONS
+            </span>
+
+            <h2>
+                {{ car.make|default('Vehicle') }}
+                {{ car.model|default('') }}
+                Specs
+            </h2>
+
+            <div class="mn-spec-table">
+
+                <div class="mn-spec-row">
+                    <span>Year</span>
+                    <strong>{{ car.year|default('—') }}</strong>
+                </div>
+
+                <div class="mn-spec-row">
+                    <span>Body Type</span>
+                    <strong>{{ car.bodyType|default('—') }}</strong>
+                </div>
+
+                {% if car.trim %}
+                <div class="mn-spec-row">
+                    <span>Trim / Variant</span>
+                    <strong>{{ car.trim }}</strong>
+                </div>
+                {% endif %}
+
+                <div class="mn-spec-row">
+                    <span>Engine</span>
+                    <strong>{{ car.engine|default('—') }}</strong>
+                </div>
+
+                {% if car.displacement %}
+                <div class="mn-spec-row">
+                    <span>Displacement</span>
+                    <strong>{{ car.displacement }} L</strong>
+                </div>
+                {% endif %}
+
+                {% if car.cylinders %}
+                <div class="mn-spec-row">
+                    <span>Cylinders</span>
+                    <strong>{{ car.cylinders }}</strong>
+                </div>
+                {% endif %}
+
+                <div class="mn-spec-row">
+                    <span>Horsepower</span>
+                    <strong>
+                        {% if car.horsepower is not none %}
+                            {{ car.horsepower|int }} hp
+                        {% else %}
+                            —
+                        {% endif %}
+                    </strong>
+                </div>
+
+                {% if car.torque is not none %}
+                <div class="mn-spec-row">
+                    <span>Torque</span>
+                    <strong>
+                        {{ car.torque|int }} lb-ft
+                    </strong>
+                </div>
+                {% endif %}
+
+                <div class="mn-spec-row">
+                    <span>Transmission</span>
+                    <strong>
+                        {{ car.transmission|default('—') }}
+                    </strong>
+                </div>
+
+                <div class="mn-spec-row">
+                    <span>Drivetrain</span>
+                    <strong>
+                        {{ car.drivetrain|default('—') }}
+                    </strong>
+                </div>
+
+                <div class="mn-spec-row">
+                    <span>Fuel Type</span>
+                    <strong>
+                        {{ car.fuelType|default('—') }}
+                    </strong>
+                </div>
+
+                <div class="mn-spec-row">
+                    <span>Seating</span>
+                    <strong>
+                        {{ car.seating|default('—') }}
+                    </strong>
+                </div>
+
+                <div class="mn-spec-row">
+                    <span>Cargo</span>
+                    <strong>
+                        {{ car.cargo|default('—') }}
+                    </strong>
+                </div>
+
+                <div class="mn-spec-row">
+                    <span>Efficiency</span>
+                    <strong>
+                        {{ car.mpg|default('—') }}
+                    </strong>
+                </div>
+
+                {% if car.towing %}
+                <div class="mn-spec-row">
+                    <span>Towing</span>
+                    <strong>
+                        {{ car.towing }}
+                    </strong>
+                </div>
+                {% endif %}
+
+                <div class="mn-spec-row">
+                    <span>Starting MSRP</span>
+                    <strong>
+
+                        {% if car.msrp is not none and car.msrp != '' %}
+
+                            ${{ "{:,.0f}".format(car.msrp|float) }}
+
+                        {% elif car.price and car.price.msrp is not none %}
+
+                            ${{ "{:,.0f}".format(car.price.msrp|float) }}
+
+                        {% else %}
+
+                            Price unavailable
+
+                        {% endif %}
+
+                    </strong>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- FINAL WORD -->
+    <section class="mn-final-word">
+
+        <div class="mn-section-inner">
+
+            <span class="mn-label">
+                THE FINAL WORD
+            </span>
+
+            <h2>
+                Our Take
+            </h2>
+
+            {% if car.finalWord %}
+
+                <p>
+                    {{ car.finalWord }}
+                </p>
+
+            {% elif car.sourceData and car.sourceData.get('Review Summary / Verdict') %}
+
+                <p>
+                    {{ car.sourceData.get('Review Summary / Verdict') }}
+                </p>
+
+            {% else %}
+
+                <p>
+                    Our detailed assessment for this vehicle will be
+                    added as the MotorNation database is expanded.
+                </p>
+
+            {% endif %}
+
+            <a
+                href="{{ url_for('cars') }}"
+                class="mn-primary-btn"
+            >
+                Explore More Cars
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
+
+{% endblock %}

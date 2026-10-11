@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}
+MotorNation — Compare Cars
+{% endblock %}
+
+{% block content %}
+
+<section class="compare-page">
+
+    <div class="container">
+
+        <!-- Compare Header -->
+        <div class="compare-header">
+
+            <span class="eyebrow">
+                MOTOR NATION
+            </span>
+
+            <h1>
+                Compare Cars
+            </h1>
+
+            <p>
+                Compare vehicles side by side and see their
+                specifications, pricing, performance and features.
+            </p>
+
+            <!-- Comparison Status -->
+            <div class="compare-status">
+
+                <span id="compare-count">
+                    Loading comparison...
+                </span>
+
+                <a
+                    href="{{ url_for('cars') }}"
+                    class="compare-add-link"
+                >
+                    + Add More Cars
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- Comparison Content -->
+        <div id="compare-container">
+
+            <!--
+                JavaScript will replace/populate this area
+                when vehicles are selected for comparison.
+            -->
+
+            <div class="compare-empty">
+
+                <h2>
+                    No cars selected
+                </h2>
+
+                <p>
+                    Select cars from the Explore Cars page
+                    to compare them.
+                </p>
+
+                <a
+                    href="{{ url_for('cars') }}"
+                    class="primary-btn"
+                >
+                    Explore Cars
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- Comparison Information -->
+        <div class="compare-info">
+
+            <div class="compare-info-card">
+
+                <h3>
+                    What can you compare?
+                </h3>
+
+                <p>
+                    Compare important vehicle information including
+                    price, horsepower, engine, fuel type, transmission,
+                    drivetrain, efficiency, seating and cargo capacity.
+                </p>
+
+            </div>
+
+            <div class="compare-info-card">
+
+                <h3>
+                    Need another vehicle?
+                </h3>
+
+                <p>
+                    Return to the Explore Cars page and add more
+                    vehicles to your comparison.
+                </p>
+
+                <a
+                    href="{{ url_for('cars') }}"
+                    class="secondary-btn"
+                >
+                    Explore Cars →
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- Compare Page JavaScript -->
+<script
+    src="{{ url_for('static', filename='js/compare.js') }}"
+></script>
+
+{% endblock %}

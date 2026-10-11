@@ -1,0 +1,99 @@
+MOTOR NATION IMAGE FAILURES
+======================================================================
+
+Vehicle: 2026 Dodge Durango SRT Hellcat Hammerhead
+Error: No working image
+----------------------------------------------------------------------
+Vehicle: 2026 Jeep Recon Moab 4xe EV
+Error: No working image
+----------------------------------------------------------------------
+Vehicle: 2026 Lexus IS IS 500 F SPORT
+Error: No working image
+----------------------------------------------------------------------
+Vehicle: 2026 Maserati GranTurismo Trofeo AWD
+Error: No working image
+----------------------------------------------------------------------
+Vehicle: 2026 Mercedes-Benz CLA-Class AMG CLA45 S
+Error: No working image
+----------------------------------------------------------------------
+Vehicle: 2026 Mercedes-Benz E-Class All-Terrain E450 4MATIC Wagon
+Error: No working image
+----------------------------------------------------------------------
+Vehicle: 2026 Mercedes-Benz EQE Sedan AMG EQE AWD
+Error: No working image
+----------------------------------------------------------------------
+Vehicle: 2026 Mercedes-Benz S-Class Maybach S680 4MATIC
+Error: No working image
+----------------------------------------------------------------------
+Vehicle: 2026 Mercedes-Benz SL-Class AMG SL63 Roadster
+Error: No working image
+----------------------------------------------------------------------
+Vehicle: 2026 Mercedes-Benz GLA-Class AMG GLA45 S
+Error: No working image
+----------------------------------------------------------------------
+Vehicle: 2026 Mercedes-Benz GLE-Class AMG GLE63 S
+Error: No working image
+----------------------------------------------------------------------
+Vehicle: 2026 Mercedes-Benz GLS-Class Maybach GLS600
+Error: No working image
+----------------------------------------------------------------------
+Vehicle: 2026 MINI Countryman EV SE ALL4
+Error: No working image
+----------------------------------------------------------------------
+Vehicle: 2026 Mitsubishi Outlander PHEV SEL S-AWC
+Error: No working image
+----------------------------------------------------------------------
+Vehicle: 2026 Nissan Z NISMO
+Error: No working image
+----------------------------------------------------------------------
+Vehicle: 2026 Porsche 718 Cayman GT4 RS
+Error: No working image
+----------------------------------------------------------------------
+Vehicle: 2026 Porsche Taycan Turbo GT
+Error: No working image
+----------------------------------------------------------------------
+Vehicle: 2026 Toyota Corolla Hybrid XLE Hybrid AWD
+Error: No working image
+----------------------------------------------------------------------
+Vehicle: 2026 Toyota GR Supra 3.0 Premium 6MT
+Error: No working image
+----------------------------------------------------------------------
+Vehicle: 2026 Toyota RAV4 Prime XSE PHEV
+Error: No working image
+----------------------------------------------------------------------
+Vehicle: 2026 Volvo V60 Polestar Engineered Recharge
+Error: No working image
+----------------------------------------------------------------------
+Vehicle: 2026 VinFast VF 8 Plus Dual Motor AWD
+Error: No working image
+----------------------------------------------------------------------
+Vehicle: 2026 VinFast VF 9 Plus AWD 7-Passenger
+Error: No working image
+----------------------------------------------------------------------
+Vehicle: 2026 Ford Super Duty F-350 Lariat Dually 4x4
+Error: No working image
+----------------------------------------------------------------------
+Vehicle: 2026 Audi Q5 Sportback 45 TFSI
+Error: No working image
+----------------------------------------------------------------------
+Vehicle: 2026 Audi e-tron GT RS e-tron GT Ice
+Error: No working image
+----------------------------------------------------------------------
+Vehicle: 2026 Toyota Corolla Hatchback XSE
+Error: No working image
+----------------------------------------------------------------------
+Vehicle: 2026 Ford Escape Plug-in Hybrid FWD
+Error: No working image
+----------------------------------------------------------------------
+Vehicle: 2026 Kia Sorento Plug-in Hybrid SX Prestige
+Error: No working image
+----------------------------------------------------------------------
+Vehicle: 2026 Mazda CX-90 PHEV Premium Plus
+Error: No working image
+----------------------------------------------------------------------
+Vehicle: 2026 Mazda CX-70 PHEV Premium Plus
+Error: No working image
+----------------------------------------------------------------------
+Vehicle: 2026 Audi A4 allroad quattro Premium Plus
+Error: No working image
+----------------------------------------------------------------------

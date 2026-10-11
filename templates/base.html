@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="MotorNation — Research, compare and discover new cars in the United States."
+    >
+
+    <meta
+        name="keywords"
+        content="cars, automotive, EV, reviews, comparison, SUVs, trucks, sedans"
+    >
+
+    <meta
+        name="author"
+        content="MotorNation"
+    >
+
+    <title>
+        {% block title %}
+        MotorNation
+        {% endblock %}
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}?v=20261011_v3"
+    >
+
+    {% block extra_css %}
+    {% endblock %}
+
+</head>
+
+<body>
+
+    <!-- =========================================
+         HEADER
+    ========================================== -->
+
+    <header class="navbar">
+
+        <div class="container navbar-inner">
+
+            <!-- LOGO -->
+
+            <a
+                href="{{ url_for('home') }}"
+                class="logo"
+                aria-label="MotorNation Home"
+            >
+
+                <span class="logo-text">
+                    MotorNation
+                </span>
+
+                <span class="logo-stripes">
+
+                    <span class="logo-stripe cyan"></span>
+                    <span class="logo-stripe yellow"></span>
+
+                </span>
+
+            </a>
+
+
+            <!-- MOBILE BUTTON -->
+
+            <button
+                class="menu-toggle"
+                id="menuToggle"
+                aria-label="Open navigation"
+            >
+                ☰
+            </button>
+
+
+            <!-- NAVIGATION -->
+
+            <nav
+                class="nav-links"
+                id="mainNav"
+            >
+
+                <a href="{{ url_for('cars') }}">
+                    New Cars
+                </a>
+
+                <a href="{{ url_for('compare') }}">
+                    Compare
+                </a>
+
+                <a href="{{ url_for('reviews') }}">
+                    Reviews
+                </a>
+
+                <a href="{{ url_for('news') }}">
+                    News
+                </a>
+
+                <a href="{{ url_for('cars') }}?fuelType=Electric">
+                    EV
+                </a>
+
+            </nav>
+
+
+            <!-- SEARCH -->
+
+            <a
+                href="{{ url_for('cars') }}"
+                class="search-button"
+            >
+                Search
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================================
+         MAIN CONTENT
+    ========================================== -->
+
+    <main>
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+
+    <!-- =========================================
+         FOOTER
+    ========================================== -->
+
+    <footer class="footer">
+
+        <div class="container footer-grid">
+
+            <div class="footer-brand">
+
+                <h3>
+                    MotorNation
+                </h3>
+
+                <p>
+                    Research, compare and discover
+                    new vehicles in the USA.
+                </p>
+
+            </div>
+
+            <div class="footer-links">
+
+                <h4>
+                    Explore
+                </h4>
+
+                <a href="{{ url_for('cars') }}">
+                    New Cars
+                </a>
+
+                <a href="{{ url_for('compare') }}">
+                    Compare
+                </a>
+
+                <a href="{{ url_for('reviews') }}">
+                    Reviews
+                </a>
+
+                <a href="{{ url_for('news') }}">
+                    News
+                </a>
+
+            </div>
+
+            <div class="footer-links">
+
+                <h4>
+                    Community
+                </h4>
+
+                <a
+                    href="https://www.youtube.com/@motornationofficial"
+                    target="_blank"
+                >
+                    YouTube Channel
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+
+            <p>
+                © 2026 MotorNation.
+                All rights reserved.
+            </p>
+
+        </div>
+
+    </footer>
+
+    <script>
+        window.MotorNationCompare = {
+            KEY: "motorNationCompare",
+            MAX: 3,
+            getIds: function () {
+                try {
+                    const stored = JSON.parse(localStorage.getItem(this.KEY) || "[]");
+                    return Array.isArray(stored) ? stored.map(String) : [];
+                } catch (e) {
+                    return [];
+                }
+            },
+            has: function (id) {
+                return this.getIds().includes(String(id));
+            },
+            toggle: function (id) {
+                let ids = this.getIds();
+                const strId = String(id);
+                const idx = ids.indexOf(strId);
+                if (idx >= 0) {
+                    ids.splice(idx, 1);
+                    localStorage.setItem(this.KEY, JSON.stringify(ids));
+                    this.updateAllButtons();
+                    return false;
+                } else {
+                    if (ids.length >= this.MAX) {
+                        alert(`You can compare up to ${this.MAX} cars at once. Remove one on the Compare page to add another.`);
+                        return false;
+                    }
+                    ids.push(strId);
+                    localStorage.setItem(this.KEY, JSON.stringify(ids));
+                    this.updateAllButtons();
+                    return true;
+                }
+            },
+            updateAllButtons: function () {
+                const ids = this.getIds();
+                document.querySelectorAll("[data-compare-id]").forEach(function (btn) {
+                    const id = btn.getAttribute("data-compare-id");
+                    if (ids.includes(String(id))) {
+                        btn.classList.add("active");
+                        btn.textContent = "✓ In Compare";
+                    } else {
+                        btn.classList.remove("active");
+                        btn.textContent = "+ Compare";
+                    }
+                });
+                const navLinks = document.querySelectorAll('a[href*="compare"]');
+                navLinks.forEach(function (link) {
+                    if (link.textContent.includes("Compare")) {
+                        link.textContent = ids.length ? `Compare (${ids.length})` : "Compare";
+                    }
+                });
+            }
+        };
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const toggle = document.getElementById("menuToggle");
+            const nav = document.getElementById("mainNav");
+            if (toggle && nav) {
+                toggle.addEventListener("click", function () {
+                    nav.classList.toggle("active");
+                });
+            }
+            window.MotorNationCompare.updateAllButtons();
+        });
+    </script>
+
+    {% block extra_js %}
+    {% endblock %}
+
+</body>
+
+</html>

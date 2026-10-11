@@ -1,0 +1,772 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if vehicle %}
+        Edit Vehicle — MotorNation
+    {% else %}
+        Add Vehicle — MotorNation
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+<div class="admin-page">
+
+    <div class="admin-container">
+
+        <!-- HEADER -->
+        <div class="admin-form-header">
+            <div>
+                <span class="admin-eyebrow">MOTORNATION ADMIN</span>
+
+                <h1>
+                    {% if vehicle %}
+                        Edit Vehicle
+                    {% else %}
+                        Add Vehicle
+                    {% endif %}
+                </h1>
+
+                <p>
+                    {% if vehicle %}
+                        Update the vehicle information below.
+                    {% else %}
+                        Add a new vehicle to the MotorNation catalog.
+                    {% endif %}
+                </p>
+            </div>
+
+            <a href="{{ url_for('admin_dashboard') }}" class="admin-back-btn">
+                ← Back to Dashboard
+            </a>
+        </div>
+
+
+        <!-- FORM -->
+        <form
+            method="POST"
+            action="{% if vehicle %}{{ url_for('admin_edit_vehicle', car_id=vehicle.id) }}{% else %}{{ url_for('admin_add_vehicle') }}{% endif %}"
+            class="vehicle-form"
+        >
+
+            <!-- BASIC INFORMATION -->
+            <section class="admin-form-section">
+
+                <div class="section-heading">
+                    <h2>Basic Information</h2>
+                    <p>Core vehicle identification information.</p>
+                </div>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="year">Year</label>
+                        <input
+                            type="number"
+                            id="year"
+                            name="Year"
+                            value="{{ vehicle.year if vehicle else '' }}"
+                            placeholder="2026"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="make">Make</label>
+                        <input
+                            type="text"
+                            id="make"
+                            name="Make"
+                            value="{{ vehicle.make if vehicle else '' }}"
+                            placeholder="Toyota"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group form-group-wide">
+                        <label for="model">Model / Model Group</label>
+                        <input
+                            type="text"
+                            id="model"
+                            name="Model / Model Group"
+                            value="{{ vehicle.model if vehicle else '' }}"
+                            placeholder="Camry"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="trim">Trim / Variant</label>
+                        <input
+                            type="text"
+                            id="trim"
+                            name="Trim / Variant"
+                            value="{{ vehicle.trim if vehicle else '' }}"
+                            placeholder="XSE"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="body_type">Body Type</label>
+                        <input
+                            type="text"
+                            id="body_type"
+                            name="Body Type"
+                            value="{{ vehicle.bodyType if vehicle else '' }}"
+                            placeholder="Sedan"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fuel_type">Fuel Type</label>
+                        <input
+                            type="text"
+                            id="fuel_type"
+                            name="Fuel Type"
+                            value="{{ vehicle.fuelType if vehicle else '' }}"
+                            placeholder="Gasoline"
+                        >
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ENGINE & PERFORMANCE -->
+            <section class="admin-form-section">
+
+                <div class="section-heading">
+                    <h2>Engine & Performance</h2>
+                    <p>Powertrain and performance specifications.</p>
+                </div>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="engine">Engine</label>
+                        <input
+                            type="text"
+                            id="engine"
+                            name="Engine"
+                            value="{{ vehicle.engine if vehicle else '' }}"
+                            placeholder="2.5L 4-Cylinder"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="displacement">Displacement</label>
+                        <input
+                            type="text"
+                            id="displacement"
+                            name="Displacement"
+                            value="{{ vehicle.displacement if vehicle else '' }}"
+                            placeholder="2.5L"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cylinders">Cylinders</label>
+                        <input
+                            type="number"
+                            id="cylinders"
+                            name="Cylinders"
+                            value="{{ vehicle.cylinders if vehicle else '' }}"
+                            placeholder="4"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="horsepower">Horsepower</label>
+                        <input
+                            type="number"
+                            id="horsepower"
+                            name="Horsepower"
+                            value="{{ vehicle.horsepower if vehicle else '' }}"
+                            placeholder="225"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="torque">Torque</label>
+                        <input
+                            type="text"
+                            id="torque"
+                            name="Torque"
+                            value="{{ vehicle.torque if vehicle else '' }}"
+                            placeholder="163 lb-ft"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="transmission">Transmission</label>
+                        <input
+                            type="text"
+                            id="transmission"
+                            name="Transmission"
+                            value="{{ vehicle.transmission if vehicle else '' }}"
+                            placeholder="8-Speed Automatic"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="drivetrain">Drivetrain</label>
+                        <input
+                            type="text"
+                            id="drivetrain"
+                            name="Drivetrain"
+                            value="{{ vehicle.drivetrain if vehicle else '' }}"
+                            placeholder="FWD"
+                        >
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- EFFICIENCY -->
+            <section class="admin-form-section">
+
+                <div class="section-heading">
+                    <h2>Efficiency & Range</h2>
+                    <p>Fuel economy and electric vehicle information.</p>
+                </div>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="mpg">MPG</label>
+                        <input
+                            type="text"
+                            id="mpg"
+                            name="MPG"
+                            value="{{ vehicle.mpg if vehicle else '' }}"
+                            placeholder="30 combined"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ev_range">EV Range</label>
+                        <input
+                            type="text"
+                            id="ev_range"
+                            name="EV range"
+                            value="{{ vehicle.evRange if vehicle else '' }}"
+                            placeholder="300 miles"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="battery">Battery</label>
+                        <input
+                            type="text"
+                            id="battery"
+                            name="Battery"
+                            value="{{ vehicle.battery if vehicle else '' }}"
+                            placeholder="82 kWh"
+                        >
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- PRICE & PRACTICALITY -->
+            <section class="admin-form-section">
+
+                <div class="section-heading">
+                    <h2>Price & Practicality</h2>
+                    <p>Pricing, seating, cargo and towing information.</p>
+                </div>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="msrp">MSRP</label>
+                        <input
+                            type="number"
+                            id="msrp"
+                            name="MSRP"
+                            value="{{ vehicle.msrp if vehicle else '' }}"
+                            placeholder="35000"
+                            step="0.01"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="seating">Seating</label>
+                        <input
+                            type="number"
+                            id="seating"
+                            name="Seating"
+                            value="{{ vehicle.seating if vehicle else '' }}"
+                            placeholder="5"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cargo">Cargo</label>
+                        <input
+                            type="text"
+                            id="cargo"
+                            name="Cargo"
+                            value="{{ vehicle.cargo if vehicle else '' }}"
+                            placeholder="15.1 cu ft"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="towing">Towing</label>
+                        <input
+                            type="text"
+                            id="towing"
+                            name="Towing"
+                            value="{{ vehicle.towing if vehicle else '' }}"
+                            placeholder="3500 lbs"
+                        >
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- REVIEWS -->
+            <section class="admin-form-section">
+
+                <div class="section-heading">
+                    <h2>Review Information</h2>
+                    <p>MotorNation review information and editorial content.</p>
+                </div>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="rating">C&D Rating</label>
+                        <input
+                            type="text"
+                            id="rating"
+                            name="C&D Rating"
+                            value="{{ vehicle.rating if vehicle else '' }}"
+                            placeholder="8.5/10"
+                        >
+                    </div>
+
+                    <div class="form-group form-group-wide">
+                        <label for="review_url">Review URL</label>
+                        <input
+                            type="url"
+                            id="review_url"
+                            name="Review URL"
+                            value="{{ vehicle.reviewUrl if vehicle else '' }}"
+                            placeholder="https://..."
+                        >
+                    </div>
+
+                    <div class="form-group form-group-full">
+                        <label for="review_summary">
+                            Review Summary / Verdict
+                        </label>
+
+                        <textarea
+                            id="review_summary"
+                            name="Review Summary / Verdict"
+                            rows="5"
+                            placeholder="Write the overall review summary or verdict..."
+                        >{{ vehicle.finalWord if vehicle else '' }}</textarea>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- PROS & CONS -->
+            <section class="admin-form-section">
+
+                <div class="section-heading">
+                    <h2>Pros & Cons</h2>
+                    <p>Key strengths and weaknesses of the vehicle.</p>
+                </div>
+
+                <div class="form-grid">
+
+                    <div class="form-group form-group-full">
+
+                        <label for="pros">
+                            Pros (Highs)
+                        </label>
+
+                        <textarea
+                            id="pros"
+                            name="Pros (Highs)"
+                            rows="6"
+                            placeholder="Enter pros, one per line..."
+                        >{% if vehicle and vehicle.pros %}{{ vehicle.pros | join('\n') }}{% endif %}</textarea>
+
+                        <small>
+                            Enter one advantage per line.
+                        </small>
+
+                    </div>
+
+
+                    <div class="form-group form-group-full">
+
+                        <label for="cons">
+                            Cons (Lows)
+                        </label>
+
+                        <textarea
+                            id="cons"
+                            name="Cons (Lows)"
+                            rows="6"
+                            placeholder="Enter cons, one per line..."
+                        >{% if vehicle and vehicle.cons %}{{ vehicle.cons | join('\n') }}{% endif %}</textarea>
+
+                        <small>
+                            Enter one disadvantage per line.
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- DESCRIPTION -->
+            <section class="admin-form-section">
+
+                <div class="section-heading">
+                    <h2>Description</h2>
+                    <p>Main vehicle description shown on the website.</p>
+                </div>
+
+                <div class="form-group form-group-full">
+
+                    <textarea
+                        id="description"
+                        name="Description"
+                        rows="8"
+                        placeholder="Write the vehicle description..."
+                    >{{ vehicle.description if vehicle else '' }}</textarea>
+
+                </div>
+
+            </section>
+
+
+            <!-- IMAGE -->
+            <section class="admin-form-section">
+
+                <div class="section-heading">
+                    <h2>Vehicle Image</h2>
+                    <p>
+                        Use the local MotorNation image path when available.
+                    </p>
+                </div>
+
+                <div class="form-group form-group-full">
+
+                    <label for="image">
+                        Image Path
+                    </label>
+
+                    <input
+                        type="text"
+                        id="image"
+                        name="Image"
+                        value="{{ vehicle.image if vehicle else '' }}"
+                        placeholder="/static/images/2026_Toyota_Camry.jpg"
+                    >
+
+                    <small>
+                        Example:
+                        /static/images/2026_Toyota_Camry.jpg
+                    </small>
+
+                </div>
+
+            </section>
+
+
+            <!-- SOURCE -->
+            <section class="admin-form-section">
+
+                <div class="section-heading">
+                    <h2>Source</h2>
+                    <p>Source information for this vehicle record.</p>
+                </div>
+
+                <div class="form-grid">
+
+                    <div class="form-group form-group-full">
+
+                        <label for="cd_source">
+                            C&D Source
+                        </label>
+
+                        <input
+                            type="text"
+                            id="cd_source"
+                            name="C&D source"
+                            value="{{ vehicle.cdSource if vehicle else '' }}"
+                            placeholder="Car and Driver"
+                        >
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ACTIONS -->
+            <div class="admin-form-actions">
+
+                <a
+                    href="{{ url_for('admin_dashboard') }}"
+                    class="admin-cancel-btn"
+                >
+                    Cancel
+                </a>
+
+                <button
+                    type="submit"
+                    class="admin-save-btn"
+                >
+                    {% if vehicle %}
+                        Save Changes
+                    {% else %}
+                        Add Vehicle
+                    {% endif %}
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<style>
+
+.admin-page {
+    min-height: 100vh;
+    padding: 40px 20px 80px;
+    background: #f5f6f8;
+}
+
+.admin-container {
+    width: min(1100px, 100%);
+    margin: 0 auto;
+}
+
+.admin-form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.admin-eyebrow {
+    display: inline-block;
+    margin-bottom: 8px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    color: #e11d2e;
+}
+
+.admin-form-header h1 {
+    margin: 0;
+    font-size: 38px;
+    color: #11151a;
+}
+
+.admin-form-header p {
+    margin: 8px 0 0;
+    color: #6b7280;
+}
+
+.admin-back-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 11px 18px;
+    border: 1px solid #dfe3e8;
+    border-radius: 8px;
+    background: white;
+    color: #11151a;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.vehicle-form {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.admin-form-section {
+    padding: 28px;
+    border: 1px solid #e1e5e9;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.04);
+}
+
+.section-heading {
+    margin-bottom: 24px;
+}
+
+.section-heading h2 {
+    margin: 0 0 5px;
+    font-size: 21px;
+    color: #11151a;
+}
+
+.section-heading p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group-wide {
+    grid-column: span 2;
+}
+
+.form-group-full {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #252a31;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    border: 1px solid #d8dde3;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #171a1f;
+    font: inherit;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: #e11d2e;
+    box-shadow: 0 0 0 3px rgba(225, 29, 46, 0.1);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.form-group small {
+    color: #737b86;
+    font-size: 12px;
+}
+
+.admin-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-top: 5px;
+}
+
+.admin-cancel-btn,
+.admin-save-btn {
+    min-width: 140px;
+    padding: 13px 22px;
+    border-radius: 8px;
+    font-weight: 800;
+    font-size: 14px;
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.admin-cancel-btn {
+    border: 1px solid #d8dde3;
+    background: #ffffff;
+    color: #252a31;
+}
+
+.admin-save-btn {
+    border: 0;
+    background: #e11d2e;
+    color: #ffffff;
+}
+
+.admin-save-btn:hover {
+    background: #b91c2b;
+}
+
+@media (max-width: 700px) {
+
+    .admin-page {
+        padding: 25px 14px 50px;
+    }
+
+    .admin-form-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .admin-form-header h1 {
+        font-size: 30px;
+    }
+
+    .admin-form-section {
+        padding: 20px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group-wide,
+    .form-group-full {
+        grid-column: 1;
+    }
+
+    .admin-form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .admin-cancel-btn,
+    .admin-save-btn {
+        width: 100%;
+    }
+}
+
+</style>
+
+{% endblock %}

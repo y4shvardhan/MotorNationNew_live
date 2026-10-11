@@ -1,0 +1,321 @@
+{% extends "base.html" %}
+
+{% block title %}
+MotorNation — News
+{% endblock %}
+
+{% block content %}
+
+<section class="news-page">
+
+    <div class="container">
+
+        <!-- Page Header -->
+        <div class="page-header">
+
+            <span class="eyebrow">
+                MOTOR NATION NEWS
+            </span>
+
+            <h1>
+                Automotive News
+            </h1>
+
+            <p>
+                Stay updated with the latest automotive news,
+                new vehicle launches, industry developments,
+                electric vehicles and automotive technology.
+            </p>
+
+        </div>
+
+
+        <!-- Featured News -->
+        <section class="news-intro">
+
+            <div class="news-intro-content">
+
+                <h2>
+                    Stay Ahead of the Road
+                </h2>
+
+                <p>
+                    MotorNation News will bring together important
+                    developments from the automotive world, helping
+                    you stay informed about new cars, technology,
+                    manufacturers and the future of mobility.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- Latest Stories -->
+        <section class="news-stories" style="margin-bottom: 55px;">
+
+            <div class="section-heading">
+
+                <div>
+                    <span class="eyebrow">
+                        LATEST STORIES
+                    </span>
+
+                    <h2>
+                        Industry & Technology Trends
+                    </h2>
+
+                    <p class="section-description">
+                        In-depth looks at where automotive engineering, styling and future mobility are heading.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="news-grid">
+
+                <article class="news-card">
+
+                    <div class="news-card-image">
+                        <img
+                            src="https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=800&q=80"
+                            alt="The next generation of modern vehicles"
+                            loading="lazy"
+                        >
+                        <span class="news-card-badge">NEW CARS</span>
+                    </div>
+
+                    <div class="news-card-body">
+
+                        <div class="news-card-meta">
+                            <span class="news-card-num">01</span>
+                            <span class="news-card-time">3 min read</span>
+                        </div>
+
+                        <h3 class="news-card-title">
+                            The next generation of modern vehicles
+                        </h3>
+
+                        <p class="news-card-excerpt">
+                            Discover how new vehicle architectures, lighter materials, and active aerodynamics are reshaping modern road performance and ownership.
+                        </p>
+
+                    </div>
+
+                </article>
+
+
+                <article class="news-card">
+
+                    <div class="news-card-image">
+                        <img
+                            src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=800&q=80"
+                            alt="Smarter technology inside today's cars"
+                            loading="lazy"
+                        >
+                        <span class="news-card-badge">TECHNOLOGY</span>
+                    </div>
+
+                    <div class="news-card-body">
+
+                        <div class="news-card-meta">
+                            <span class="news-card-num">02</span>
+                            <span class="news-card-time">4 min read</span>
+                        </div>
+
+                        <h3 class="news-card-title">
+                            Smarter technology inside today's cars
+                        </h3>
+
+                        <p class="news-card-excerpt">
+                            From ultra-responsive cockpits to advanced driver assistance, software-defined vehicle innovation continues to evolve at record speed.
+                        </p>
+
+                    </div>
+
+                </article>
+
+
+                <article class="news-card">
+
+                    <div class="news-card-image">
+                        <img
+                            src="https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=800&q=80"
+                            alt="The continued growth of EVs"
+                            loading="lazy"
+                        >
+                        <span class="news-card-badge">ELECTRIC</span>
+                    </div>
+
+                    <div class="news-card-body">
+
+                        <div class="news-card-meta">
+                            <span class="news-card-num">03</span>
+                            <span class="news-card-time">5 min read</span>
+                        </div>
+
+                        <h3 class="news-card-title">
+                            The continued growth of EVs
+                        </h3>
+
+                        <p class="news-card-excerpt">
+                            Explore electric vehicles, high-speed charging infrastructure, battery efficiency advances, and key metrics before making the transition.
+                        </p>
+
+                    </div>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- News Categories -->
+        <section class="news-categories">
+
+            <div class="section-heading">
+
+                <div>
+                    <span class="eyebrow">
+                        EXPLORE
+                    </span>
+
+                    <h2>
+                        News Categories
+                    </h2>
+                </div>
+
+                <a
+                    href="{{ url_for('cars') }}"
+                    class="section-link"
+                >
+                    Explore Cars →
+                </a>
+
+            </div>
+
+
+            <div class="news-category-grid">
+
+                <!-- New Cars -->
+                <article class="news-category-card">
+
+                    <div class="news-category-icon">
+                        🚘
+                    </div>
+
+                    <h3>
+                        New Cars
+                    </h3>
+
+                    <p>
+                        Follow new vehicle announcements, launches,
+                        updates and upcoming models.
+                    </p>
+
+                    <a href="{{ url_for('cars') }}">
+                        Explore Cars →
+                    </a>
+
+                </article>
+
+
+                <!-- Electric Vehicles -->
+                <article class="news-category-card">
+
+                    <div class="news-category-icon">
+                        ⚡
+                    </div>
+
+                    <h3>
+                        Electric Vehicles
+                    </h3>
+
+                    <p>
+                        Keep up with EV launches, electric technology,
+                        charging developments and the future of mobility.
+                    </p>
+
+                    <a href="{{ url_for('cars') }}?fuelType=Electric">
+                        Explore EVs →
+                    </a>
+
+                </article>
+
+
+                <!-- Automotive Technology -->
+                <article class="news-category-card">
+
+                    <div class="news-category-icon">
+                        🧠
+                    </div>
+
+                    <h3>
+                        Automotive Technology
+                    </h3>
+
+                    <p>
+                        Discover developments in vehicle technology,
+                        safety systems, connectivity and innovation.
+                    </p>
+
+                    <a href="{{ url_for('cars') }}">
+                        Explore Vehicles →
+                    </a>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- Coming Soon -->
+        <section class="news-coming-soon">
+
+            <div class="coming-soon-card">
+
+                <span class="eyebrow">
+                    COMING SOON
+                </span>
+
+                <h2>
+                    MotorNation News
+                </h2>
+
+                <p>
+                    Our dedicated automotive news system is currently
+                    being developed. This section will eventually feature
+                    vehicle launches, manufacturer announcements, industry
+                    developments, EV news, automotive technology and other
+                    important stories from the automotive world.
+                </p>
+
+                <div class="coming-soon-actions">
+
+                    <a
+                        href="{{ url_for('cars') }}"
+                        class="primary-btn"
+                    >
+                        Explore Cars
+                    </a>
+
+                    <a
+                        href="{{ url_for('reviews') }}"
+                        class="secondary-btn"
+                    >
+                        Read Reviews
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</section>
+
+{% endblock %}
