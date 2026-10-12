@@ -408,6 +408,10 @@ function renderCars(cars) {
     if (window.MotorNationCompare) {
         window.MotorNationCompare.updateAllButtons();
     }
+
+    if (window.MotorNationFavorites) {
+        window.MotorNationFavorites.updateAllButtons();
+    }
 }
 
 
@@ -489,6 +493,17 @@ function createCarCard(car) {
                 <span class="car-card-year">
                     ${escapeHTML(year)}
                 </span>
+
+                <button
+                    type="button"
+                    class="card-favorite-btn"
+                    data-favorite-id="${escapeHTML(car?.id ?? car?.vehicle_id ?? '')}"
+                    onclick="event.preventDefault(); event.stopPropagation(); window.MotorNationFavorites && window.MotorNationFavorites.toggle('${escapeHTML(car?.id ?? car?.vehicle_id ?? '')}')"
+                    aria-label="Save vehicle"
+                    title="Save vehicle"
+                >
+                    ♡
+                </button>
 
             </a>
 
@@ -836,6 +851,25 @@ function clearFilters() {
 function showLoading() {
 
     elements.loading?.removeAttribute("hidden");
+
+    if (elements.results) {
+        elements.results.innerHTML = Array.from({ length: 6 }, () => `
+            <article class="skeleton-card">
+                <div class="skeleton-thumb skeleton-shimmer"></div>
+                <div class="skeleton-body">
+                    <div class="skeleton-pill skeleton-shimmer"></div>
+                    <div class="skeleton-title skeleton-shimmer"></div>
+                    <div class="skeleton-price skeleton-shimmer"></div>
+                    <div class="skeleton-specs">
+                        <div class="skeleton-spec-item skeleton-shimmer"></div>
+                        <div class="skeleton-spec-item skeleton-shimmer"></div>
+                        <div class="skeleton-spec-item skeleton-shimmer"></div>
+                    </div>
+                    <div class="skeleton-btn skeleton-shimmer"></div>
+                </div>
+            </article>
+        `).join("");
+    }
 
     if (elements.error) {
         elements.error.hidden = true;

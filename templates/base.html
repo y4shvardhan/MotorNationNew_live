@@ -33,7 +33,7 @@
 
     <link
         rel="stylesheet"
-        href="{{ url_for('static', filename='css/style.css') }}?v=20261011_v3"
+        href="{{ url_for('static', filename='css/style.css') }}?v=20261012"
     >
 
     {% block extra_css %}
@@ -213,10 +213,143 @@
 
     </footer>
 
+    <!-- =========================================
+         FLOATING COMPARE DOCK
+    ========================================== -->
+    <aside class="mn-compare-dock" id="mnCompareDock" aria-label="Comparison Dock">
+        <div class="mn-dock-inner">
+            <div class="mn-dock-info">
+                <span class="mn-dock-badge" id="mnDockCount">0/3</span>
+                <div class="mn-dock-text">
+                    <strong>Compare Deck</strong>
+                    <span>Select up to 3 cars</span>
+                </div>
+            </div>
+            <div class="mn-dock-cars" id="mnDockCars"></div>
+            <div class="mn-dock-actions">
+                <a href="{{ url_for('compare') }}" class="mn-dock-btn" id="mnDockCompareBtn">
+                    Compare Now →
+                </a>
+                <button type="button" class="mn-dock-clear" onclick="window.MotorNationCompare.clear()" title="Clear comparison">
+                    ✕
+                </button>
+            </div>
+        </div>
+    </aside>
+
     <script>
+        // Global Cars Cache for UI Widgets
+        window.mnCarsCache = null;
+        window.fetchMnCars = async function () {
+            if (window.mnCarsCache) return window.mnCarsCache;
+            try {
+                const res = await fetch("/api/cars", { headers: { "Accept": "application/json" } });
+                const data = await res.json();
+                window.mnCarsCache = Array.isArray(data) ? data : (data.cars || []);
+                return window.mnCarsCache;
+            } catch (e) {
+                return [];
+            }
+        };
+
+        // Comparison Manager
         window.MotorNationCompare = {
             KEY: "motorNationCompare",
             MAX: 3,
+            getIds: function () {
+                try {
+                    const stored = JSON.parse(localStorage.getItem(this.KEY) || "[]");
+                    return Array.isArray(stored) ? stored.map(String) : [];
+                } catch (e) {
+                    return [];
+                }
+            },
+            has: function (id) {
+                return this.getIds().includes(String(id));
+            },
+            clear: function () {
+                localStorage.setItem(this.KEY, "[]");
+                this.updateAllButtons();
+            },
+            toggle: function (id) {
+                let ids = this.getIds();
+                const strId = String(id);
+                const idx = ids.indexOf(strId);
+                if (idx >= 0) {
+                    ids.splice(idx, 1);
+                    localStorage.setItem(this.KEY, JSON.stringify(ids));
+                    this.updateAllButtons();
+                    return false;
+                } else {
+                    if (ids.length >= this.MAX) {
+                        alert(`You can compare up to ${this.MAX} cars at once. Remove one to add another.`);
+                        return false;
+                    }
+                    ids.push(strId);
+                    localStorage.setItem(this.KEY, JSON.stringify(ids));
+                    this.updateAllButtons();
+                    return true;
+                }
+            },
+            updateAllButtons: async function () {
+                const ids = this.getIds();
+                document.querySelectorAll("[data-compare-id]").forEach(function (btn) {
+                    const id = btn.getAttribute("data-compare-id");
+                    if (ids.includes(String(id))) {
+                        btn.classList.add("active");
+                        btn.textContent = "✓ In Compare";
+                    } else {
+                        btn.classList.remove("active");
+                        btn.textContent = "+ Compare";
+                    }
+                });
+
+                const navLinks = document.querySelectorAll('a[href*="compare"]');
+                navLinks.forEach(function (link) {
+                    if (link.textContent.includes("Compare")) {
+                        link.textContent = ids.length ? `Compare (${ids.length})` : "Compare";
+                    }
+                });
+
+                // Update Floating Compare Dock
+                const dock = document.getElementById("mnCompareDock");
+                const countBadge = document.getElementById("mnDockCount");
+                const carsSlot = document.getElementById("mnDockCars");
+                const compareBtn = document.getElementById("mnDockCompareBtn");
+
+                if (!dock) return;
+
+                if (ids.length === 0) {
+                    dock.classList.remove("visible");
+                    return;
+                }
+
+                dock.classList.add("visible");
+                if (countBadge) countBadge.textContent = `${ids.length}/${this.MAX}`;
+                if (compareBtn) compareBtn.textContent = `Compare (${ids.length}) →`;
+
+                const cars = await window.fetchMnCars();
+                if (carsSlot && cars.length) {
+                    carsSlot.innerHTML = ids.map(function (id) {
+                        const car = cars.find(c => String(c.id || c.vehicle_id) === String(id));
+                        if (!car) return "";
+                        const img = car.image || car.imageUrl || "";
+                        const title = `${car.year || "2026"} ${car.make} ${car.model}`;
+                        return `
+                            <div class="mn-dock-chip">
+                                ${img ? `<img src="${img}" alt="${title}">` : `<span class="mn-dock-chip-icon">🚗</span>`}
+                                <span class="mn-dock-chip-name" title="${title}">${car.make} ${car.model}</span>
+                                <button type="button" class="mn-dock-chip-remove" onclick="window.MotorNationCompare.toggle('${id}')" title="Remove">✕</button>
+                            </div>
+                        `;
+                    }).join("");
+                }
+            }
+        };
+
+        // Favorites / Saved Cars Manager
+        window.MotorNationFavorites = {
+            KEY: "motorNationFavorites",
             getIds: function () {
                 try {
                     const stored = JSON.parse(localStorage.getItem(this.KEY) || "[]");
@@ -234,36 +367,25 @@
                 const idx = ids.indexOf(strId);
                 if (idx >= 0) {
                     ids.splice(idx, 1);
-                    localStorage.setItem(this.KEY, JSON.stringify(ids));
-                    this.updateAllButtons();
-                    return false;
                 } else {
-                    if (ids.length >= this.MAX) {
-                        alert(`You can compare up to ${this.MAX} cars at once. Remove one on the Compare page to add another.`);
-                        return false;
-                    }
                     ids.push(strId);
-                    localStorage.setItem(this.KEY, JSON.stringify(ids));
-                    this.updateAllButtons();
-                    return true;
                 }
+                localStorage.setItem(this.KEY, JSON.stringify(ids));
+                this.updateAllButtons();
+                return idx < 0;
             },
             updateAllButtons: function () {
                 const ids = this.getIds();
-                document.querySelectorAll("[data-compare-id]").forEach(function (btn) {
-                    const id = btn.getAttribute("data-compare-id");
+                document.querySelectorAll("[data-favorite-id]").forEach(function (btn) {
+                    const id = btn.getAttribute("data-favorite-id");
                     if (ids.includes(String(id))) {
                         btn.classList.add("active");
-                        btn.textContent = "✓ In Compare";
+                        btn.setAttribute("aria-label", "Remove from saved");
+                        btn.innerHTML = "♥";
                     } else {
                         btn.classList.remove("active");
-                        btn.textContent = "+ Compare";
-                    }
-                });
-                const navLinks = document.querySelectorAll('a[href*="compare"]');
-                navLinks.forEach(function (link) {
-                    if (link.textContent.includes("Compare")) {
-                        link.textContent = ids.length ? `Compare (${ids.length})` : "Compare";
+                        btn.setAttribute("aria-label", "Save car");
+                        btn.innerHTML = "♡";
                     }
                 });
             }
@@ -278,6 +400,7 @@
                 });
             }
             window.MotorNationCompare.updateAllButtons();
+            window.MotorNationFavorites.updateAllButtons();
         });
     </script>
 

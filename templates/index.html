@@ -29,7 +29,8 @@ MotorNation — New Cars, Reviews & Comparisons
         </p>
 
         <form
-            class="search-box"
+            class="search-box hero-search-box"
+            id="heroSearchForm"
             method="GET"
             action="{{ url_for('cars') }}"
         >
@@ -37,7 +38,8 @@ MotorNation — New Cars, Reviews & Comparisons
             <input
                 type="text"
                 name="q"
-                placeholder="Search by make or model..."
+                id="heroSearchInput"
+                placeholder="Search by make or model (e.g. Porsche, Integra, EV)..."
                 autocomplete="off"
                 aria-label="Search cars by make or model"
             >
@@ -46,7 +48,30 @@ MotorNation — New Cars, Reviews & Comparisons
                 Search Cars
             </button>
 
+            <!-- Live Search Autocomplete Dropdown -->
+            <div class="hero-search-dropdown" id="heroSearchDropdown" hidden></div>
+
         </form>
+
+        <!-- Quick Filter Category Pills -->
+        <div class="hero-quick-filters">
+            <span class="hero-filters-label">Trending:</span>
+            <a href="{{ url_for('cars') }}?fuelType=Electric" class="hero-filter-pill">
+                <span>⚡</span> EVs & Hybrids
+            </a>
+            <a href="{{ url_for('cars') }}?bodyType=SUV" class="hero-filter-pill">
+                <span>🚙</span> SUVs
+            </a>
+            <a href="{{ url_for('cars') }}?bodyType=Sedan" class="hero-filter-pill">
+                <span>🏎️</span> Sedans
+            </a>
+            <a href="{{ url_for('cars') }}?bodyType=Truck" class="hero-filter-pill">
+                <span>🛻</span> Trucks
+            </a>
+            <a href="{{ url_for('cars') }}?maxPrice=35000" class="hero-filter-pill">
+                <span>💰</span> Under $35k
+            </a>
+        </div>
 
     </div>
 

@@ -1035,6 +1035,52 @@ def find_car_by_id(car_id):
     )
 
 
+def find_rivals_for_car(car, limit=3):
+    """
+    Find competitor/rival vehicles with same body type or category.
+    """
+    try:
+        body_type = car.get("bodyType") or car.get("body_type") or ""
+        vehicle_id = car.get("vehicle_id") or car.get("id") or 0
+
+        connection = get_db()
+        cursor = connection.cursor()
+
+        if body_type:
+            cursor.execute(
+                """
+                SELECT rowid, *
+                FROM vehicles
+                WHERE ("Body Type" = ? OR "Body" = ?)
+                  AND rowid != ?
+                  AND vehicle_id != ?
+                ORDER BY RANDOM()
+                LIMIT ?
+                """,
+                (body_type, body_type, vehicle_id, vehicle_id, limit)
+            )
+        else:
+            cursor.execute(
+                """
+                SELECT rowid, *
+                FROM vehicles
+                WHERE rowid != ? AND vehicle_id != ?
+                ORDER BY RANDOM()
+                LIMIT ?
+                """,
+                (vehicle_id, vehicle_id, limit)
+            )
+
+        rows = cursor.fetchall()
+        connection.close()
+
+        return [row_to_car(r) for r in rows]
+
+    except Exception as e:
+        app.logger.warning("Error fetching rivals: %s", e)
+        return []
+
+
 # ============================================================
 # HOME
 # ============================================================
@@ -1081,11 +1127,14 @@ def car_details(car_id):
 
         return "Vehicle not found", 404
 
+    rivals = find_rivals_for_car(car, limit=3)
+
     return render_template(
         "car-details.html",
         car=car,
         vehicle=car,
-        car_id=car_id
+        car_id=car_id,
+        rivals=rivals
     )
 
 

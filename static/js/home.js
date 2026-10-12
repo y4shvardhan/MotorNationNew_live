@@ -7,6 +7,9 @@
 ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
+    renderSkeletonCards("featured-cars", 6);
+    renderSkeletonCards("ev-cars", 4);
+    initHeroSearch();
     loadHomepageCars();
 });
 
@@ -270,6 +273,7 @@ function createImageHTML(car, className = "car-card-image") {
 ========================================================= */
 
 function createFeaturedCard(car) {
+    const carId = car?.id ?? car?.vehicle_id ?? "";
     const name = getVehicleName(car);
     const year = getText(car?.year, "2026");
     const price = formatPrice(getPrice(car));
@@ -292,6 +296,17 @@ function createFeaturedCard(car) {
                 <span class="car-card-year">
                     ${escapeHTML(year)}
                 </span>
+
+                <button
+                    type="button"
+                    class="card-favorite-btn"
+                    data-favorite-id="${escapeHTML(carId)}"
+                    onclick="event.preventDefault(); event.stopPropagation(); window.MotorNationFavorites && window.MotorNationFavorites.toggle('${escapeHTML(carId)}')"
+                    aria-label="Save vehicle"
+                    title="Save vehicle"
+                >
+                    ♡
+                </button>
 
             </a>
 
@@ -437,6 +452,7 @@ function createReviewCard(car) {
 ========================================================= */
 
 function createEVCard(car) {
+    const carId = car?.id ?? car?.vehicle_id ?? "";
     const name = getVehicleName(car);
     const year = getText(car?.year, "2026");
     const price = formatPrice(getPrice(car));
@@ -457,6 +473,17 @@ function createEVCard(car) {
                 <span class="car-card-year">
                     ${escapeHTML(year)}
                 </span>
+
+                <button
+                    type="button"
+                    class="card-favorite-btn"
+                    data-favorite-id="${escapeHTML(carId)}"
+                    onclick="event.preventDefault(); event.stopPropagation(); window.MotorNationFavorites && window.MotorNationFavorites.toggle('${escapeHTML(carId)}')"
+                    aria-label="Save vehicle"
+                    title="Save vehicle"
+                >
+                    ♡
+                </button>
 
             </a>
 
@@ -510,6 +537,121 @@ function createEVCard(car) {
 
         </article>
     `;
+}
+
+
+/* =========================================================
+   SKELETON SHIMMER LOADERS
+========================================================= */
+
+function renderSkeletonCards(containerId, count = 6) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    el.innerHTML = Array.from({ length: count }, () => `
+        <article class="skeleton-card">
+            <div class="skeleton-thumb skeleton-shimmer"></div>
+            <div class="skeleton-body">
+                <div class="skeleton-pill skeleton-shimmer"></div>
+                <div class="skeleton-title skeleton-shimmer"></div>
+                <div class="skeleton-price skeleton-shimmer"></div>
+                <div class="skeleton-specs">
+                    <div class="skeleton-spec-item skeleton-shimmer"></div>
+                    <div class="skeleton-spec-item skeleton-shimmer"></div>
+                    <div class="skeleton-spec-item skeleton-shimmer"></div>
+                </div>
+                <div class="skeleton-btn skeleton-shimmer"></div>
+            </div>
+        </article>
+    `).join("");
+}
+
+
+/* =========================================================
+   HERO SEARCH AUTOCOMPLETE
+========================================================= */
+
+function initHeroSearch() {
+    const input = document.getElementById("heroSearchInput");
+    const dropdown = document.getElementById("heroSearchDropdown");
+    const form = document.getElementById("heroSearchForm");
+
+    if (!input || !dropdown) return;
+
+    let debounceTimer = null;
+
+    input.addEventListener("input", () => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(async () => {
+            const query = input.value.trim().toLowerCase();
+            if (query.length < 2) {
+                dropdown.hidden = true;
+                dropdown.innerHTML = "";
+                return;
+            }
+
+            const cars = await (window.fetchMnCars ? window.fetchMnCars() : []);
+            if (!cars || !cars.length) {
+                dropdown.hidden = true;
+                return;
+            }
+
+            const matches = cars.filter(car => {
+                const make = String(car.make || "").toLowerCase();
+                const model = String(car.model || "").toLowerCase();
+                const body = String(car.bodyType || car.body || "").toLowerCase();
+                const fuel = String(car.fuelType || car.fuel || "").toLowerCase();
+                return make.includes(query) || model.includes(query) || body.includes(query) || fuel.includes(query);
+            }).slice(0, 5);
+
+            if (!matches.length) {
+                dropdown.innerHTML = `<div class="hero-dropdown-empty">No vehicles found matching "${escapeHTML(query)}"</div>`;
+                dropdown.hidden = false;
+                return;
+            }
+
+            dropdown.innerHTML = matches.map(car => {
+                const name = getVehicleName(car);
+                const url = getVehicleUrl(car);
+                const img = getImage(car);
+                const price = formatPrice(getPrice(car));
+                const year = getText(car.year, "2026");
+                const body = getBodyType(car);
+                const fuel = getFuelType(car);
+
+                return `
+                    <a href="${escapeHTML(url)}" class="hero-dropdown-item">
+                        ${img ? `<img src="${escapeHTML(img)}" alt="${escapeHTML(name)}" class="hero-dropdown-thumb">` : `<div class="hero-dropdown-thumb-placeholder">🚗</div>`}
+                        <div class="hero-dropdown-meta">
+                            <div class="hero-dropdown-title">${escapeHTML(name)}</div>
+                            <div class="hero-dropdown-sub">
+                                <span>${escapeHTML(year)}</span>
+                                <span>·</span>
+                                <span>${escapeHTML(body)}</span>
+                                ${fuel ? `<span>·</span><span>${escapeHTML(fuel)}</span>` : ""}
+                            </div>
+                        </div>
+                        <div class="hero-dropdown-price">${escapeHTML(price)}</div>
+                    </a>
+                `;
+            }).join("");
+
+            dropdown.hidden = false;
+        }, 160);
+    });
+
+    // Close when clicking outside
+    document.addEventListener("click", (e) => {
+        if (form && !form.contains(e.target)) {
+            dropdown.hidden = true;
+        }
+    });
+
+    // Close on Escape key
+    input.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+            dropdown.hidden = true;
+        }
+    });
 }
 
 
@@ -617,6 +759,9 @@ function renderFeaturedCars(cars) {
 
     if (window.MotorNationCompare) {
         window.MotorNationCompare.updateAllButtons();
+    }
+    if (window.MotorNationFavorites) {
+        window.MotorNationFavorites.updateAllButtons();
     }
 
     if (empty) {
@@ -733,6 +878,9 @@ function renderElectricCars(cars) {
 
     if (window.MotorNationCompare) {
         window.MotorNationCompare.updateAllButtons();
+    }
+    if (window.MotorNationFavorites) {
+        window.MotorNationFavorites.updateAllButtons();
     }
 
     if (empty) {

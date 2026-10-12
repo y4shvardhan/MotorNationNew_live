@@ -236,6 +236,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
         updateCount(0);
 
+        const toggleDiffBtn = document.getElementById("toggle-diff-btn");
+        if (toggleDiffBtn) {
+            toggleDiffBtn.style.display = "none";
+        }
+
 
         compareContainer.innerHTML = `
             <div class="compare-empty">
@@ -764,6 +769,12 @@ document.addEventListener("DOMContentLoaded", function () {
         compareContainer.innerHTML =
             html;
 
+        const toggleDiffBtn = document.getElementById("toggle-diff-btn");
+        if (toggleDiffBtn) {
+            toggleDiffBtn.style.display = cars.length > 1 ? "inline-flex" : "none";
+        }
+
+        applyDiffHighlighting();
 
         bindComparisonActions();
     }
@@ -820,10 +831,50 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     /* =========================================================
+       DIFFERENCE HIGHLIGHTING
+       ========================================================= */
+
+    let diffHighlightActive = false;
+
+    function applyDiffHighlighting() {
+        const table = document.querySelector(".compare-table");
+        if (!table) return;
+
+        const rows = table.querySelectorAll("tbody tr");
+        rows.forEach(function (row) {
+            const cells = Array.from(row.querySelectorAll("td"));
+            if (cells.length < 2) return;
+
+            const values = cells.map(function (td) {
+                return td.textContent.trim().toLowerCase();
+            });
+            const hasDiff = values.some(function (v) {
+                return v !== values[0];
+            });
+
+            if (hasDiff && diffHighlightActive) {
+                row.classList.add("diff-row");
+            } else {
+                row.classList.remove("diff-row");
+            }
+        });
+    }
+
+
+    /* =========================================================
        COMPARISON ACTIONS
        ========================================================= */
 
     function bindComparisonActions() {
+
+        const toggleDiffBtn = document.getElementById("toggle-diff-btn");
+        if (toggleDiffBtn) {
+            toggleDiffBtn.onclick = function () {
+                diffHighlightActive = !diffHighlightActive;
+                toggleDiffBtn.classList.toggle("active", diffHighlightActive);
+                applyDiffHighlighting();
+            };
+        }
 
         document
             .querySelectorAll(
