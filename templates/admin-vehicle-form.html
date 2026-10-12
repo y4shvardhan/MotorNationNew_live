@@ -45,7 +45,7 @@
         <!-- FORM -->
         <form
             method="POST"
-            action="{% if vehicle %}{{ url_for('admin_edit_vehicle', car_id=vehicle.id) }}{% else %}{{ url_for('admin_add_vehicle') }}{% endif %}"
+            action="{% if vehicle %}{{ url_for('admin_edit_vehicle', vehicle_id=(vehicle.vehicle_id or vehicle.id)) }}{% else %}{{ url_for('admin_add_vehicle') }}{% endif %}"
             class="vehicle-form"
         >
 

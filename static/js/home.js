@@ -458,6 +458,7 @@ function createEVCard(car) {
     const year = getText(car?.year, "2026");
     const price = formatPrice(getPrice(car));
     const horsepower = getHorsepower(car);
+    const body = getBodyType(car);
     const url = getVehicleUrl(car);
 
     return `
@@ -475,6 +476,10 @@ function createEVCard(car) {
                     ${escapeHTML(year)}
                 </span>
 
+                <span class="ev-badge-chip">
+                    ⚡ 100% Electric
+                </span>
+
                 <button
                     type="button"
                     class="card-favorite-btn"
@@ -490,8 +495,8 @@ function createEVCard(car) {
 
             <div class="car-card-content">
 
-                <span class="car-card-category">
-                    ELECTRIC
+                <span class="car-card-category" style="color: var(--cyan); font-weight: 800;">
+                    ${escapeHTML(body || "ELECTRIC")}
                 </span>
 
                 <h3 class="car-card-title">
@@ -500,7 +505,7 @@ function createEVCard(car) {
                     </a>
                 </h3>
 
-                <div class="car-card-price">
+                <div class="car-card-price" style="color: var(--cyan); font-weight: 800;">
                     ${escapeHTML(price)}
                 </div>
 
@@ -513,8 +518,12 @@ function createEVCard(car) {
                     ${
                         horsepower
                             ? `<span>${escapeHTML(horsepower)} hp</span>`
-                            : `<span>EV</span>`
+                            : `<span>Dual Motor</span>`
                     }
+
+                    <span>
+                        Zero Emissions
+                    </span>
 
                 </div>
 
@@ -856,10 +865,27 @@ function renderElectricCars(cars) {
     }
 
 
-    const electricCars = cars
-        .filter(isElectric)
-        .slice(0, 4);
+    // Premier marquee EVs: Porsche Taycan, Tesla Cybertruck, Rivian R1S, Hyundai Ioniq 5 N, Lucid Air, Porsche Macan EV
+    const PREMIER_EV_IDS = [287, 322, 300, 161, 220, 291];
+    const carMap = new Map();
+    cars.forEach(c => {
+        const cid = Number(c.id ?? c.vehicle_id);
+        if (cid) carMap.set(cid, c);
+    });
 
+    let electricCars = [];
+    for (const pid of PREMIER_EV_IDS) {
+        if (carMap.has(pid)) {
+            electricCars.push(carMap.get(pid));
+        }
+    }
+
+    if (electricCars.length < 4) {
+        const fallbackEVs = cars.filter(isElectric).filter(c => !electricCars.includes(c));
+        electricCars = electricCars.concat(fallbackEVs);
+    }
+
+    electricCars = electricCars.slice(0, 4);
 
     if (!electricCars.length) {
 

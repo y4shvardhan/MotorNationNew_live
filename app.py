@@ -2748,18 +2748,16 @@ def get_admin_form_values():
             )
         )
 
-        if not field_name:
+        val = None
+        if column in form:
+            val = form.get(column)
+        elif field_name and field_name in form:
+            val = form.get(field_name)
+
+        if val is None:
             continue
 
-        if field_name not in form:
-            continue
-
-        value = form.get(
-            field_name,
-            ""
-        )
-
-        value = value.strip()
+        value = str(val).strip()
 
         # Pros and cons are stored as
         # newline-separated text.
@@ -2914,8 +2912,15 @@ def admin_add_vehicle():
         "POST"
     ]
 )
+@app.route(
+    "/admin/edit",
+    methods=[
+        "GET",
+        "POST"
+    ]
+)
 def admin_edit_vehicle(
-    vehicle_id
+    vehicle_id=None
 ):
 
     if not admin_required():
@@ -2923,6 +2928,19 @@ def admin_edit_vehicle(
         return redirect(
             url_for(
                 "admin_login"
+            )
+        )
+
+    if vehicle_id is None:
+        try:
+            vehicle_id = int(request.args.get("vehicle_id") or request.args.get("car_id") or request.form.get("vehicle_id") or request.form.get("car_id") or 0)
+        except (ValueError, TypeError):
+            vehicle_id = 0
+
+    if not vehicle_id:
+        return redirect(
+            url_for(
+                "admin_dashboard"
             )
         )
 

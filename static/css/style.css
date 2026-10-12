@@ -284,19 +284,19 @@ button, input, select, textarea {
    ========================================================================== */
 .hero {
     position: relative;
-    min-height: 620px;
+    min-height: 640px;
     display: flex;
     align-items: center;
     background:
         linear-gradient(
             90deg,
-            rgba(6, 8, 10, 0.95) 0%,
-            rgba(6, 8, 10, 0.82) 40%,
-            rgba(6, 8, 10, 0.50) 70%,
-            rgba(6, 8, 10, 0.30) 100%
+            rgba(6, 8, 10, 0.94) 0%,
+            rgba(6, 8, 10, 0.85) 42%,
+            rgba(6, 8, 10, 0.52) 75%,
+            rgba(6, 8, 10, 0.35) 100%
         ),
-        url("https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=2000&q=85")
-        center / cover no-repeat;
+        url("https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=2400&q=85")
+        center 40% / cover no-repeat;
     color: var(--white);
     overflow: hidden;
 }
@@ -376,6 +376,99 @@ button, input, select, textarea {
     transform: translateY(-1px);
 }
 
+/* Hero Fleet Stats Strip */
+.hero-stats-strip {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 22px;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.hero-stat-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #cbd5e1;
+}
+
+.hero-stat-item .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(225, 29, 46, 0.2);
+    color: var(--primary);
+    font-size: 0.78rem;
+    font-weight: 900;
+}
+
+/* ==========================================================================
+   TOP MARQUES QUICK EXPLORER RIBBON
+   ========================================================================== */
+.brand-ribbon-section {
+    background: #0d1015;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 16px 0;
+    position: relative;
+    z-index: 5;
+}
+
+.brand-ribbon-track {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding: 2px 0;
+}
+
+.brand-ribbon-track::-webkit-scrollbar {
+    display: none;
+}
+
+.brand-ribbon-label {
+    font-size: 0.78rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-right: 4px;
+    flex-shrink: 0;
+}
+
+.brand-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 18px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+    color: #e2e8f0;
+    font-size: 0.86rem;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.brand-pill:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(225, 29, 46, 0.35);
+}
+
 /* ==========================================================================
    5. SECTIONS COMMON
    ========================================================================== */
@@ -436,12 +529,75 @@ button, input, select, textarea {
    6. CAR CARDS & GRIDS (HOMEPAGE, EXPLORE, EV)
    ========================================================================== */
 .car-grid,
-.cars-results-grid,
-.ev-car-grid {
+.cars-results-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 25px;
     width: 100%;
+}
+
+.ev-car-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 24px;
+    width: 100%;
+}
+
+.ev-car-card {
+    background: #0d1117 !important;
+    border: 1px solid rgba(56, 213, 223, 0.22) !important;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45) !important;
+    position: relative;
+    transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+}
+
+.ev-car-card:hover {
+    transform: translateY(-6px) !important;
+    border-color: var(--cyan) !important;
+    box-shadow: 0 16px 36px rgba(56, 213, 223, 0.22) !important;
+}
+
+.ev-badge-chip {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    background: rgba(6, 8, 10, 0.88);
+    backdrop-filter: blur(8px);
+    color: var(--cyan);
+    border: 1px solid rgba(56, 213, 223, 0.45);
+    border-radius: 999px;
+    padding: 3px 9px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    z-index: 2;
+}
+
+.ev-car-card .car-card-title a {
+    color: #f1f5f9;
+}
+
+.ev-car-card .car-card-title a:hover {
+    color: var(--cyan);
+}
+
+.ev-car-card .car-card-specs {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(255, 255, 255, 0.07) !important;
+    color: #94a3b8 !important;
+}
+
+.ev-car-card .car-card-link {
+    background: rgba(56, 213, 223, 0.08) !important;
+    color: var(--cyan) !important;
+    border: 1px solid rgba(56, 213, 223, 0.25) !important;
+}
+
+.ev-car-card .car-card-link:hover {
+    background: var(--cyan) !important;
+    color: #06080a !important;
 }
 
 .car-card {
