@@ -13,32 +13,107 @@
 
         <div class="mn-car-hero-inner">
 
-            <!-- IMAGE -->
-            <div class="mn-car-image">
+            <!-- INTERACTIVE VEHICLE GALLERY -->
+            <div class="mn-gallery-showcase" id="mnGalleryShowcase">
 
-                {% if car.image %}
+                <!-- MAIN ACTIVE VIEW -->
+                <div class="mn-gallery-main">
 
-                    <img
-                        src="{{ car.image }}"
-                        alt="{{ car.make }} {{ car.model }}"
-                        loading="eager"
-                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-                    >
-
-                    <div class="mn-car-placeholder" style="display:none;">
-                        <span>
-                            {{ car.make }} {{ car.model }}
+                    <!-- TOP OVERLAYS -->
+                    <div class="mn-gallery-topbar">
+                        <span class="mn-gallery-tag" id="mnGalleryTag">
+                            {{ car.gallery[0].category if (car.gallery and car.gallery|length > 0) else 'Exterior' }}
                         </span>
+                        <div class="mn-gallery-actions">
+                            <span class="mn-gallery-counter" id="mnGalleryCounter">
+                                1 / {{ car.gallery|length if (car.gallery and car.gallery|length > 0) else (car.images|length if (car.images and car.images|length > 0) else 1) }}
+                            </span>
+                            <button type="button" class="mn-gallery-expand" id="mnGalleryExpandBtn" title="Fullscreen View" aria-label="Open fullscreen image">
+                                ⛶
+                            </button>
+                        </div>
                     </div>
 
-                {% else %}
-
-                    <div class="mn-car-placeholder">
-                        <span>
-                            {{ car.make }} {{ car.model }}
-                        </span>
+                    <!-- ACTIVE IMAGE STAGE -->
+                    <div class="mn-gallery-stage" id="mnGalleryStage">
+                        {% if car.gallery and car.gallery|length > 0 %}
+                            <img
+                                id="mnMainPhoto"
+                                src="{{ car.gallery[0].url }}"
+                                alt="{{ car.gallery[0].caption }}"
+                                loading="eager"
+                                class="mn-active-photo"
+                            >
+                        {% elif car.images and car.images|length > 0 %}
+                            <img
+                                id="mnMainPhoto"
+                                src="{{ car.images[0] }}"
+                                alt="{{ car.make }} {{ car.model }}"
+                                loading="eager"
+                                class="mn-active-photo"
+                            >
+                        {% elif car.image %}
+                            <img
+                                id="mnMainPhoto"
+                                src="{{ car.image }}"
+                                alt="{{ car.make }} {{ car.model }}"
+                                loading="eager"
+                                class="mn-active-photo"
+                            >
+                        {% else %}
+                            <div class="mn-car-placeholder">
+                                <span>{{ car.make }} {{ car.model }}</span>
+                            </div>
+                        {% endif %}
                     </div>
 
+                    <!-- CAROUSEL ARROWS -->
+                    {% if (car.gallery and car.gallery|length > 1) or (car.images and car.images|length > 1) %}
+                        <button type="button" class="mn-gallery-nav prev" id="mnGalleryPrev" aria-label="Previous photo">‹</button>
+                        <button type="button" class="mn-gallery-nav next" id="mnGalleryNext" aria-label="Next photo">›</button>
+                    {% endif %}
+
+                    <!-- CAPTION STRIP -->
+                    <div class="mn-gallery-caption" id="mnGalleryCaption">
+                        {{ car.gallery[0].caption if (car.gallery and car.gallery|length > 0) else (car.make ~ ' ' ~ car.model ~ ' — Main Exterior') }}
+                    </div>
+
+                </div>
+
+                <!-- THUMBNAIL STRIP -->
+                {% if (car.gallery and car.gallery|length > 1) or (car.images and car.images|length > 1) %}
+                    <div class="mn-gallery-thumbs" id="mnGalleryThumbs">
+                        {% if car.gallery %}
+                            {% for photo in car.gallery %}
+                                <button
+                                    type="button"
+                                    class="mn-thumb-btn {% if loop.first %}active{% endif %}"
+                                    data-index="{{ loop.index0 }}"
+                                    data-url="{{ photo.url }}"
+                                    data-category="{{ photo.category }}"
+                                    data-caption="{{ photo.caption }}"
+                                    aria-label="View photo {{ loop.index }}: {{ photo.caption }}"
+                                >
+                                    <img src="{{ photo.url }}" alt="{{ photo.caption }}" loading="lazy">
+                                    <span class="mn-thumb-label">{{ photo.category }}</span>
+                                </button>
+                            {% endfor %}
+                        {% else %}
+                            {% for img_url in car.images %}
+                                <button
+                                    type="button"
+                                    class="mn-thumb-btn {% if loop.first %}active{% endif %}"
+                                    data-index="{{ loop.index0 }}"
+                                    data-url="{{ img_url }}"
+                                    data-category="Photo"
+                                    data-caption="{{ car.make }} {{ car.model }} Photo {{ loop.index }}"
+                                    aria-label="View photo {{ loop.index }}"
+                                >
+                                    <img src="{{ img_url }}" alt="Photo {{ loop.index }}" loading="lazy">
+                                </button>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
                 {% endif %}
 
             </div>
@@ -53,10 +128,8 @@
 
                 <div class="mn-car-eyebrow">
                     {{ car.year|default('2026') }}
-
-                    {% if car.bodyType %}
-                        · {{ car.bodyType }}
-                    {% endif %}
+                    {% if car.bodyType %}· {{ car.bodyType }}{% endif %}
+                    {% if car.fuelType %}· {{ car.fuelType }}{% endif %}
                 </div>
 
                 <h1>
@@ -70,60 +143,73 @@
                     </div>
                 {% endif %}
 
-                {% if car.description %}
+                <!-- QUICK SPECS PILLS -->
+                <div class="mn-hero-specs-pills">
+                    {% if car.horsepower %}
+                        <span class="mn-spec-pill" title="Horsepower">
+                            <i class="mn-pill-icon">⚡</i> {{ car.horsepower|int }} hp
+                        </span>
+                    {% endif %}
+                    {% if car.drivetrain %}
+                        <span class="mn-spec-pill" title="Drivetrain">
+                            <i class="mn-pill-icon">🔄</i> {{ car.drivetrain }}
+                        </span>
+                    {% endif %}
+                    {% if car.transmission %}
+                        <span class="mn-spec-pill" title="Transmission">
+                            <i class="mn-pill-icon">⚙️</i> {{ car.transmission }}
+                        </span>
+                    {% endif %}
+                    {% if car.evRange %}
+                        <span class="mn-spec-pill" title="Electric Range">
+                            <i class="mn-pill-icon">🔋</i> {{ car.evRange }} mi range
+                        </span>
+                    {% elif car.mpg %}
+                        <span class="mn-spec-pill" title="Fuel Economy">
+                            <i class="mn-pill-icon">⛽</i> {{ car.mpg }} MPG
+                        </span>
+                    {% endif %}
+                    {% if car.seating %}
+                        <span class="mn-spec-pill" title="Seating Capacity">
+                            <i class="mn-pill-icon">🪑</i> {{ car.seating }} Seats
+                        </span>
+                    {% endif %}
+                </div>
 
+                {% if car.description %}
                     <p class="mn-car-description">
                         {{ car.description }}
                     </p>
-
                 {% elif car.sourceData and car.sourceData.get('Review Summary / Verdict') %}
-
                     <p class="mn-car-description">
                         {{ car.sourceData.get('Review Summary / Verdict') }}
                     </p>
-
                 {% else %}
-
                     <p class="mn-car-description">
-                        Explore specifications, pricing and key
-                        information for this vehicle.
+                        Explore specifications, pricing, gallery photos and key information for this vehicle.
                     </p>
-
                 {% endif %}
 
                 <!-- PRICE -->
                 <div class="mn-car-price">
-
                     <span>Starting MSRP</span>
-
                     {% if car.msrp is not none and car.msrp != '' %}
-
                         <strong>
                             ${{ "{:,.0f}".format(car.msrp|float) }}
                         </strong>
-
                     {% elif car.price and car.price.msrp is not none %}
-
                         <strong>
                             ${{ "{:,.0f}".format(car.price.msrp|float) }}
                         </strong>
-
                     {% else %}
-
                         <strong>
                             Price unavailable
                         </strong>
-
                     {% endif %}
-
                 </div>
 
                 <div class="mn-car-actions">
-
-                    <a
-                        href="#specifications"
-                        class="mn-primary-btn"
-                    >
+                    <a href="#specifications" class="mn-primary-btn">
                         View Specifications
                     </a>
 
@@ -137,13 +223,21 @@
                         + Compare
                     </button>
 
-                    <a
-                        href="{{ url_for('cars') }}"
-                        class="mn-secondary-btn"
+                    <button
+                        type="button"
+                        class="mn-details-fav-btn"
+                        id="detail-favorite-btn"
+                        data-favorite-id="{{ car.vehicle_id or car.id }}"
+                        onclick="window.MotorNationFavorites && window.MotorNationFavorites.toggle('{{ car.vehicle_id or car.id }}')"
+                        aria-label="Save to favorites"
+                        title="Save to favorites"
                     >
+                        ♡ Save
+                    </button>
+
+                    <a href="{{ url_for('cars') }}" class="mn-secondary-btn">
                         Explore More Cars
                     </a>
-
                 </div>
 
             </div>
@@ -693,6 +787,154 @@
 
     </section>
 
+    <!-- FULLSCREEN LIGHTBOX MODAL -->
+    <div class="mn-lightbox" id="mnLightbox" hidden aria-modal="true" role="dialog">
+        <div class="mn-lightbox-backdrop" id="mnLightboxBackdrop"></div>
+        <div class="mn-lightbox-dialog">
+            <button type="button" class="mn-lightbox-close" id="mnLightboxClose" aria-label="Close fullscreen">✕</button>
+            <div class="mn-lightbox-content">
+                <img id="mnLightboxImg" src="" alt="{{ car.make }} {{ car.model }}">
+                <div class="mn-lightbox-footer">
+                    <span id="mnLightboxCaption"></span>
+                    <span id="mnLightboxCounter"></span>
+                </div>
+            </div>
+            <button type="button" class="mn-lightbox-nav prev" id="mnLightboxPrev" aria-label="Previous photo">‹</button>
+            <button type="button" class="mn-lightbox-nav next" id="mnLightboxNext" aria-label="Next photo">›</button>
+        </div>
+    </div>
+
 </main>
 
 {% endblock %}
+
+{% block extra_js %}
+<script>
+(function() {
+    const galleryItems = [
+        {% if car.gallery %}
+            {% for photo in car.gallery %}
+            {
+                url: {{ photo.url|tojson }},
+                caption: {{ photo.caption|tojson }},
+                category: {{ photo.category|tojson }}
+            }{% if not loop.last %},{% endif %}
+            {% endfor %}
+        {% elif car.images %}
+            {% for img_url in car.images %}
+            {
+                url: {{ img_url|tojson }},
+                caption: {{ (car.make ~ ' ' ~ car.model ~ ' — Photo ' ~ loop.index)|tojson }},
+                category: "Exterior"
+            }{% if not loop.last %},{% endif %}
+            {% endfor %}
+        {% elif car.image %}
+            {
+                url: {{ car.image|tojson }},
+                caption: {{ (car.make ~ ' ' ~ car.model ~ ' — Main View')|tojson }},
+                category: "Exterior"
+            }
+        {% endif %}
+    ];
+
+    if (!galleryItems.length) return;
+
+    let currentIndex = 0;
+    const mainPhoto = document.getElementById("mnMainPhoto");
+    const tagEl = document.getElementById("mnGalleryTag");
+    const counterEl = document.getElementById("mnGalleryCounter");
+    const captionEl = document.getElementById("mnGalleryCaption");
+    const thumbBtns = document.querySelectorAll(".mn-thumb-btn");
+    const prevBtn = document.getElementById("mnGalleryPrev");
+    const nextBtn = document.getElementById("mnGalleryNext");
+    const expandBtn = document.getElementById("mnGalleryExpandBtn");
+
+    const lightbox = document.getElementById("mnLightbox");
+    const lightboxImg = document.getElementById("mnLightboxImg");
+    const lightboxCaption = document.getElementById("mnLightboxCaption");
+    const lightboxCounter = document.getElementById("mnLightboxCounter");
+    const lightboxClose = document.getElementById("mnLightboxClose");
+    const lightboxBackdrop = document.getElementById("mnLightboxBackdrop");
+    const lightboxPrev = document.getElementById("mnLightboxPrev");
+    const lightboxNext = document.getElementById("mnLightboxNext");
+
+    function setPhoto(idx) {
+        if (idx < 0) idx = galleryItems.length - 1;
+        if (idx >= galleryItems.length) idx = 0;
+        currentIndex = idx;
+        const item = galleryItems[currentIndex];
+
+        if (mainPhoto) {
+            mainPhoto.style.opacity = "0.35";
+            mainPhoto.src = item.url;
+            mainPhoto.alt = item.caption;
+            mainPhoto.onload = function() {
+                mainPhoto.style.opacity = "1";
+            };
+        }
+
+        if (tagEl) tagEl.textContent = item.category || "Photo";
+        if (counterEl) counterEl.textContent = `${currentIndex + 1} / ${galleryItems.length}`;
+        if (captionEl) captionEl.textContent = item.caption || "";
+
+        thumbBtns.forEach(btn => {
+            const bIdx = parseInt(btn.getAttribute("data-index"), 10);
+            btn.classList.toggle("active", bIdx === currentIndex);
+            if (bIdx === currentIndex) {
+                btn.scrollIntoView({ behavior: "smooth", inline: "nearest", block: "nearest" });
+            }
+        });
+
+        if (lightbox && !lightbox.hidden) {
+            if (lightboxImg) lightboxImg.src = item.url;
+            if (lightboxCaption) lightboxCaption.textContent = item.caption || "";
+            if (lightboxCounter) lightboxCounter.textContent = `${currentIndex + 1} / ${galleryItems.length}`;
+        }
+    }
+
+    thumbBtns.forEach(btn => {
+        btn.addEventListener("click", function() {
+            const idx = parseInt(this.getAttribute("data-index"), 10);
+            setPhoto(idx);
+        });
+    });
+
+    if (prevBtn) prevBtn.addEventListener("click", () => setPhoto(currentIndex - 1));
+    if (nextBtn) nextBtn.addEventListener("click", () => setPhoto(currentIndex + 1));
+
+    function openLightbox() {
+        if (!lightbox) return;
+        lightbox.hidden = false;
+        document.body.style.overflow = "hidden";
+        setPhoto(currentIndex);
+    }
+
+    function closeLightbox() {
+        if (!lightbox) return;
+        lightbox.hidden = true;
+        document.body.style.overflow = "";
+    }
+
+    if (expandBtn) expandBtn.addEventListener("click", openLightbox);
+    if (mainPhoto) mainPhoto.addEventListener("click", openLightbox);
+    if (lightboxClose) lightboxClose.addEventListener("click", closeLightbox);
+    if (lightboxBackdrop) lightboxBackdrop.addEventListener("click", closeLightbox);
+    if (lightboxPrev) lightboxPrev.addEventListener("click", () => setPhoto(currentIndex - 1));
+    if (lightboxNext) lightboxNext.addEventListener("click", () => setPhoto(currentIndex + 1));
+
+    document.addEventListener("keydown", function(e) {
+        if (e.key === "ArrowLeft") {
+            setPhoto(currentIndex - 1);
+        } else if (e.key === "ArrowRight") {
+            setPhoto(currentIndex + 1);
+        } else if (e.key === "Escape") {
+            closeLightbox();
+        }
+    });
+
+    if (window.MotorNationFavorites) {
+        window.MotorNationFavorites.updateAllButtons();
+    }
+})();
+</script>
+{% endblock %}

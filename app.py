@@ -41,6 +41,8 @@ DATABASE_FILE = DATABASE_DIR / "motornation.db"
 
 IMAGE_DIR = BASE_DIR / "static" / "images"
 
+GALLERIES_FILE = BASE_DIR / "data" / "vehicle_galleries.json"
+
 DATABASE_DIR.mkdir(
     parents=True,
     exist_ok=True
@@ -50,6 +52,31 @@ IMAGE_DIR.mkdir(
     parents=True,
     exist_ok=True
 )
+
+_cached_galleries = None
+
+
+def get_vehicle_gallery(vehicle_id, make, model):
+    """
+    Return the rich multi-photo gallery list for a vehicle.
+    """
+    global _cached_galleries
+    if _cached_galleries is None:
+        if GALLERIES_FILE.exists():
+            try:
+                with open(GALLERIES_FILE, "r", encoding="utf-8") as f:
+                    _cached_galleries = json.load(f)
+            except Exception as e:
+                app.logger.warning(f"Could not load vehicle galleries: {e}")
+                _cached_galleries = {}
+        else:
+            _cached_galleries = {}
+
+    vid_key = str(vehicle_id) if vehicle_id is not None else ""
+    name_key = f"{make}_{model}".lower() if make and model else ""
+
+    gallery = _cached_galleries.get(vid_key) or _cached_galleries.get(name_key) or []
+    return gallery
 
 
 # ============================================================
@@ -886,20 +913,35 @@ def row_to_car(row):
     )
 
     # --------------------------------------------------------
-    # IMAGE
+    # IMAGE & GALLERY
     # --------------------------------------------------------
 
     image = get_vehicle_image(
         raw
     )
 
+    gallery = get_vehicle_gallery(
+        vehicle_id,
+        make,
+        model
+    )
+
     images = []
 
-    if image:
+    if gallery:
+        images = [
+            item["url"]
+            for item in gallery
+            if isinstance(item, dict) and item.get("url")
+        ]
 
+    if not images and image:
         images = [
             image
         ]
+
+    if not image and images:
+        image = images[0]
 
     # --------------------------------------------------------
     # RETURN FRONTEND OBJECT
@@ -992,6 +1034,8 @@ def row_to_car(row):
         "image": image,
 
         "images": images,
+
+        "gallery": gallery,
 
         "sourceData": raw
     }
