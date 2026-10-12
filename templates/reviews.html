@@ -55,105 +55,74 @@ MotorNation — Expert Road Test Reviews & In-Depth Evaluations
         </div>
 
         <!-- REVIEWS GRID -->
-        <div class="mn-reviews-grid" id="reviewsGrid">
+        <!-- REVIEWS GRID -->
+        <div class="mn-news-grid" id="reviewsGrid">
             {% for item in reviews %}
             <article
-                class="mn-review-card"
+                class="mn-news-card"
                 data-id="{{ item.id }}"
                 data-brand="{{ item.make|lower }}"
             >
-                <div class="mn-review-card-media">
+                <div class="mn-news-card-thumb">
                     <img
                         src="{{ item.image }}"
                         alt="{{ item.year }} {{ item.make }} {{ item.model }}"
                         loading="lazy"
                         onerror="this.src='https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=800&q=80'"
                     >
+                    <span class="mn-news-card-tag">{{ item.make }}</span>
                     {% if item.rating %}
-                        <div class="mn-review-rating-badge">
-                            <span class="star">★</span>
+                        <div class="mn-review-rating-badge" style="position: absolute; top: 12px; right: 12px; background: rgba(15, 23, 42, 0.92); backdrop-filter: blur(6px); color: #ffffff; padding: 4px 10px; border-radius: 999px; font-size: 0.82rem; font-weight: 800; display: flex; align-items: center; gap: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.25);">
+                            <span style="color: #f59e0b;">★</span>
                             <span>{{ item.rating }}</span>
                         </div>
                     {% endif %}
                 </div>
 
-                <div class="mn-review-card-content">
-                    <h3 class="mn-review-card-title">
+                <div class="mn-news-card-body">
+                    <div class="mn-news-card-meta">
+                        <span>{{ item.year }} {{ item.model }}</span>
+                        {% if item.msrp %}
+                            <span style="font-weight: 700;">
+                                <span style="color: #0f172a;">$</span><span style="color: #e11d2e;">{{ "{:,.0f}".format(item.msrp|float) }}</span>
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <h3 class="mn-news-card-title">
                         {{ item.year }} {{ item.make }} {{ item.model }}
                         {% if item.trim %}
-                            <span style="font-size: 0.88rem; font-weight: 600; color: #64748b; display: block;">{{ item.trim }}</span>
+                            <span style="font-size: 0.88rem; font-weight: 600; color: #64748b; display: block; margin-top: 2px;">{{ item.trim }}</span>
                         {% endif %}
                     </h3>
 
-                    <div class="mn-review-card-msrp">
-                        {% if item.msrp %}
-                            Starting MSRP: ${{ "{:,.0f}".format(item.msrp|float) }}
-                        {% else %}
-                            Starting MSRP: Consult Dealer
-                        {% endif %}
-                    </div>
+                    <p class="mn-news-card-excerpt">
+                        {% set excerpt = item.final_word or item.summary or item.review_summary or (item.review_lines[0] if item.review_lines else 'Comprehensive 5-point driving dynamics assessment and road test evaluation.') %}
+                        {{ excerpt[:190] }}...
+                    </p>
 
-                    <!-- 5-POINT ROAD TEST VERDICT -->
-                    <div class="mn-review-5point-box">
-                        <div class="mn-review-5point-title">
-                            <span>⚡</span> 5-Point In-Depth Road Test
-                        </div>
-                        <ul class="mn-review-points-list">
-                            {% for line in item.review_lines %}
-                                <li class="mn-review-point-row">
-                                    <span class="mn-review-point-bullet">{{ loop.index }}.</span>
-                                    <span>{{ line.lstrip('0123456789. ') }}</span>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-
-                    <!-- PROS & CONS COMPACT SUMMARY -->
-                    {% if item.pros or item.cons %}
-                    <div class="mn-review-pros-cons-compact">
-                        {% if item.pros %}
-                        <div class="mn-compact-pros">
-                            <div class="mn-compact-label">Key Strengths</div>
-                            {% for pro in item.pros[:2] %}
-                                <div class="mn-compact-item">+ {{ pro }}</div>
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-
-                        {% if item.cons %}
-                        <div class="mn-compact-cons">
-                            <div class="mn-compact-label">Compromises</div>
-                            {% for con in item.cons[:2] %}
-                                <div class="mn-compact-item">- {{ con }}</div>
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-                    </div>
-                    {% endif %}
-
-                    <!-- CARD ACTIONS -->
-                    <div class="mn-review-card-actions">
-                        <a href="/reviews/{{ item.id }}" class="primary-btn" style="flex: 1; text-align: center; text-decoration: none; padding: 10px 14px; font-size: 0.88rem;">
-                            5-Point Verdict & Review →
+                    <div class="mn-news-card-footer">
+                        <a
+                            href="/reviews/{{ item.id }}"
+                            class="mn-news-read-btn"
+                            style="text-decoration: none; text-align: center; display: inline-flex; align-items: center; justify-content: center;"
+                        >
+                            Read Full Review →
                         </a>
-
-                        <a href="/car/{{ item.id }}" class="secondary-btn" style="text-align: center; text-decoration: none; padding: 10px 14px; font-size: 0.88rem;">
+                        <a href="/car/{{ item.id }}" style="font-size: 0.82rem; color: #64748b; font-weight: 700; text-decoration: none;">
                             Specs ↗
                         </a>
-
                         <button
                             type="button"
                             class="compare-button"
                             data-compare-id="{{ item.id }}"
                             onclick="window.MotorNationCompare && window.MotorNationCompare.toggle('{{ item.id }}')"
-                            style="padding: 10px 14px; font-size: 0.88rem;"
+                            style="padding: 7px 12px; font-size: 0.8rem;"
                         >
                             + Compare
                         </button>
                     </div>
-
                 </div>
-
             </article>
             {% endfor %}
         </div>
@@ -189,81 +158,52 @@ MotorNation — Expert Road Test Reviews & In-Depth Evaluations
     let minRating = "0";
 
     function renderReviewCardHTML(item) {
-        const formattedMsrp = item.msrp ? `$${Number(item.msrp).toLocaleString()}` : 'Consult Dealer';
+        const formattedMsrp = item.msrp
+            ? `<span style="font-weight: 700;"><span style="color: #0f172a;">$</span><span style="color: #e11d2e;">${Number(item.msrp).toLocaleString()}</span></span>`
+            : '';
         const ratingBadge = item.rating ? `
-            <div class="mn-review-rating-badge">
-                <span class="star">★</span>
+            <div class="mn-review-rating-badge" style="position: absolute; top: 12px; right: 12px; background: rgba(15, 23, 42, 0.92); backdrop-filter: blur(6px); color: #ffffff; padding: 4px 10px; border-radius: 999px; font-size: 0.82rem; font-weight: 800; display: flex; align-items: center; gap: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.25);">
+                <span style="color: #f59e0b;">★</span>
                 <span>${item.rating}</span>
             </div>
         ` : '';
 
-        const pointsHTML = (item.review_lines || []).map((line, idx) => `
-            <li class="mn-review-point-row">
-                <span class="mn-review-point-bullet">${idx + 1}.</span>
-                <span>${line.replace(/^[0-9]+\.\s*/, '')}</span>
-            </li>
-        `).join('');
-
-        const prosHTML = (item.pros && item.pros.length) ? `
-            <div class="mn-compact-pros">
-                <div class="mn-compact-label">Key Strengths</div>
-                ${item.pros.slice(0, 2).map(p => `<div class="mn-compact-item">+ ${p}</div>`).join('')}
-            </div>
-        ` : '';
-
-        const consHTML = (item.cons && item.cons.length) ? `
-            <div class="mn-compact-cons">
-                <div class="mn-compact-label">Compromises</div>
-                ${item.cons.slice(0, 2).map(c => `<div class="mn-compact-item">- ${c}</div>`).join('')}
-            </div>
-        ` : '';
-
-        const prosConsRow = (prosHTML || consHTML) ? `
-            <div class="mn-review-pros-cons-compact">
-                ${prosHTML}
-                ${consHTML}
-            </div>
-        ` : '';
-
-        const cdBtn = item.cd_url ? `
-            <a href="${item.cd_url}" target="_blank" rel="noopener noreferrer" class="secondary-btn" title="Car and Driver Full Road Test" style="padding: 10px 14px; font-size: 0.88rem;">
-                C&D ↗
-            </a>
-        ` : '';
+        const excerptRaw = item.final_word || item.summary || item.review_summary || ((item.review_lines && item.review_lines.length) ? item.review_lines[0] : 'Comprehensive 5-point driving dynamics assessment and road test evaluation.');
+        const excerpt = excerptRaw.length > 190 ? excerptRaw.substring(0, 190) + '...' : excerptRaw;
 
         return `
-            <article class="mn-review-card" data-id="${item.id}" data-brand="${(item.make || '').toLowerCase()}">
-                <div class="mn-review-card-media">
+            <article class="mn-news-card" data-id="${item.id}" data-brand="${(item.make || '').toLowerCase()}" data-rating="${item.rating || 0}">
+                <div class="mn-news-card-thumb">
                     <img
                         src="${item.image || 'https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=800&q=80'}"
                         alt="${item.year || 2026} ${item.make || ''} ${item.model || ''}"
                         loading="lazy"
                         onerror="this.src='https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=800&q=80'"
                     >
+                    <span class="mn-news-card-tag">${item.make || 'Car Review'}</span>
                     ${ratingBadge}
                 </div>
-                <div class="mn-review-card-content">
-                    <h3 class="mn-review-card-title">
+                <div class="mn-news-card-body">
+                    <div class="mn-news-card-meta">
+                        <span>${item.year || 2026} ${item.model || ''}</span>
+                        ${formattedMsrp}
+                    </div>
+                    <h3 class="mn-news-card-title">
                         ${item.year || 2026} ${item.make || ''} ${item.model || ''}
-                        ${item.trim ? `<span style="font-size: 0.88rem; font-weight: 600; color: #64748b; display: block;">${item.trim}</span>` : ''}
+                        ${item.trim ? `<span style="font-size: 0.88rem; font-weight: 600; color: #64748b; display: block; margin-top: 2px;">${item.trim}</span>` : ''}
                     </h3>
-                    <div class="mn-review-card-msrp">
-                        Starting MSRP: ${formattedMsrp}
-                    </div>
-                    <div class="mn-review-5point-box">
-                        <div class="mn-review-5point-title">
-                            <span>⚡</span> 5-Point In-Depth Road Test
-                        </div>
-                        <ul class="mn-review-points-list">
-                            ${pointsHTML}
-                        </ul>
-                    </div>
-                    ${prosConsRow}
-                    <div class="mn-review-card-actions">
-                        <a href="/reviews/${item.id}" class="primary-btn" style="flex: 1; text-align: center; text-decoration: none; padding: 10px 14px; font-size: 0.88rem;">
-                            5-Point Verdict & Review →
+                    <p class="mn-news-card-excerpt">
+                        ${excerpt}
+                    </p>
+                    <div class="mn-news-card-footer">
+                        <a
+                            href="/reviews/${item.id}"
+                            class="mn-news-read-btn"
+                            style="text-decoration: none; text-align: center; display: inline-flex; align-items: center; justify-content: center;"
+                        >
+                            Read Full Review →
                         </a>
-                        <a href="/car/${item.id}" class="secondary-btn" style="text-align: center; text-decoration: none; padding: 10px 14px; font-size: 0.88rem;">
+                        <a href="/car/${item.id}" style="font-size: 0.82rem; color: #64748b; font-weight: 700; text-decoration: none;">
                             Specs ↗
                         </a>
                         <button
@@ -271,7 +211,7 @@ MotorNation — Expert Road Test Reviews & In-Depth Evaluations
                             class="compare-button"
                             data-compare-id="${item.id}"
                             onclick="window.MotorNationCompare && window.MotorNationCompare.toggle('${item.id}')"
-                            style="padding: 10px 14px; font-size: 0.88rem;"
+                            style="padding: 7px 12px; font-size: 0.8rem;"
                         >
                             + Compare
                         </button>
@@ -304,7 +244,7 @@ MotorNation — Expert Road Test Reviews & In-Depth Evaluations
             }
 
             currentOffset += items.length;
-            const displayed = reviewsGrid.querySelectorAll(".mn-review-card").length;
+            const displayed = reviewsGrid.querySelectorAll(".mn-news-card").length;
             if (countDisplay) {
                 countDisplay.textContent = `Showing ${displayed} of ${data.total} reviews`;
             }
