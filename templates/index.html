@@ -53,31 +53,6 @@ MotorNation — New Cars, Reviews & Comparisons
 
         </form>
 
-        <!-- Engine Rev & Acceleration Bar -->
-        <div class="hero-engine-bar">
-            <button
-                type="button"
-                id="heroRevButton"
-                class="hero-rev-btn"
-                title="Rev high-torque V8 engine"
-                aria-label="Rev engine"
-            >
-                <span class="engine-pulse-ring"></span>
-                <span class="engine-pulse-dot"></span>
-                <span class="rev-btn-text">🔊 REV ENGINE</span>
-                <span class="rev-btn-tag">HIGH TORQUE</span>
-            </button>
-            <button
-                type="button"
-                id="heroSoundToggle"
-                class="hero-sound-toggle-btn"
-                title="Toggle engine audio"
-                aria-label="Toggle sound"
-            >
-                Audio: On
-            </button>
-        </div>
-
     </div>
 
 </section>
@@ -486,7 +461,7 @@ MotorNation — New Cars, Reviews & Comparisons
 <div class="torque-acceleration-overlay" id="torqueOverlay" aria-hidden="true"></div>
 <audio
     id="engineAudio"
-    src="{{ url_for('static', filename='audio/engine_acceleration.wav') }}"
+    src="{{ url_for('static', filename='audio/arrival_sound.mp3') }}"
     preload="auto"
 ></audio>
 

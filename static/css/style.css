@@ -284,25 +284,28 @@ button, input, select, textarea {
    ========================================================================== */
 .hero {
     position: relative;
-    min-height: 640px;
+    min-height: 560px;
     display: flex;
     align-items: center;
-    background:
+    background-color: #06080a;
+    background-image:
         linear-gradient(
             90deg,
-            rgba(6, 8, 10, 0.94) 0%,
-            rgba(6, 8, 10, 0.82) 42%,
-            rgba(6, 8, 10, 0.38) 72%,
-            rgba(6, 8, 10, 0.15) 100%
+            rgba(6, 8, 10, 0.95) 0%,
+            rgba(6, 8, 10, 0.84) 36%,
+            rgba(6, 8, 10, 0.25) 65%,
+            rgba(6, 8, 10, 0.02) 100%
         ),
-        url("../images/hero_mustang_bg.jpg")
-        center right / cover no-repeat;
+        url("../images/hero_mustang_bg.jpg");
+    background-repeat: no-repeat;
+    background-position: calc(100% + 50px) 50%;
+    background-size: auto 100%;
     color: var(--white);
     overflow: hidden;
 }
 
 .hero-content {
-    padding: 95px 0 95px 25px;
+    padding: 70px 0 70px 20px;
     position: relative;
     z-index: 2;
 }
@@ -749,7 +752,7 @@ button, input, select, textarea {
 
 .ev-car-card {
     background: #0d1117 !important;
-    border: 1px solid rgba(56, 213, 223, 0.22) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
     border-radius: var(--radius-lg);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45) !important;
     position: relative;
@@ -758,8 +761,8 @@ button, input, select, textarea {
 
 .ev-car-card:hover {
     transform: translateY(-6px) !important;
-    border-color: var(--cyan) !important;
-    box-shadow: 0 16px 36px rgba(56, 213, 223, 0.22) !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 16px 36px rgba(225, 29, 46, 0.28) !important;
 }
 
 .ev-badge-chip {
@@ -768,14 +771,14 @@ button, input, select, textarea {
     left: 12px;
     background: rgba(6, 8, 10, 0.88);
     backdrop-filter: blur(8px);
-    color: var(--cyan);
-    border: 1px solid rgba(56, 213, 223, 0.45);
+    color: var(--primary);
+    border: 1px solid rgba(225, 29, 46, 0.45);
     border-radius: 999px;
     padding: 3px 9px;
     font-size: 0.72rem;
     font-weight: 800;
     letter-spacing: 0.04em;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     z-index: 2;
 }
 
@@ -784,7 +787,7 @@ button, input, select, textarea {
 }
 
 .ev-car-card .car-card-title a:hover {
-    color: var(--cyan);
+    color: var(--primary);
 }
 
 .ev-car-card .car-card-specs {
@@ -794,14 +797,19 @@ button, input, select, textarea {
 }
 
 .ev-car-card .car-card-link {
-    background: rgba(56, 213, 223, 0.08) !important;
-    color: var(--cyan) !important;
-    border: 1px solid rgba(56, 213, 223, 0.25) !important;
+    background: rgba(225, 29, 46, 0.12) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(225, 29, 46, 0.35) !important;
+    border-radius: var(--radius-md);
+    text-align: center;
+    font-weight: 800;
 }
 
 .ev-car-card .car-card-link:hover {
-    background: var(--cyan) !important;
-    color: #06080a !important;
+    background: var(--primary) !important;
+    color: #ffffff !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 4px 14px rgba(225, 29, 46, 0.4) !important;
 }
 
 .car-card {
@@ -1117,11 +1125,11 @@ button, input, select, textarea {
 
 .dark-section .container {
     padding-left: 20px;
-    border-left: 4px solid var(--cyan);
+    border-left: 4px solid var(--primary);
 }
 
 .dark-section .eyebrow {
-    color: var(--cyan);
+    color: var(--primary);
 }
 
 .dark-section h2 {
@@ -1425,7 +1433,7 @@ button, input, select, textarea {
     gap: 30px;
     margin-bottom: 35px;
     padding-left: 20px;
-    border-left: 4px solid var(--cyan);
+    border-left: 4px solid var(--primary);
 }
 
 .ev-header h2 {
@@ -1443,7 +1451,7 @@ button, input, select, textarea {
 }
 
 .ev-header .eyebrow {
-    color: var(--cyan);
+    color: var(--primary);
 }
 
 /* =========================================================

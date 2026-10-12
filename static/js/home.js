@@ -413,10 +413,6 @@ function createReviewCard(car) {
 
                 ${createImageHTML(car, "review-card-image")}
 
-                <span class="car-badge-chip" style="color: var(--yellow); border-color: rgba(255, 196, 0, 0.45);">
-                    ★ EDITORIAL VERDICT
-                </span>
-
             </a>
 
             <div class="review-content">
@@ -504,7 +500,7 @@ function createEVCard(car) {
 
             <div class="car-card-content">
 
-                <span class="car-card-category" style="color: var(--cyan); font-weight: 800;">
+                <span class="car-card-category" style="color: var(--primary); font-weight: 800;">
                     ${escapeHTML(body || "ELECTRIC")}
                 </span>
 
@@ -514,7 +510,7 @@ function createEVCard(car) {
                     </a>
                 </h3>
 
-                <div class="car-card-price" style="color: var(--cyan); font-weight: 800;">
+                <div class="car-card-price" style="color: var(--primary); font-weight: 900;">
                     ${escapeHTML(price)}
                 </div>
 
@@ -963,7 +959,6 @@ window.MotorNationHome = {
    ENGINE ACCELERATION SOUND & TORQUE ENTRANCE ANIMATION
 ========================================================= */
 
-let isAudioMuted = false;
 let hasPlayedEntranceSound = false;
 
 function triggerTorqueAnimation() {
@@ -977,46 +972,35 @@ function triggerTorqueAnimation() {
     }, 1600);
 }
 
-function playEngineSound() {
-    if (isAudioMuted) return;
+function playArrivalSound() {
     const audio = document.getElementById("engineAudio");
-    triggerTorqueAnimation();
+    if (!audio) return;
 
-    if (audio) {
-        audio.currentTime = 0;
-        const playPromise = audio.play();
-        if (playPromise !== undefined) {
-            playPromise.catch((err) => {
-                console.log("Autoplay was prevented by browser policy:", err);
-            });
+    triggerTorqueAnimation();
+    audio.currentTime = 0;
+
+    // Enforce 5-second max duration
+    const onTimeUpdate = () => {
+        if (audio.currentTime >= 5.0) {
+            audio.pause();
+            audio.removeEventListener("timeupdate", onTimeUpdate);
         }
+    };
+    audio.addEventListener("timeupdate", onTimeUpdate);
+
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+        playPromise.catch((err) => {
+            console.log("Arrival audio waiting for interaction:", err);
+        });
     }
 }
 
 function initEngineSound() {
-    const revBtn = document.getElementById("heroRevButton");
-    const toggleBtn = document.getElementById("heroSoundToggle");
-
-    if (revBtn) {
-        revBtn.addEventListener("click", () => {
-            playEngineSound();
-        });
-    }
-
-    if (toggleBtn) {
-        toggleBtn.addEventListener("click", () => {
-            isAudioMuted = !isAudioMuted;
-            toggleBtn.textContent = isAudioMuted ? "Sound: Muted" : "Sound: On";
-            toggleBtn.style.borderColor = isAudioMuted ? "rgba(225, 29, 46, 0.6)" : "rgba(255, 255, 255, 0.14)";
-            toggleBtn.style.color = isAudioMuted ? "#f87171" : "#cbd5e1";
-        });
-    }
-
-    // Attempt playback upon entering page
     const tryEntranceSound = () => {
         if (hasPlayedEntranceSound) return;
         hasPlayedEntranceSound = true;
-        playEngineSound();
+        playArrivalSound();
         removeUserGestureListeners();
     };
 
@@ -1027,18 +1011,25 @@ function initEngineSound() {
         window.removeEventListener("touchstart", tryEntranceSound);
     };
 
-    // Try playing on enter
+    // Try playing immediately upon page entry
     setTimeout(() => {
         const audio = document.getElementById("engineAudio");
-        if (audio && !isAudioMuted) {
+        if (audio) {
             audio.currentTime = 0;
             const p = audio.play();
             if (p !== undefined) {
                 p.then(() => {
                     hasPlayedEntranceSound = true;
                     triggerTorqueAnimation();
+                    const onTimeUpdate = () => {
+                        if (audio.currentTime >= 5.0) {
+                            audio.pause();
+                            audio.removeEventListener("timeupdate", onTimeUpdate);
+                        }
+                    };
+                    audio.addEventListener("timeupdate", onTimeUpdate);
                 }).catch(() => {
-                    // Browser requires user interaction before audio: listen for first gesture
+                    // Browser requires user interaction: listen for first touch/click/scroll
                     window.addEventListener("click", tryEntranceSound, { once: true });
                     window.addEventListener("scroll", tryEntranceSound, { once: true });
                     window.addEventListener("keydown", tryEntranceSound, { once: true });
@@ -1046,5 +1037,5 @@ function initEngineSound() {
                 });
             }
         }
-    }, 400);
+    }, 300);
 }
