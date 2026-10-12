@@ -53,67 +53,33 @@ MotorNation — New Cars, Reviews & Comparisons
 
         </form>
 
-        <!-- Quick Filter Category Pills -->
-        <div class="hero-quick-filters">
-            <span class="hero-filters-label">Trending:</span>
-            <a href="{{ url_for('cars') }}?fuelType=Electric" class="hero-filter-pill">
-                <span>⚡</span> EVs & Hybrids
-            </a>
-            <a href="{{ url_for('cars') }}?bodyType=SUV" class="hero-filter-pill">
-                <span>🚙</span> SUVs
-            </a>
-            <a href="{{ url_for('cars') }}?bodyType=Sedan" class="hero-filter-pill">
-                <span>🏎️</span> Sedans
-            </a>
-            <a href="{{ url_for('cars') }}?bodyType=Truck" class="hero-filter-pill">
-                <span>🛻</span> Trucks
-            </a>
-            <a href="{{ url_for('cars') }}?maxPrice=35000" class="hero-filter-pill">
-                <span>💰</span> Under $35k
-            </a>
-        </div>
-
-        <div class="hero-stats-strip">
-            <div class="hero-stat-item">
-                <span class="icon">✓</span> 455 Vehicles Cataloged
-            </div>
-            <div class="hero-stat-item">
-                <span class="icon">▶</span> 29 Video Road Tests
-            </div>
-            <div class="hero-stat-item">
-                <span class="icon">★</span> 176 Editorial Verdicts
-            </div>
-            <div class="hero-stat-item">
-                <span class="icon">⚡</span> High-Voltage EV Fleet
-            </div>
+        <!-- Engine Rev & Acceleration Bar -->
+        <div class="hero-engine-bar">
+            <button
+                type="button"
+                id="heroRevButton"
+                class="hero-rev-btn"
+                title="Rev high-torque V8 engine"
+                aria-label="Rev engine"
+            >
+                <span class="engine-pulse-ring"></span>
+                <span class="engine-pulse-dot"></span>
+                <span class="rev-btn-text">🔊 REV ENGINE</span>
+                <span class="rev-btn-tag">HIGH TORQUE</span>
+            </button>
+            <button
+                type="button"
+                id="heroSoundToggle"
+                class="hero-sound-toggle-btn"
+                title="Toggle engine audio"
+                aria-label="Toggle sound"
+            >
+                Audio: On
+            </button>
         </div>
 
     </div>
 
-</section>
-
-
-<!-- =========================================================
-     TOP MARQUES QUICK EXPLORER
-========================================================= -->
-<section class="brand-ribbon-section">
-    <div class="container">
-        <div class="brand-ribbon-track">
-            <span class="brand-ribbon-label">Top Marques:</span>
-            <a href="{{ url_for('cars') }}?make=Porsche" class="brand-pill">Porsche</a>
-            <a href="{{ url_for('cars') }}?make=Tesla" class="brand-pill">Tesla</a>
-            <a href="{{ url_for('cars') }}?make=BMW" class="brand-pill">BMW</a>
-            <a href="{{ url_for('cars') }}?make=Mercedes-Benz" class="brand-pill">Mercedes-Benz</a>
-            <a href="{{ url_for('cars') }}?make=Audi" class="brand-pill">Audi</a>
-            <a href="{{ url_for('cars') }}?make=Ferrari" class="brand-pill">Ferrari</a>
-            <a href="{{ url_for('cars') }}?make=Lamborghini" class="brand-pill">Lamborghini</a>
-            <a href="{{ url_for('cars') }}?make=Rivian" class="brand-pill">Rivian</a>
-            <a href="{{ url_for('cars') }}?make=Ford" class="brand-pill">Ford</a>
-            <a href="{{ url_for('cars') }}?make=Chevrolet" class="brand-pill">Chevrolet</a>
-            <a href="{{ url_for('cars') }}?make=Toyota" class="brand-pill">Toyota</a>
-            <a href="{{ url_for('cars') }}?make=Hyundai" class="brand-pill">Hyundai</a>
-        </div>
-    </div>
 </section>
 
 
@@ -122,7 +88,7 @@ MotorNation — New Cars, Reviews & Comparisons
 ========================================================= -->
 
 <section
-    class="section featured-section"
+    class="section featured-section dark-homepage-section"
     id="new-cars"
 >
 
@@ -181,7 +147,7 @@ MotorNation — New Cars, Reviews & Comparisons
 ========================================================= -->
 
 <section
-    class="section reviews-section"
+    class="section reviews-section dark-homepage-section"
     id="reviews"
 >
 
@@ -285,7 +251,7 @@ MotorNation — New Cars, Reviews & Comparisons
 ========================================================= -->
 
 <section
-    class="section news-section"
+    class="section news-section dark-homepage-section"
     id="news"
 >
 
@@ -513,6 +479,16 @@ MotorNation — New Cars, Reviews & Comparisons
 
 </section>
 
+
+<!-- =========================================================
+     TORQUE ACCELERATION EFFECT & ENGINE AUDIO
+========================================================= -->
+<div class="torque-acceleration-overlay" id="torqueOverlay" aria-hidden="true"></div>
+<audio
+    id="engineAudio"
+    src="{{ url_for('static', filename='audio/engine_acceleration.wav') }}"
+    preload="auto"
+></audio>
 
 <!-- =========================================================
      HOME PAGE JAVASCRIPT

@@ -291,12 +291,12 @@ button, input, select, textarea {
         linear-gradient(
             90deg,
             rgba(6, 8, 10, 0.94) 0%,
-            rgba(6, 8, 10, 0.85) 42%,
-            rgba(6, 8, 10, 0.52) 75%,
-            rgba(6, 8, 10, 0.35) 100%
+            rgba(6, 8, 10, 0.82) 42%,
+            rgba(6, 8, 10, 0.38) 72%,
+            rgba(6, 8, 10, 0.15) 100%
         ),
-        url("https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=2400&q=85")
-        center 40% / cover no-repeat;
+        url("../images/hero_mustang_bg.jpg")
+        center right / cover no-repeat;
     color: var(--white);
     overflow: hidden;
 }
@@ -308,7 +308,7 @@ button, input, select, textarea {
 }
 
 .hero .eyebrow {
-    color: var(--cyan);
+    color: var(--primary);
     margin-bottom: 18px;
 }
 
@@ -376,97 +376,301 @@ button, input, select, textarea {
     transform: translateY(-1px);
 }
 
-/* Hero Fleet Stats Strip */
-.hero-stats-strip {
+/* ==========================================================================
+   HERO ENGINE REV BAR & TORQUE ANIMATION
+   ========================================================================== */
+.hero-engine-bar {
     display: flex;
     align-items: center;
+    gap: 14px;
+    margin-top: 26px;
     flex-wrap: wrap;
-    gap: 22px;
-    margin-top: 32px;
-    padding-top: 24px;
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-.hero-stat-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.88rem;
-    font-weight: 700;
-    color: #cbd5e1;
-}
-
-.hero-stat-item .icon {
+.hero-rev-btn {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: rgba(225, 29, 46, 0.2);
-    color: var(--primary);
-    font-size: 0.78rem;
+    gap: 10px;
+    padding: 10px 22px;
+    background: linear-gradient(135deg, rgba(225, 29, 46, 0.28) 0%, rgba(13, 17, 23, 0.95) 100%);
+    border: 1px solid rgba(225, 29, 46, 0.65);
+    border-radius: 999px;
+    color: #ffffff;
+    font-size: 0.88rem;
     font-weight: 900;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 18px rgba(225, 29, 46, 0.25);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    user-select: none;
+}
+
+.hero-rev-btn:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 26px rgba(225, 29, 46, 0.55);
+}
+
+.hero-rev-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 10px rgba(225, 29, 46, 0.35);
+}
+
+.engine-pulse-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #e11d2e;
+    box-shadow: 0 0 10px #e11d2e;
+    animation: enginePulse 1.4s infinite;
+}
+
+@keyframes enginePulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.9;
+    }
+    50% {
+        transform: scale(1.4);
+        opacity: 1;
+        box-shadow: 0 0 14px #e11d2e;
+    }
+}
+
+.rev-btn-tag {
+    font-size: 0.68rem;
+    color: #cbd5e1;
+    background: rgba(0, 0, 0, 0.55);
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.08em;
+    font-weight: 800;
+}
+
+.hero-sound-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 18px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    color: #cbd5e1;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    transition: all 0.2s ease;
+}
+
+.hero-sound-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.14);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.28);
+}
+
+/* Torque Acceleration Screen Overlay & Launch Flash */
+.torque-acceleration-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 99999;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    box-shadow: inset 0 0 120px rgba(225, 29, 46, 0.55);
+}
+
+.torque-acceleration-active {
+    animation: torqueLaunchPulse 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes torqueLaunchPulse {
+    0% {
+        opacity: 0;
+    }
+    20% {
+        opacity: 0.85;
+        box-shadow: inset 0 0 150px rgba(225, 29, 46, 0.7);
+    }
+    55% {
+        opacity: 0.35;
+    }
+    75% {
+        opacity: 0.55;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+/* Floating Image Badges (Featured & Reviews) */
+.car-badge-chip {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    background: rgba(6, 8, 10, 0.88);
+    backdrop-filter: blur(8px);
+    color: var(--primary);
+    border: 1px solid rgba(225, 29, 46, 0.45);
+    border-radius: 999px;
+    padding: 3px 9px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    z-index: 2;
 }
 
 /* ==========================================================================
-   TOP MARQUES QUICK EXPLORER RIBBON
+   DARK HOMEPAGE THEME (BLACK, RED, BLACK) & EV-STYLE CARDS
    ========================================================================== */
-.brand-ribbon-section {
-    background: #0d1015;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 16px 0;
+.dark-homepage-section {
+    background: #080a0e !important;
+    color: #f1f5f9;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.featured-section.dark-homepage-section {
+    background: #07090c !important;
+}
+
+.reviews-section.dark-homepage-section {
+    background: #0b0e14 !important;
+}
+
+.news-section.dark-homepage-section {
+    background: #07090c !important;
+}
+
+.dark-homepage-section .section-heading h2 {
+    color: #ffffff !important;
+}
+
+.dark-homepage-section .section-description {
+    color: #94a3b8 !important;
+}
+
+.dark-homepage-section .section-link {
+    color: #cbd5e1 !important;
+}
+
+.dark-homepage-section .section-link:hover {
+    color: var(--primary) !important;
+}
+
+/* EV-Style Card UI across Homepage */
+.dark-homepage-section .car-card,
+.dark-homepage-section .review-card,
+.dark-homepage-section .news-card {
+    background: #0d1117 !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
     position: relative;
-    z-index: 5;
+    overflow: hidden;
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease !important;
 }
 
-.brand-ribbon-track {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-    padding: 2px 0;
+.dark-homepage-section .car-card:hover,
+.dark-homepage-section .review-card:hover,
+.dark-homepage-section .news-card:hover {
+    transform: translateY(-6px) !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 16px 36px rgba(225, 29, 46, 0.28) !important;
 }
 
-.brand-ribbon-track::-webkit-scrollbar {
-    display: none;
+.dark-homepage-section .car-card-image-wrapper,
+.dark-homepage-section .review-image,
+.dark-homepage-section .news-card-image {
+    background: #161b22 !important;
 }
 
-.brand-ribbon-label {
-    font-size: 0.78rem;
+.dark-homepage-section .car-card-category {
+    color: var(--primary) !important;
+    font-weight: 800;
+}
+
+.dark-homepage-section .car-card-title a,
+.dark-homepage-section .review-content h3 a,
+.dark-homepage-section .news-card-title a {
+    color: #f1f5f9 !important;
+}
+
+.dark-homepage-section .car-card-title a:hover,
+.dark-homepage-section .review-content h3 a:hover,
+.dark-homepage-section .news-card-title a:hover {
+    color: var(--primary) !important;
+}
+
+.dark-homepage-section .car-card-price,
+.dark-homepage-section .review-price {
+    color: var(--primary) !important;
     font-weight: 900;
-    letter-spacing: 0.12em;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    margin-right: 4px;
-    flex-shrink: 0;
 }
 
-.brand-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 18px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 999px;
-    color: #e2e8f0;
-    font-size: 0.86rem;
-    font-weight: 700;
-    text-decoration: none;
-    white-space: nowrap;
-    flex-shrink: 0;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+.dark-homepage-section .car-card-specs {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(255, 255, 255, 0.07) !important;
+    border-radius: var(--radius-sm);
+    color: #cbd5e1 !important;
 }
 
-.brand-pill:hover {
-    background: var(--primary);
-    border-color: var(--primary);
-    color: #ffffff;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(225, 29, 46, 0.35);
+.dark-homepage-section .car-card-specs span {
+    color: #cbd5e1 !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.07) !important;
+}
+
+.dark-homepage-section .car-card-specs span:last-child {
+    border-right: none !important;
+}
+
+.dark-homepage-section .car-card-link,
+.dark-homepage-section .review-link,
+.dark-homepage-section .news-link-btn {
+    background: rgba(225, 29, 46, 0.12) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(225, 29, 46, 0.35) !important;
+    border-radius: var(--radius-md);
+    text-align: center;
+    font-weight: 800;
+}
+
+.dark-homepage-section .car-card-link:hover,
+.dark-homepage-section .review-link:hover,
+.dark-homepage-section .news-link-btn:hover {
+    background: var(--primary) !important;
+    color: #ffffff !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 4px 14px rgba(225, 29, 46, 0.4) !important;
+}
+
+.dark-homepage-section .compare-button {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: #cbd5e1 !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: var(--radius-md);
+}
+
+.dark-homepage-section .compare-button:hover {
+    background: rgba(255, 255, 255, 0.14) !important;
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+.dark-homepage-section .review-content p,
+.dark-homepage-section .news-card-excerpt {
+    color: #94a3b8 !important;
+}
+
+.dark-homepage-section .news-card-num,
+.dark-homepage-section .news-card-time {
+    color: #64748b !important;
+}
+
+.dark-homepage-section .news-card-badge {
+    background: rgba(225, 29, 46, 0.9) !important;
+    color: #ffffff !important;
 }
 
 /* ==========================================================================

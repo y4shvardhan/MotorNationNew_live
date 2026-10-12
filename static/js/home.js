@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderSkeletonCards("ev-cars", 4);
     initHeroSearch();
     loadHomepageCars();
+    initEngineSound();
 });
 
 
@@ -298,6 +299,10 @@ function createFeaturedCard(car) {
                     ${escapeHTML(year)}
                 </span>
 
+                <span class="car-badge-chip">
+                    ★ FEATURED
+                </span>
+
                 <button
                     type="button"
                     class="card-favorite-btn"
@@ -407,6 +412,10 @@ function createReviewCard(car) {
             >
 
                 ${createImageHTML(car, "review-card-image")}
+
+                <span class="car-badge-chip" style="color: var(--yellow); border-color: rgba(255, 196, 0, 0.45);">
+                    ★ EDITORIAL VERDICT
+                </span>
 
             </a>
 
@@ -948,3 +957,94 @@ function showHomepageEmptyStates() {
 window.MotorNationHome = {
     reload: loadHomepageCars
 };
+
+
+/* =========================================================
+   ENGINE ACCELERATION SOUND & TORQUE ENTRANCE ANIMATION
+========================================================= */
+
+let isAudioMuted = false;
+let hasPlayedEntranceSound = false;
+
+function triggerTorqueAnimation() {
+    const overlay = document.getElementById("torqueOverlay");
+    if (!overlay) return;
+    overlay.classList.remove("torque-acceleration-active");
+    void overlay.offsetWidth; // force DOM reflow
+    overlay.classList.add("torque-acceleration-active");
+    setTimeout(() => {
+        overlay.classList.remove("torque-acceleration-active");
+    }, 1600);
+}
+
+function playEngineSound() {
+    if (isAudioMuted) return;
+    const audio = document.getElementById("engineAudio");
+    triggerTorqueAnimation();
+
+    if (audio) {
+        audio.currentTime = 0;
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+            playPromise.catch((err) => {
+                console.log("Autoplay was prevented by browser policy:", err);
+            });
+        }
+    }
+}
+
+function initEngineSound() {
+    const revBtn = document.getElementById("heroRevButton");
+    const toggleBtn = document.getElementById("heroSoundToggle");
+
+    if (revBtn) {
+        revBtn.addEventListener("click", () => {
+            playEngineSound();
+        });
+    }
+
+    if (toggleBtn) {
+        toggleBtn.addEventListener("click", () => {
+            isAudioMuted = !isAudioMuted;
+            toggleBtn.textContent = isAudioMuted ? "Sound: Muted" : "Sound: On";
+            toggleBtn.style.borderColor = isAudioMuted ? "rgba(225, 29, 46, 0.6)" : "rgba(255, 255, 255, 0.14)";
+            toggleBtn.style.color = isAudioMuted ? "#f87171" : "#cbd5e1";
+        });
+    }
+
+    // Attempt playback upon entering page
+    const tryEntranceSound = () => {
+        if (hasPlayedEntranceSound) return;
+        hasPlayedEntranceSound = true;
+        playEngineSound();
+        removeUserGestureListeners();
+    };
+
+    const removeUserGestureListeners = () => {
+        window.removeEventListener("click", tryEntranceSound);
+        window.removeEventListener("scroll", tryEntranceSound);
+        window.removeEventListener("keydown", tryEntranceSound);
+        window.removeEventListener("touchstart", tryEntranceSound);
+    };
+
+    // Try playing on enter
+    setTimeout(() => {
+        const audio = document.getElementById("engineAudio");
+        if (audio && !isAudioMuted) {
+            audio.currentTime = 0;
+            const p = audio.play();
+            if (p !== undefined) {
+                p.then(() => {
+                    hasPlayedEntranceSound = true;
+                    triggerTorqueAnimation();
+                }).catch(() => {
+                    // Browser requires user interaction before audio: listen for first gesture
+                    window.addEventListener("click", tryEntranceSound, { once: true });
+                    window.addEventListener("scroll", tryEntranceSound, { once: true });
+                    window.addEventListener("keydown", tryEntranceSound, { once: true });
+                    window.addEventListener("touchstart", tryEntranceSound, { once: true });
+                });
+            }
+        }
+    }, 400);
+}
