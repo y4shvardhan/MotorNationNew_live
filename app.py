@@ -963,6 +963,10 @@ def row_to_car(row):
     if not review_lines and road_test_review:
         review_lines = [l.strip() for l in road_test_review.split("\n") if l.strip()]
 
+    video_title = clean_text(first_value(raw, "video_title", "youtube_video_title")) or nr_item.get("video_title", "")
+    video_url = clean_text(first_value(raw, "video_url", "youtube_video_link")) or nr_item.get("video_url", "")
+    video_id = clean_text(first_value(raw, "video_id", "youtube_video_id")) or nr_item.get("video_id", "")
+
     if not rating and nr_item.get("rating"):
         rating = nr_item.get("rating")
 
@@ -1107,6 +1111,18 @@ def row_to_car(row):
 
         "gallery": gallery,
 
+        "video_title": video_title,
+
+        "video_url": video_url,
+
+        "video_id": video_id,
+
+        "videoTitle": video_title,
+
+        "videoUrl": video_url,
+
+        "videoId": video_id,
+
         "sourceData": raw
     }
 
@@ -1149,126 +1165,80 @@ def find_car_by_id(car_id):
     )
 
 
+_CAR_VIDEOS_CACHE = None
+
+def get_car_videos_map():
+    """
+    Load and cache the official 455-car YouTube video mapping.
+    """
+    global _CAR_VIDEOS_CACHE
+    if _CAR_VIDEOS_CACHE is not None:
+        return _CAR_VIDEOS_CACHE
+
+    mapping_file = BASE_DIR / "data" / "car_videos_mapping.json"
+    if mapping_file.exists():
+        try:
+            with open(mapping_file, "r", encoding="utf-8") as f:
+                _CAR_VIDEOS_CACHE = json.load(f)
+                return _CAR_VIDEOS_CACHE
+        except Exception as e:
+            app.logger.warning(f"Error loading car_videos_mapping.json: {e}")
+
+    _CAR_VIDEOS_CACHE = {}
+    return _CAR_VIDEOS_CACHE
+
+
 def get_motornation_video_for_car(car):
     """
-    Select an authentic, directly-playable video from @motornationofficial
-    matching the vehicle's make, model, or body category.
+    Select the official video from @motornationofficial specified for each car
+    from the curated 455-vehicle dataset.
     """
-    make = (car.get("make") or "").strip().lower()
-    model = (car.get("model") or "").strip().lower()
-    body = (car.get("bodyType") or car.get("body_type") or "").strip().lower()
-
-    # Trucks & Pickups
-    if any(w in model for w in ["tundra", "tacoma", "silverado", "f-150", "ram", "colorado", "ranger", "frontier", "sierra"]) or any(w in body for w in ["truck", "pickup"]):
+    if not car:
         return {
-            "video_id": "FCxwMVjtb6w",
-            "title": "2026 Pickups & Trucks In-Depth Evaluation — @motornationofficial",
+            "video_id": "Z0I64NzsFNQ",
+            "title": "2025 Toyota Corolla vs 2025 Honda Civic Compared | Sedans Clash! — @motornationofficial",
+            "url": "https://www.youtube.com/watch?v=Z0I64NzsFNQ",
+            "car_name": "MotorNation Vehicle Review"
+        }
+
+    # 1. If car already has non-empty video fields
+    if car.get("video_id") and car.get("video_title"):
+        return {
+            "video_id": car.get("video_id"),
+            "title": car.get("video_title"),
+            "url": car.get("video_url") or f"https://www.youtube.com/watch?v={car.get('video_id')}",
             "car_name": f"{car.get('year', '2026')} {car.get('make', '')} {car.get('model', '')}"
         }
 
-    # BMW Models
-    if "bmw" in make:
-        if any(w in model for w in ["ix3", "ix", "ix5", "i4", "i5", "i7"]) or "electric" in body or "ev" in body:
-            return {
-                "video_id": "zvvPLCMGW1c",
-                "title": "2027 BMW iX3 & Next-Gen EV In-Depth Review — @motornationofficial",
-                "car_name": f"{car.get('year', '2026')} {car.get('make', '')} {car.get('model', '')}"
-            }
-        elif "x1" in model:
-            return {
-                "video_id": "D-CbzfvCbRc",
-                "title": "2027 BMW X1 vs Lexus NX Luxury Compact Showdown — @motornationofficial",
-                "car_name": f"{car.get('year', '2026')} {car.get('make', '')} {car.get('model', '')}"
-            }
-        elif any(w in model for w in ["3 series", "4 series", "5 series", "7 series", "m3", "m4", "m5", "m2", "coupe", "sedan"]):
-            return {
-                "video_id": "XT-yh0I2f4A",
-                "title": "2027 BMW 3 Series & Sports Sedan Evaluation — @motornationofficial",
-                "car_name": f"{car.get('year', '2026')} {car.get('make', '')} {car.get('model', '')}"
-            }
-        else:
-            return {
-                "video_id": "M0q3Fdn3tFo",
-                "title": "Why The BMW X5 & Luxury SUV Lineup Dominates — @motornationofficial",
-                "car_name": f"{car.get('year', '2026')} {car.get('make', '')} {car.get('model', '')}"
-            }
-
-    # Mercedes-Benz
-    if "mercedes" in make:
-        if any(w in model for w in ["glc", "c-class", "cle", "cla"]):
-            return {
-                "video_id": "YWvvbp5ez_4",
-                "title": "2027 Mercedes GLC 350e vs Lexus RX: Battle of Luxury & Power — @motornationofficial",
-                "car_name": f"{car.get('year', '2026')} {car.get('make', '')} {car.get('model', '')}"
-            }
-        else:
-            return {
-                "video_id": "jEoFC8FV2Ac",
-                "title": "2027 Mercedes-Benz GLE Luxury SUV In-Depth Analysis — @motornationofficial",
-                "car_name": f"{car.get('year', '2026')} {car.get('make', '')} {car.get('model', '')}"
-            }
-
-    # Lexus & Toyota
-    if "lexus" in make or "toyota" in make:
-        if any(w in model for w in ["gx", "land cruiser", "4runner"]) or "off-road" in body:
-            return {
-                "video_id": "PXrSMv94PLU",
-                "title": "2027 Lexus GX550 vs Range Rover Sport: Luxury & Off-Road — @motornationofficial",
-                "car_name": f"{car.get('year', '2026')} {car.get('make', '')} {car.get('model', '')}"
-            }
-        elif any(w in model for w in ["lx", "sequoia"]):
-            return {
-                "video_id": "o4SzS-_A1wQ",
-                "title": "2027 Lexus LX vs Range Rover: Ultimate Luxury Showdown — @motornationofficial",
-                "car_name": f"{car.get('year', '2026')} {car.get('make', '')} {car.get('model', '')}"
-            }
-        elif "nx" in model:
-            return {
-                "video_id": "Badyqn3s7mw",
-                "title": "2027 Lexus NX vs Mercedes-Benz GLC: Which Luxury SUV to Buy? — @motornationofficial",
-                "car_name": f"{car.get('year', '2026')} {car.get('make', '')} {car.get('model', '')}"
-            }
-        elif any(w in model for w in ["tx", "grand highlander", "highlander"]) or "3-row" in body:
-            return {
-                "video_id": "sFEhGY-6zJY",
-                "title": "2027 Lexus RX vs 2027 Lexus TX 3-Row Family Comparison — @motornationofficial",
-                "car_name": f"{car.get('year', '2026')} {car.get('make', '')} {car.get('model', '')}"
-            }
-        else:
-            return {
-                "video_id": "64gmXwhVmuw",
-                "title": "Why the Lexus RX & Premium Japanese Lineup is the Best-Seller — @motornationofficial",
-                "car_name": f"{car.get('year', '2026')} {car.get('make', '')} {car.get('model', '')}"
-            }
-
-    # Mazda
-    if "mazda" in make:
+    # 2. Check JSON mapping by vehicle ID (1..455)
+    vid_map = get_car_videos_map()
+    car_id_str = str(car.get("vehicle_id") or car.get("id") or "")
+    if car_id_str and car_id_str in vid_map:
+        info = vid_map[car_id_str]
         return {
-            "video_id": "MTg2UxKEq9A",
-            "title": "2027 Mazda CX-60 / CX-90 vs Luxury Rivals Comparison — @motornationofficial",
+            "video_id": info.get("video_id") or "Z0I64NzsFNQ",
+            "title": info.get("title") or "MotorNation Video Review",
+            "url": info.get("url") or f"https://www.youtube.com/watch?v={info.get('video_id', 'Z0I64NzsFNQ')}",
             "car_name": f"{car.get('year', '2026')} {car.get('make', '')} {car.get('model', '')}"
         }
 
-    # Land Rover / Range Rover
-    if "rover" in make or "land rover" in make:
-        return {
-            "video_id": "iC1UHDnthBo",
-            "title": "Range Rover Sport vs BMW X5 vs Mercedes GLE Showdown — @motornationofficial",
-            "car_name": f"{car.get('year', '2026')} {car.get('make', '')} {car.get('model', '')}"
-        }
+    # 3. Match by make and model
+    make_clean = (car.get("make") or "").strip().lower()
+    model_clean = (car.get("model") or "").strip().lower()
+    for item in vid_map.values():
+        if (item.get("make") or "").lower() == make_clean and (item.get("model") or "").lower() == model_clean:
+            return {
+                "video_id": item.get("video_id") or "Z0I64NzsFNQ",
+                "title": item.get("title") or "MotorNation Video Review",
+                "url": item.get("url") or f"https://www.youtube.com/watch?v={item.get('video_id', 'Z0I64NzsFNQ')}",
+                "car_name": f"{car.get('year', '2026')} {car.get('make', '')} {car.get('model', '')}"
+            }
 
-    # Sedans, Coupes & Sports Cars
-    if any(w in body for w in ["sedan", "coupe", "hatch", "liftback", "fastback", "sports car", "supercar", "hypercar", "roadster"]):
-        return {
-            "video_id": "XT-yh0I2f4A",
-            "title": "Performance, Handling & Cabin Tech Road Test — @motornationofficial",
-            "car_name": f"{car.get('year', '2026')} {car.get('make', '')} {car.get('model', '')}"
-        }
-
-    # Default luxury and benchmark comparison video
+    # Default fallback
     return {
-        "video_id": "iC1UHDnthBo",
-        "title": "2027 Luxury & Performance Benchmark Comparison — @motornationofficial",
+        "video_id": "Z0I64NzsFNQ",
+        "title": "2025 Toyota Corolla vs 2025 Honda Civic Compared | Sedans Clash! — @motornationofficial",
+        "url": "https://www.youtube.com/watch?v=Z0I64NzsFNQ",
         "car_name": f"{car.get('year', '2026')} {car.get('make', '')} {car.get('model', '')}"
     }
 

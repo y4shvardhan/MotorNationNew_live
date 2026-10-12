@@ -117,7 +117,7 @@
 
             <div style="position: relative; width: 100%; padding-top: 56.25%; background: #0f172a; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
                 <iframe
-                    src="https://www.youtube-nocookie.com/embed/{{ video_info.video_id if video_info else 'iC1UHDnthBo' }}?rel=0"
+                    src="https://www.youtube-nocookie.com/embed/{{ video_info.video_id if video_info else 'Z0I64NzsFNQ' }}?rel=0"
                     title="{{ video_info.title if video_info else 'MotorNation Video Review' }}"
                     style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -128,7 +128,7 @@
 
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 18px; padding-top: 14px; border-top: 1px solid #f1f5f9; font-size: 0.88rem; color: #64748b;">
                 <span>Watch launch analysis, dynamic driving clips, and design walkarounds.</span>
-                <a href="https://www.youtube.com/watch?v={{ video_info.video_id if video_info else 'iC1UHDnthBo' }}" target="_blank" rel="noopener noreferrer" style="color: var(--primary, #e11d2e); font-weight: 700; text-decoration: none;">
+                <a href="{{ video_info.url if video_info and video_info.url else ('https://www.youtube.com/watch?v=' ~ (video_info.video_id if video_info else 'Z0I64NzsFNQ')) }}" target="_blank" rel="noopener noreferrer" style="color: var(--primary, #e11d2e); font-weight: 700; text-decoration: none;">
                     Watch on YouTube ↗
                 </a>
             </div>
