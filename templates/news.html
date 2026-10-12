@@ -1,321 +1,377 @@
 {% extends "base.html" %}
 
 {% block title %}
-MotorNation — News
+MotorNation — Automotive News & Journalistic Coverage
 {% endblock %}
 
 {% block content %}
 
 <section class="news-page">
 
-    <div class="container">
+    <div class="container" style="max-width: 1280px; margin: 0 auto; padding: 40px 24px;">
 
-        <!-- Page Header -->
-        <div class="page-header">
-
-            <span class="eyebrow">
-                MOTOR NATION NEWS
+        <!-- PAGE HEADER -->
+        <div class="page-header" style="text-align: center; max-width: 820px; margin: 0 auto 40px auto;">
+            <span class="eyebrow" style="color: var(--primary, #e11d2e); font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.82rem;">
+                MOTOR NATION AUTOMOTIVE NEWSROOM
             </span>
-
-            <h1>
-                Automotive News
+            <h1 style="font-size: 2.75rem; font-weight: 900; margin: 12px 0; color: #0f172a; line-height: 1.15;">
+                Industry News & Launch Reports
             </h1>
-
-            <p>
-                Stay updated with the latest automotive news,
-                new vehicle launches, industry developments,
-                electric vehicles and automotive technology.
+            <p style="font-size: 1.12rem; color: #64748b; line-height: 1.6;">
+                Comprehensive journalistic coverage across {{ total_count or '455' }} 2026–2027 vehicles, featuring official manufacturer debuts, powertrain engineering, luxury cabin updates, and market intelligence.
             </p>
-
         </div>
 
-
-        <!-- Featured News -->
-        <section class="news-intro">
-
-            <div class="news-intro-content">
-
-                <h2>
-                    Stay Ahead of the Road
-                </h2>
-
-                <p>
-                    MotorNation News will bring together important
-                    developments from the automotive world, helping
-                    you stay informed about new cars, technology,
-                    manufacturers and the future of mobility.
-                </p>
-
-            </div>
-
-        </section>
-
-
-        <!-- Latest Stories -->
-        <section class="news-stories" style="margin-bottom: 55px;">
-
-            <div class="section-heading">
-
-                <div>
-                    <span class="eyebrow">
-                        LATEST STORIES
-                    </span>
-
-                    <h2>
-                        Industry & Technology Trends
-                    </h2>
-
-                    <p class="section-description">
-                        In-depth looks at where automotive engineering, styling and future mobility are heading.
-                    </p>
-                </div>
-
-            </div>
-
-            <div class="news-grid">
-
-                <article class="news-card">
-
-                    <div class="news-card-image">
-                        <img
-                            src="https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=800&q=80"
-                            alt="The next generation of modern vehicles"
-                            loading="lazy"
-                        >
-                        <span class="news-card-badge">NEW CARS</span>
-                    </div>
-
-                    <div class="news-card-body">
-
-                        <div class="news-card-meta">
-                            <span class="news-card-num">01</span>
-                            <span class="news-card-time">3 min read</span>
-                        </div>
-
-                        <h3 class="news-card-title">
-                            The next generation of modern vehicles
-                        </h3>
-
-                        <p class="news-card-excerpt">
-                            Discover how new vehicle architectures, lighter materials, and active aerodynamics are reshaping modern road performance and ownership.
-                        </p>
-
-                    </div>
-
-                </article>
-
-
-                <article class="news-card">
-
-                    <div class="news-card-image">
-                        <img
-                            src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=800&q=80"
-                            alt="Smarter technology inside today's cars"
-                            loading="lazy"
-                        >
-                        <span class="news-card-badge">TECHNOLOGY</span>
-                    </div>
-
-                    <div class="news-card-body">
-
-                        <div class="news-card-meta">
-                            <span class="news-card-num">02</span>
-                            <span class="news-card-time">4 min read</span>
-                        </div>
-
-                        <h3 class="news-card-title">
-                            Smarter technology inside today's cars
-                        </h3>
-
-                        <p class="news-card-excerpt">
-                            From ultra-responsive cockpits to advanced driver assistance, software-defined vehicle innovation continues to evolve at record speed.
-                        </p>
-
-                    </div>
-
-                </article>
-
-
-                <article class="news-card">
-
-                    <div class="news-card-image">
-                        <img
-                            src="https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=800&q=80"
-                            alt="The continued growth of EVs"
-                            loading="lazy"
-                        >
-                        <span class="news-card-badge">ELECTRIC</span>
-                    </div>
-
-                    <div class="news-card-body">
-
-                        <div class="news-card-meta">
-                            <span class="news-card-num">03</span>
-                            <span class="news-card-time">5 min read</span>
-                        </div>
-
-                        <h3 class="news-card-title">
-                            The continued growth of EVs
-                        </h3>
-
-                        <p class="news-card-excerpt">
-                            Explore electric vehicles, high-speed charging infrastructure, battery efficiency advances, and key metrics before making the transition.
-                        </p>
-
-                    </div>
-
-                </article>
-
-            </div>
-
-        </section>
-
-
-        <!-- News Categories -->
-        <section class="news-categories">
-
-            <div class="section-heading">
-
-                <div>
-                    <span class="eyebrow">
-                        EXPLORE
-                    </span>
-
-                    <h2>
-                        News Categories
-                    </h2>
-                </div>
-
-                <a
-                    href="{{ url_for('cars') }}"
-                    class="section-link"
+        <!-- FEATURED STORY HERO -->
+        {% if featured %}
+        <section class="news-featured-hero" id="featuredStory">
+            <div class="news-featured-img-wrap">
+                <img
+                    src="{{ featured.image }}"
+                    alt="{{ featured.headline }}"
+                    loading="eager"
+                    onerror="this.src='https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=1200&q=80'"
                 >
-                    Explore Cars →
-                </a>
-
             </div>
-
-
-            <div class="news-category-grid">
-
-                <!-- New Cars -->
-                <article class="news-category-card">
-
-                    <div class="news-category-icon">
-                        🚘
-                    </div>
-
-                    <h3>
-                        New Cars
-                    </h3>
-
-                    <p>
-                        Follow new vehicle announcements, launches,
-                        updates and upcoming models.
-                    </p>
-
-                    <a href="{{ url_for('cars') }}">
-                        Explore Cars →
-                    </a>
-
-                </article>
-
-
-                <!-- Electric Vehicles -->
-                <article class="news-category-card">
-
-                    <div class="news-category-icon">
-                        ⚡
-                    </div>
-
-                    <h3>
-                        Electric Vehicles
-                    </h3>
-
-                    <p>
-                        Keep up with EV launches, electric technology,
-                        charging developments and the future of mobility.
-                    </p>
-
-                    <a href="{{ url_for('cars') }}?fuelType=Electric">
-                        Explore EVs →
-                    </a>
-
-                </article>
-
-
-                <!-- Automotive Technology -->
-                <article class="news-category-card">
-
-                    <div class="news-category-icon">
-                        🧠
-                    </div>
-
-                    <h3>
-                        Automotive Technology
-                    </h3>
-
-                    <p>
-                        Discover developments in vehicle technology,
-                        safety systems, connectivity and innovation.
-                    </p>
-
-                    <a href="{{ url_for('cars') }}">
-                        Explore Vehicles →
-                    </a>
-
-                </article>
-
-            </div>
-
-        </section>
-
-
-        <!-- Coming Soon -->
-        <section class="news-coming-soon">
-
-            <div class="coming-soon-card">
-
-                <span class="eyebrow">
-                    COMING SOON
+            <div class="news-featured-content">
+                <span class="news-featured-eyebrow">
+                    ★ FEATURED REPORT · {{ featured.make }} {{ featured.model }}
                 </span>
-
-                <h2>
-                    MotorNation News
+                <h2 class="news-featured-title">
+                    {{ featured.headline }}
                 </h2>
-
-                <p>
-                    Our dedicated automotive news system is currently
-                    being developed. This section will eventually feature
-                    vehicle launches, manufacturer announcements, industry
-                    developments, EV news, automotive technology and other
-                    important stories from the automotive world.
+                <p class="news-featured-excerpt">
+                    {{ featured.article[:320] }}...
                 </p>
-
-                <div class="coming-soon-actions">
-
-                    <a
-                        href="{{ url_for('cars') }}"
+                <div class="news-featured-btns">
+                    <button
+                        type="button"
                         class="primary-btn"
+                        style="cursor: pointer;"
+                        onclick="openArticleModal({{ featured.id }})"
                     >
-                        Explore Cars
+                        Read Full Story ↗
+                    </button>
+                    <a href="/car/{{ featured.id }}" class="secondary-btn" style="color: #ffffff; border-color: rgba(255,255,255,0.3);">
+                        View {{ featured.make }} {{ featured.model }} Specs →
                     </a>
+                </div>
+            </div>
+        </section>
+        {% endif %}
 
-                    <a
-                        href="{{ url_for('reviews') }}"
-                        class="secondary-btn"
+        <!-- SEARCH & BRAND FILTERS -->
+        <div class="news-search-filter-bar">
+            <div class="news-search-input-wrap">
+                <span class="news-search-icon">🔍</span>
+                <input
+                    type="text"
+                    id="newsSearchInput"
+                    class="news-search-input"
+                    placeholder="Search news headlines, car models, or keywords..."
+                    aria-label="Search automotive news"
+                >
+            </div>
+
+            <div class="news-brand-chips" id="newsBrandChips">
+                <button type="button" class="news-chip-btn active" data-brand="">All Brands ({{ total_count or '455' }})</button>
+                {% for brand in brands %}
+                    <button type="button" class="news-chip-btn" data-brand="{{ brand }}">{{ brand }}</button>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- NEWS RESULTS STATUS -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <div id="newsCountDisplay" style="font-weight: 700; color: #475569; font-size: 0.95rem;">
+                Showing {{ news_items|length }} of {{ total_count or '455' }} articles
+            </div>
+        </div>
+
+        <!-- NEWS GRID -->
+        <div class="mn-news-grid" id="newsGrid">
+            {% for item in news_items %}
+            <article
+                class="mn-news-card"
+                data-id="{{ item.id }}"
+                data-brand="{{ item.make|lower }}"
+            >
+                <div class="mn-news-card-thumb">
+                    <img
+                        src="{{ item.image }}"
+                        alt="{{ item.headline }}"
+                        loading="lazy"
+                        onerror="this.src='https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=800&q=80'"
                     >
-                        Read Reviews
-                    </a>
-
+                    <span class="mn-news-card-tag">{{ item.make }}</span>
                 </div>
 
-            </div>
+                <div class="mn-news-card-body">
+                    <div class="mn-news-card-meta">
+                        <span>{{ item.year }} {{ item.model }}</span>
+                        {% if item.msrp %}
+                            <span style="color: #059669; font-weight: 700;">${{ "{:,.0f}".format(item.msrp|float) }}</span>
+                        {% endif %}
+                    </div>
 
-        </section>
+                    <h3 class="mn-news-card-title">
+                        {{ item.headline }}
+                    </h3>
+
+                    <p class="mn-news-card-excerpt">
+                        {{ item.article[:190] }}...
+                    </p>
+
+                    <div class="mn-news-card-footer">
+                        <button
+                            type="button"
+                            class="mn-news-read-btn"
+                            onclick="openArticleModal({{ item.id }})"
+                        >
+                            Read Full Article →
+                        </button>
+                        <a href="/car/{{ item.id }}" style="font-size: 0.82rem; color: #64748b; font-weight: 700; text-decoration: none;">
+                            Specs ↗
+                        </a>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+
+        <!-- LOAD MORE BUTTON -->
+        <div id="loadMoreWrap" style="text-align: center; margin: 40px 0;">
+            <button
+                type="button"
+                id="loadMoreBtn"
+                class="secondary-btn"
+                style="padding: 14px 32px; font-weight: 700; cursor: pointer; border-radius: 12px;"
+            >
+                Load More Articles (24 More) ↓
+            </button>
+        </div>
 
     </div>
 
 </section>
+
+<!-- FULL ARTICLE MODAL -->
+<div class="mn-article-modal" id="articleModal" hidden aria-modal="true" role="dialog">
+    <div class="mn-article-backdrop" id="articleBackdrop" onclick="closeArticleModal()"></div>
+    <div class="mn-article-dialog">
+        <button type="button" class="mn-article-dialog-close" onclick="closeArticleModal()" aria-label="Close article">✕</button>
+        <div class="mn-article-dialog-hero">
+            <img id="modalImg" src="" alt="Vehicle Article Photo">
+        </div>
+        <div class="mn-article-dialog-body">
+            <div class="mn-article-dialog-meta">
+                <span class="mn-news-badge" id="modalBadge">OFFICIAL REPORT</span>
+                <span id="modalCarTitle" style="font-weight: 800; color: #0f172a;"></span>
+                <span id="modalMsrp" style="margin-left: auto; font-weight: 800; color: #059669;"></span>
+            </div>
+            <h2 class="mn-article-dialog-headline" id="modalHeadline"></h2>
+            <div class="mn-article-dialog-text" id="modalBody"></div>
+            <div class="mn-article-dialog-actions">
+                <a id="modalOemLink" href="#" target="_blank" rel="noopener noreferrer" class="primary-btn" style="display: none;">
+                    Official Manufacturer Press Release ↗
+                </a>
+                <a id="modalCarLink" href="#" class="secondary-btn">
+                    View Full Specifications & Gallery →
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CLIENT JAVASCRIPT FOR FAST PAGINATION & DYNAMIC SEARCH -->
+<script>
+(function() {
+    const cachedArticles = {};
+    {% for item in news_items %}
+    cachedArticles["{{ item.id }}"] = {
+        id: {{ item.id }},
+        make: {{ item.make|tojson }},
+        model: {{ item.model|tojson }},
+        year: {{ item.year|tojson }},
+        trim: {{ item.trim|tojson }},
+        msrp: {{ item.msrp|tojson }},
+        headline: {{ item.headline|tojson }},
+        article: {{ item.article|tojson }},
+        image: {{ item.image|tojson }},
+        oem_url: {{ item.oem_url|tojson }},
+        cd_url: {{ item.cd_url|tojson }}
+    };
+    {% endfor %}
+
+    const searchInput = document.getElementById("newsSearchInput");
+    const brandChips = document.getElementById("newsBrandChips");
+    const newsGrid = document.getElementById("newsGrid");
+    const countDisplay = document.getElementById("newsCountDisplay");
+    const loadMoreBtn = document.getElementById("loadMoreBtn");
+    const loadMoreWrap = document.getElementById("loadMoreWrap");
+
+    let currentOffset = {{ news_items|length }};
+    let currentBrand = "";
+    let currentQuery = "";
+    let searchDebounceTimer = null;
+
+    function renderCardHTML(item) {
+        cachedArticles[String(item.id)] = item;
+        const formattedMsrp = item.msrp ? `$${Number(item.msrp).toLocaleString()}` : '';
+        const excerpt = (item.article || '').slice(0, 190) + '...';
+        return `
+            <article class="mn-news-card" data-id="${item.id}" data-brand="${(item.make || '').toLowerCase()}">
+                <div class="mn-news-card-thumb">
+                    <img
+                        src="${item.image || 'https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=800&q=80'}"
+                        alt="${item.headline || ''}"
+                        loading="lazy"
+                        onerror="this.src='https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=800&q=80'"
+                    >
+                    <span class="mn-news-card-tag">${item.make || ''}</span>
+                </div>
+                <div class="mn-news-card-body">
+                    <div class="mn-news-card-meta">
+                        <span>${item.year || 2026} ${item.model || ''}</span>
+                        ${formattedMsrp ? `<span style="color: #059669; font-weight: 700;">${formattedMsrp}</span>` : ''}
+                    </div>
+                    <h3 class="mn-news-card-title">${item.headline || ''}</h3>
+                    <p class="mn-news-card-excerpt">${excerpt}</p>
+                    <div class="mn-news-card-footer">
+                        <button type="button" class="mn-news-read-btn" onclick="openArticleModal(${item.id})">
+                            Read Full Article →
+                        </button>
+                        <a href="/car/${item.id}" style="font-size: 0.82rem; color: #64748b; font-weight: 700; text-decoration: none;">
+                            Specs ↗
+                        </a>
+                    </div>
+                </div>
+            </article>
+        `;
+    }
+
+    async function fetchNews(isAppend = false) {
+        if (!isAppend) {
+            currentOffset = 0;
+        }
+
+        const params = new URLSearchParams();
+        if (currentQuery) params.append("q", currentQuery);
+        if (currentBrand) params.append("make", currentBrand);
+        params.append("offset", String(currentOffset));
+        params.append("limit", "24");
+
+        try {
+            const resp = await fetch(`/api/news?${params.toString()}`);
+            const data = await resp.json();
+
+            const items = data.news || [];
+            if (!isAppend) {
+                newsGrid.innerHTML = items.map(renderCardHTML).join("");
+            } else {
+                newsGrid.insertAdjacentHTML("beforeend", items.map(renderCardHTML).join(""));
+            }
+
+            currentOffset += items.length;
+            const displayed = newsGrid.querySelectorAll(".mn-news-card").length;
+            if (countDisplay) {
+                countDisplay.textContent = `Showing ${displayed} of ${data.total} articles`;
+            }
+
+            if (loadMoreWrap) {
+                loadMoreWrap.style.display = data.has_more ? "block" : "none";
+            }
+        } catch (e) {
+            console.error("Error fetching news:", e);
+        }
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener("input", function() {
+            clearTimeout(searchDebounceTimer);
+            searchDebounceTimer = setTimeout(() => {
+                currentQuery = this.value.trim().toLowerCase();
+                fetchNews(false);
+            }, 250);
+        });
+    }
+
+    if (brandChips) {
+        brandChips.addEventListener("click", function(e) {
+            const btn = e.target.closest(".news-chip-btn");
+            if (!btn) return;
+            brandChips.querySelectorAll(".news-chip-btn").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            currentBrand = btn.getAttribute("data-brand") || "";
+            fetchNews(false);
+        });
+    }
+
+    if (loadMoreBtn) {
+        loadMoreBtn.addEventListener("click", function() {
+            fetchNews(true);
+        });
+    }
+
+    // Modal controls
+    const modal = document.getElementById("articleModal");
+    const modalImg = document.getElementById("modalImg");
+    const modalBadge = document.getElementById("modalBadge");
+    const modalCarTitle = document.getElementById("modalCarTitle");
+    const modalMsrp = document.getElementById("modalMsrp");
+    const modalHeadline = document.getElementById("modalHeadline");
+    const modalBody = document.getElementById("modalBody");
+    const modalOemLink = document.getElementById("modalOemLink");
+    const modalCarLink = document.getElementById("modalCarLink");
+
+    window.openArticleModal = async function(id) {
+        let item = cachedArticles[String(id)];
+        if (!item) {
+            try {
+                const resp = await fetch(`/api/news/${id}`);
+                item = await resp.json();
+                cachedArticles[String(id)] = item;
+            } catch(e) {
+                console.error("Could not fetch article:", e);
+                return;
+            }
+        }
+        if (!item || !modal) return;
+
+        modalImg.src = item.image || "https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=800&q=80";
+        modalCarTitle.textContent = `${item.year || 2026} ${item.make} ${item.model} ${item.trim || ''}`.trim();
+        modalMsrp.textContent = item.msrp ? `$${Number(item.msrp).toLocaleString()}` : '';
+        modalHeadline.textContent = item.headline || '';
+
+        const paragraphs = (item.article || '').split(/\n\n+/);
+        modalBody.innerHTML = paragraphs.map(p => `<p>${p.trim()}</p>`).join('');
+
+        if (item.oem_url) {
+            modalOemLink.href = item.oem_url;
+            modalOemLink.style.display = "inline-flex";
+        } else {
+            modalOemLink.style.display = "none";
+        }
+
+        modalCarLink.href = `/car/${item.id}`;
+
+        modal.hidden = false;
+        document.body.style.overflow = "hidden";
+    };
+
+    window.closeArticleModal = function() {
+        if (!modal) return;
+        modal.hidden = true;
+        document.body.style.overflow = "";
+    };
+
+    document.addEventListener("keydown", function(e) {
+        if (e.key === "Escape" && modal && !modal.hidden) {
+            window.closeArticleModal();
+        }
+    });
+})();
+</script>
 
 {% endblock %}

@@ -21,9 +21,6 @@
 
                     <!-- TOP OVERLAYS -->
                     <div class="mn-gallery-topbar">
-                        <span class="mn-gallery-tag" id="mnGalleryTag">
-                            {{ car.gallery[0].category if (car.gallery and car.gallery|length > 0) else 'Exterior' }}
-                        </span>
                         <div class="mn-gallery-actions">
                             <span class="mn-gallery-counter" id="mnGalleryCounter">
                                 1 / {{ car.gallery|length if (car.gallery and car.gallery|length > 0) else (car.images|length if (car.images and car.images|length > 0) else 1) }}
@@ -90,12 +87,10 @@
                                     class="mn-thumb-btn {% if loop.first %}active{% endif %}"
                                     data-index="{{ loop.index0 }}"
                                     data-url="{{ photo.url }}"
-                                    data-category="{{ photo.category }}"
                                     data-caption="{{ photo.caption }}"
                                     aria-label="View photo {{ loop.index }}: {{ photo.caption }}"
                                 >
                                     <img src="{{ photo.url }}" alt="{{ photo.caption }}" loading="lazy">
-                                    <span class="mn-thumb-label">{{ photo.category }}</span>
                                 </button>
                             {% endfor %}
                         {% else %}
@@ -147,31 +142,37 @@
                 <div class="mn-hero-specs-pills">
                     {% if car.horsepower %}
                         <span class="mn-spec-pill" title="Horsepower">
-                            <i class="mn-pill-icon">⚡</i> {{ car.horsepower|int }} hp
+                            <i class="mn-pill-icon">⚡</i>
+                            <span class="mn-pill-val">{{ car.horsepower|int }} hp</span>
                         </span>
                     {% endif %}
                     {% if car.drivetrain %}
                         <span class="mn-spec-pill" title="Drivetrain">
-                            <i class="mn-pill-icon">🔄</i> {{ car.drivetrain }}
+                            <i class="mn-pill-icon">🔄</i>
+                            <span class="mn-pill-val">{{ car.drivetrain }}</span>
                         </span>
                     {% endif %}
                     {% if car.transmission %}
                         <span class="mn-spec-pill" title="Transmission">
-                            <i class="mn-pill-icon">⚙️</i> {{ car.transmission }}
+                            <i class="mn-pill-icon">⚙️</i>
+                            <span class="mn-pill-val">{{ car.transmission }}</span>
                         </span>
                     {% endif %}
                     {% if car.evRange %}
                         <span class="mn-spec-pill" title="Electric Range">
-                            <i class="mn-pill-icon">🔋</i> {{ car.evRange }} mi range
+                            <i class="mn-pill-icon">🔋</i>
+                            <span class="mn-pill-val">{{ car.evRange }} mi range</span>
                         </span>
                     {% elif car.mpg %}
                         <span class="mn-spec-pill" title="Fuel Economy">
-                            <i class="mn-pill-icon">⛽</i> {{ car.mpg }} MPG
+                            <i class="mn-pill-icon">⛽</i>
+                            <span class="mn-pill-val">{{ car.mpg }} MPG</span>
                         </span>
                     {% endif %}
                     {% if car.seating %}
                         <span class="mn-spec-pill" title="Seating Capacity">
-                            <i class="mn-pill-icon">🪑</i> {{ car.seating }} Seats
+                            <i class="mn-pill-icon">🪑</i>
+                            <span class="mn-pill-val">{{ car.seating }} Seats</span>
                         </span>
                     {% endif %}
                 </div>
@@ -742,50 +743,108 @@
     {% endif %}
 
 
-    <!-- FINAL WORD -->
-    <section class="mn-final-word">
+    <!-- FINAL WORD & ROAD TEST REVIEW -->
+    <section class="mn-final-word" id="road-test-review">
 
         <div class="mn-section-inner">
 
             <span class="mn-label">
-                THE FINAL WORD
+                IN-DEPTH ROAD TEST EVALUATION
             </span>
 
             <h2>
-                Our Take
+                5-Point Expert Verdict
             </h2>
 
-            {% if car.finalWord %}
+            {% if car.roadTestReviewLines and car.roadTestReviewLines|length > 0 %}
+                <div class="mn-roadtest-review-card">
+                    <div class="mn-roadtest-header">
+                        {% if car.rating %}
+                            <div class="mn-roadtest-rating">
+                                <span class="mn-star">★</span>
+                                <span class="mn-score">{{ car.rating }}</span>
+                                <span class="mn-score-sub">C&D Tested Score</span>
+                            </div>
+                        {% endif %}
+                        <div class="mn-roadtest-headline">
+                            <h3>{{ car.year|default('2026') }} {{ car.make }} {{ car.model }} {% if car.trim %}{{ car.trim }}{% endif %}</h3>
+                            <p class="mn-roadtest-subtitle">Comprehensive dynamic road evaluation and engineering assessment</p>
+                        </div>
+                    </div>
 
-                <p>
+                    <ol class="mn-roadtest-list">
+                        {% for line in car.roadTestReviewLines %}
+                            <li class="mn-roadtest-item">
+                                <span class="mn-item-num">{{ loop.index }}</span>
+                                <span class="mn-item-content">{{ line.lstrip('0123456789. ') }}</span>
+                            </li>
+                        {% endfor %}
+                    </ol>
+
+                    {% if car.reviewUrl %}
+                        <div class="mn-roadtest-actions">
+                            <a href="{{ car.reviewUrl }}" target="_blank" rel="noopener noreferrer" class="mn-secondary-btn">
+                                View Full Car and Driver Road Test Report ↗
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            {% elif car.finalWord %}
+                <p class="mn-verdict-text">
                     {{ car.finalWord }}
                 </p>
-
             {% elif car.sourceData and car.sourceData.get('Review Summary / Verdict') %}
-
-                <p>
+                <p class="mn-verdict-text">
                     {{ car.sourceData.get('Review Summary / Verdict') }}
                 </p>
-
             {% else %}
-
-                <p>
-                    Our detailed assessment for this vehicle will be
-                    added as the MotorNation database is expanded.
+                <p class="mn-verdict-text">
+                    Our detailed assessment for this vehicle will be added as the MotorNation database is expanded.
                 </p>
-
             {% endif %}
-
-            <a
-                href="{{ url_for('cars') }}"
-                class="mn-primary-btn"
-            >
-                Explore More Cars
-            </a>
 
         </div>
 
     </section>
+
+    <!-- AUTOMOTIVE NEWS & OEM PRESS COVERAGE -->
+    {% if car.newsHeadline or car.newsArticle %}
+    <section class="mn-car-news-section" id="news-coverage">
+        <div class="mn-section-inner">
+            <span class="mn-label">PRESS & AUTOMOTIVE JOURNALISM</span>
+            <h2 class="mn-news-detail-headline">{{ car.newsHeadline or (car.make ~ ' ' ~ car.model ~ ' Newsroom Dispatch') }}</h2>
+            
+            <div class="mn-news-article-card">
+                <div class="mn-news-meta-row">
+                    <span class="mn-news-badge">OFFICIAL COVERAGE</span>
+                    <span class="mn-news-brand-tag">{{ car.make }} Media Room</span>
+                    {% if car.msrp %}
+                        <span class="mn-news-msrp">Base MSRP: ${{ "{:,.0f}".format(car.msrp|float) }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="mn-news-full-body">
+                    {% for paragraph in car.newsArticle.split('\n\n') %}
+                        {% if paragraph.strip() %}
+                            <p>{{ paragraph.strip() }}</p>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <div class="mn-news-links-bar">
+                    {% if car.oemNewsroomUrl %}
+                        <a href="{{ car.oemNewsroomUrl }}" target="_blank" rel="noopener noreferrer" class="mn-primary-btn">
+                            Official {{ car.make }} Press Release ↗
+                        </a>
+                    {% endif %}
+                    <a href="{{ url_for('news') }}" class="mn-secondary-btn">
+                        Browse All Industry News →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endif %}
 
     <!-- FULLSCREEN LIGHTBOX MODAL -->
     <div class="mn-lightbox" id="mnLightbox" hidden aria-modal="true" role="dialog">
@@ -841,7 +900,6 @@
 
     let currentIndex = 0;
     const mainPhoto = document.getElementById("mnMainPhoto");
-    const tagEl = document.getElementById("mnGalleryTag");
     const counterEl = document.getElementById("mnGalleryCounter");
     const captionEl = document.getElementById("mnGalleryCaption");
     const thumbBtns = document.querySelectorAll(".mn-thumb-btn");
@@ -873,7 +931,6 @@
             };
         }
 
-        if (tagEl) tagEl.textContent = item.category || "Photo";
         if (counterEl) counterEl.textContent = `${currentIndex + 1} / ${galleryItems.length}`;
         if (captionEl) captionEl.textContent = item.caption || "";
 

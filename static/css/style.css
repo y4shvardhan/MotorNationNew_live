@@ -2904,25 +2904,13 @@ button, input, select, textarea {
     right: 16px;
     z-index: 10;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     pointer-events: none;
 }
 
 .mn-gallery-tag {
-    background: rgba(10, 14, 22, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    color: var(--cyan, #38d5df);
-    font-size: 0.76rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    padding: 6px 14px;
-    border-radius: 999px;
-    border: 1px solid rgba(56, 213, 223, 0.3);
-    pointer-events: auto;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    display: none !important;
 }
 
 .mn-gallery-actions {
@@ -3033,18 +3021,25 @@ button, input, select, textarea {
 
 .mn-gallery-caption {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 14px 18px;
-    background: linear-gradient(180deg, transparent 0%, rgba(9, 12, 18, 0.94) 100%);
-    color: #cbd5e1;
-    font-size: 0.85rem;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 90%;
+    padding: 8px 20px;
+    background: rgba(10, 14, 22, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 9999px;
+    color: #f8fafc;
+    font-size: 0.88rem;
     font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     pointer-events: none;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
+    text-align: center;
 }
 
 .mn-gallery-thumbs {
@@ -3101,21 +3096,7 @@ button, input, select, textarea {
 }
 
 .mn-thumb-label {
-    position: absolute;
-    bottom: 2px;
-    left: 2px;
-    right: 2px;
-    background: rgba(0, 0, 0, 0.78);
-    font-size: 0.62rem;
-    font-weight: 700;
-    color: #ffffff;
-    text-transform: uppercase;
-    border-radius: 4px;
-    padding: 1px 3px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    text-align: center;
+    display: none !important;
 }
 
 /* Lightbox Modal */
@@ -3234,34 +3215,50 @@ button, input, select, textarea {
     transform: translateY(-50%) scale(1.1);
 }
 
-/* Hero Info Upgrades */
+/* Hero Info Upgrades - Redesigned Bold High-Contrast Quick Specs */
 .mn-hero-specs-pills {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin: 14px 0 18px 0;
+    align-items: center;
+    gap: 9px;
+    margin: 16px 0 22px 0;
 }
 
 .mn-spec-pill {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    font-size: 0.84rem;
-    font-weight: 600;
-    color: #e2e8f0;
-    transition: border-color 0.15s ease;
+    gap: 7px;
+    padding: 7px 14px;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 9999px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #0f172a;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    letter-spacing: -0.01em;
 }
 
 .mn-spec-pill:hover {
-    border-color: rgba(56, 213, 223, 0.4);
+    background: #e2e8f0;
+    border-color: #94a3b8;
+    color: #020617;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
 }
 
 .mn-pill-icon {
     font-style: normal;
+    font-size: 1rem;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+}
+
+.mn-pill-val {
+    font-weight: 700;
+    color: #0f172a;
 }
 
 .mn-details-fav-btn {
@@ -3305,5 +3302,788 @@ button, input, select, textarea {
     }
     .mn-lightbox-nav.next {
         right: 8px;
+    }
+}
+
+/* ============================================================
+   ROAD TEST REVIEW (5-POINT EVALUATION)
+   ============================================================ */
+.mn-roadtest-review-card {
+    background: #0f172a;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-xl, 16px);
+    padding: 36px 40px;
+    margin-top: 24px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+    color: #f8fafc;
+}
+
+.mn-roadtest-header {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 28px;
+}
+
+.mn-roadtest-rating {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(225, 29, 46, 0.25), rgba(225, 29, 46, 0.08));
+    border: 1px solid rgba(225, 29, 46, 0.4);
+    border-radius: 14px;
+    padding: 12px 20px;
+    min-width: 110px;
+    text-align: center;
+}
+
+.mn-roadtest-rating .mn-star {
+    color: #f59e0b;
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+.mn-roadtest-rating .mn-score {
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.1;
+    margin-top: 4px;
+}
+
+.mn-roadtest-rating .mn-score-sub {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 4px;
+}
+
+.mn-roadtest-headline h3 {
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 6px;
+    line-height: 1.25;
+}
+
+.mn-roadtest-subtitle {
+    color: #94a3b8;
+    font-size: 0.92rem;
+    margin: 0;
+}
+
+.mn-roadtest-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.mn-roadtest-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 12px;
+    padding: 16px 20px;
+    transition: all 0.2s ease;
+}
+
+.mn-roadtest-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateX(4px);
+}
+
+.mn-item-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--primary, #e11d2e);
+    color: #ffffff;
+    font-size: 0.85rem;
+    font-weight: 800;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.mn-item-content {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #cbd5e1;
+}
+
+.mn-roadtest-actions {
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ============================================================
+   AUTOMOTIVE NEWS COVERAGE ON CAR DETAILS
+   ============================================================ */
+.mn-car-news-section {
+    padding: 40px 0;
+    margin-bottom: 40px;
+}
+
+.mn-news-detail-headline {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.3;
+    margin: 10px 0 24px 0;
+}
+
+.mn-news-article-card {
+    background: #ffffff;
+    border: 1px solid var(--border, #e2e8f0);
+    border-radius: var(--radius-xl, 16px);
+    padding: 38px 42px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+}
+
+.mn-news-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.mn-news-badge {
+    background: var(--primary, #e11d2e);
+    color: #ffffff;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    padding: 5px 12px;
+    border-radius: 999px;
+    text-transform: uppercase;
+}
+
+.mn-news-brand-tag {
+    background: #f1f5f9;
+    color: #334155;
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 999px;
+}
+
+.mn-news-msrp {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #059669;
+    margin-left: auto;
+}
+
+.mn-news-full-body {
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: #334155;
+}
+
+.mn-news-full-body p {
+    margin-bottom: 18px;
+}
+
+.mn-news-links-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid #f1f5f9;
+}
+
+/* ============================================================
+   NEWS PORTAL PAGE STYLES (/news)
+   ============================================================ */
+.news-search-filter-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin: 32px 0;
+}
+
+.news-search-input-wrap {
+    position: relative;
+    max-width: 600px;
+    width: 100%;
+}
+
+.news-search-input {
+    width: 100%;
+    padding: 14px 20px 14px 48px;
+    border-radius: 14px;
+    border: 1px solid #cbd5e1;
+    font-size: 1rem;
+    background: #ffffff;
+    color: #0f172a;
+    transition: all 0.2s ease;
+}
+
+.news-search-input:focus {
+    outline: none;
+    border-color: var(--primary, #e11d2e);
+    box-shadow: 0 0 0 4px rgba(225, 29, 46, 0.12);
+}
+
+.news-search-icon {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 1.1rem;
+    pointer-events: none;
+}
+
+.news-brand-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    max-height: 120px;
+    overflow-y: auto;
+    padding-bottom: 6px;
+}
+
+.news-chip-btn {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 9999px;
+    padding: 6px 14px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+
+.news-chip-btn:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+.news-chip-btn.active {
+    background: var(--primary, #e11d2e);
+    border-color: var(--primary, #e11d2e);
+    color: #ffffff;
+}
+
+/* Featured Lead Story */
+.news-featured-hero {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 36px;
+    background: #0f172a;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 48px;
+    color: #f8fafc;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+}
+
+.news-featured-img-wrap {
+    position: relative;
+    min-height: 380px;
+    overflow: hidden;
+}
+
+.news-featured-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.news-featured-hero:hover .news-featured-img-wrap img {
+    transform: scale(1.03);
+}
+
+.news-featured-content {
+    padding: 42px 36px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.news-featured-eyebrow {
+    color: #ef4444;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+.news-featured-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.3;
+    margin-bottom: 16px;
+}
+
+.news-featured-excerpt {
+    color: #94a3b8;
+    font-size: 0.98rem;
+    line-height: 1.65;
+    margin-bottom: 24px;
+}
+
+.news-featured-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+/* News Article Card */
+.mn-news-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+    gap: 28px;
+    margin-bottom: 60px;
+}
+
+.mn-news-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.mn-news-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.1);
+}
+
+.mn-news-card-thumb {
+    position: relative;
+    height: 200px;
+    background: #0f172a;
+    overflow: hidden;
+}
+
+.mn-news-card-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+}
+
+.mn-news-card:hover .mn-news-card-thumb img {
+    transform: scale(1.05);
+}
+
+.mn-news-card-tag {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(8px);
+    color: #ffffff;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    padding: 4px 10px;
+    border-radius: 999px;
+    text-transform: uppercase;
+}
+
+.mn-news-card-body {
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.mn-news-card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    color: #64748b;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.mn-news-card-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    line-height: 1.4;
+    color: #0f172a;
+    margin-bottom: 12px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.mn-news-card-excerpt {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #475569;
+    margin-bottom: 18px;
+    flex-grow: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.mn-news-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 14px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.mn-news-read-btn {
+    background: none;
+    border: none;
+    color: var(--primary, #e11d2e);
+    font-weight: 700;
+    font-size: 0.88rem;
+    cursor: pointer;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: color 0.15s ease;
+}
+
+.mn-news-read-btn:hover {
+    color: #b91c1c;
+    text-decoration: underline;
+}
+
+/* Article Reader Modal */
+.mn-article-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.mn-article-modal[hidden] {
+    display: none !important;
+}
+
+.mn-article-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(12px);
+}
+
+.mn-article-dialog {
+    position: relative;
+    z-index: 10;
+    background: #ffffff;
+    max-width: 820px;
+    width: 100%;
+    max-height: 90vh;
+    border-radius: 20px;
+    overflow-y: auto;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+}
+
+.mn-article-dialog-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(15, 23, 42, 0.7);
+    color: #ffffff;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    cursor: pointer;
+    z-index: 20;
+    transition: all 0.2s ease;
+}
+
+.mn-article-dialog-close:hover {
+    background: var(--primary, #e11d2e);
+    transform: scale(1.1);
+}
+
+.mn-article-dialog-hero {
+    position: relative;
+    height: 320px;
+    background: #0f172a;
+}
+
+.mn-article-dialog-hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.mn-article-dialog-body {
+    padding: 36px 40px;
+}
+
+.mn-article-dialog-headline {
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.3;
+    margin-bottom: 16px;
+}
+
+.mn-article-dialog-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.mn-article-dialog-text {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: #334155;
+    margin-bottom: 28px;
+}
+
+.mn-article-dialog-text p {
+    margin-bottom: 16px;
+}
+
+.mn-article-dialog-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 20px;
+    border-top: 1px solid #f1f5f9;
+}
+
+/* ============================================================
+   REVIEWS DIRECTORY PAGE STYLES (/reviews)
+   ============================================================ */
+.mn-reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 32px;
+    margin: 36px 0 60px 0;
+}
+
+.mn-review-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.mn-review-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.1);
+}
+
+.mn-review-card-media {
+    position: relative;
+    height: 220px;
+    background: #0f172a;
+    overflow: hidden;
+}
+
+.mn-review-card-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+}
+
+.mn-review-card:hover .mn-review-card-media img {
+    transform: scale(1.05);
+}
+
+.mn-review-rating-badge {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: rgba(15, 23, 42, 0.9);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(245, 158, 11, 0.4);
+    color: #ffffff;
+    padding: 6px 12px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.mn-review-rating-badge span.star {
+    color: #f59e0b;
+}
+
+.mn-review-card-content {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.mn-review-card-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 4px;
+    line-height: 1.3;
+}
+
+.mn-review-card-msrp {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #059669;
+    margin-bottom: 16px;
+}
+
+.mn-review-5point-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 18px;
+}
+
+.mn-review-5point-title {
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #64748b;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.mn-review-points-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.mn-review-point-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 0.86rem;
+    line-height: 1.5;
+    color: #334155;
+}
+
+.mn-review-point-bullet {
+    color: var(--primary, #e11d2e);
+    font-weight: 800;
+    flex-shrink: 0;
+    font-size: 0.9rem;
+}
+
+.mn-review-pros-cons-compact {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.mn-compact-pros, .mn-compact-cons {
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 0.8rem;
+}
+
+.mn-compact-pros {
+    border-left: 3px solid #10b981;
+}
+
+.mn-compact-cons {
+    border-left: 3px solid #f43f5e;
+}
+
+.mn-compact-label {
+    font-weight: 800;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+}
+
+.mn-compact-pros .mn-compact-label {
+    color: #059669;
+}
+
+.mn-compact-cons .mn-compact-label {
+    color: #e11d48;
+}
+
+.mn-compact-item {
+    color: #475569;
+    line-height: 1.4;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mn-review-card-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid #f1f5f9;
+}
+
+@media (max-width: 900px) {
+    .news-featured-hero {
+        grid-template-columns: 1fr;
+    }
+    .mn-roadtest-header {
+        flex-direction: column;
+        align-items: flex-start;
     }
 }

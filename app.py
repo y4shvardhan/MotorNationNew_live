@@ -42,6 +42,7 @@ DATABASE_FILE = DATABASE_DIR / "motornation.db"
 IMAGE_DIR = BASE_DIR / "static" / "images"
 
 GALLERIES_FILE = BASE_DIR / "data" / "vehicle_galleries.json"
+NEWS_REVIEWS_FILE = BASE_DIR / "data" / "news_and_reviews.json"
 
 DATABASE_DIR.mkdir(
     parents=True,
@@ -54,6 +55,7 @@ IMAGE_DIR.mkdir(
 )
 
 _cached_galleries = None
+_cached_news_reviews = None
 
 
 def get_vehicle_gallery(vehicle_id, make, model):
@@ -77,6 +79,24 @@ def get_vehicle_gallery(vehicle_id, make, model):
 
     gallery = _cached_galleries.get(vid_key) or _cached_galleries.get(name_key) or []
     return gallery
+
+
+def get_news_and_reviews():
+    """
+    Return the full news and road test reviews dataset.
+    """
+    global _cached_news_reviews
+    if _cached_news_reviews is None:
+        if NEWS_REVIEWS_FILE.exists():
+            try:
+                with open(NEWS_REVIEWS_FILE, "r", encoding="utf-8") as f:
+                    _cached_news_reviews = json.load(f)
+            except Exception as e:
+                app.logger.warning(f"Could not load news and reviews: {e}")
+                _cached_news_reviews = {"items": [], "by_id": {}, "by_key": {}}
+        else:
+            _cached_news_reviews = {"items": [], "by_id": {}, "by_key": {}}
+    return _cached_news_reviews
 
 
 # ============================================================
@@ -913,6 +933,46 @@ def row_to_car(row):
     )
 
     # --------------------------------------------------------
+    # NEWSROOM & ROAD TEST REVIEW DATA
+    # --------------------------------------------------------
+
+    nr_data = get_news_and_reviews()
+    nr_item = (
+        nr_data.get("by_id", {}).get(str(vehicle_id))
+        or nr_data.get("by_key", {}).get(f"{make}_{model}".lower())
+        or {}
+    )
+
+    news_headline = (
+        clean_text(first_value(raw, "news_headline", "News Article Headline"))
+        or nr_item.get("headline", "")
+    )
+    news_article = (
+        clean_text(first_value(raw, "news_article", "Full News Article (Journalistic Coverage)"))
+        or nr_item.get("article", "")
+    )
+    road_test_review = (
+        clean_text(first_value(raw, "road_test_review", "In-Depth Road Test Review (5-6 Lines)"))
+        or nr_item.get("review", "")
+    )
+    oem_newsroom_url = (
+        clean_text(first_value(raw, "oem_newsroom_url", "Official OEM Newsroom URL"))
+        or nr_item.get("oem_url", "")
+    )
+    review_lines = nr_item.get("review_lines", [])
+    if not review_lines and road_test_review:
+        review_lines = [l.strip() for l in road_test_review.split("\n") if l.strip()]
+
+    if not rating and nr_item.get("rating"):
+        rating = nr_item.get("rating")
+
+    if not pros and nr_item.get("pros"):
+        pros = nr_item.get("pros")
+
+    if not cons and nr_item.get("cons"):
+        cons = nr_item.get("cons")
+
+    # --------------------------------------------------------
     # IMAGE & GALLERY
     # --------------------------------------------------------
 
@@ -1030,6 +1090,16 @@ def row_to_car(row):
         "reviewUrl": review_url,
 
         "cdSource": cd_source,
+
+        "newsHeadline": news_headline,
+
+        "newsArticle": news_article,
+
+        "roadTestReview": road_test_review,
+
+        "roadTestReviewLines": review_lines,
+
+        "oemNewsroomUrl": oem_newsroom_url,
 
         "image": image,
 
@@ -1205,9 +1275,64 @@ def compare():
 )
 def reviews():
 
+    nr_data = get_news_and_reviews()
+    items = nr_data.get("items", [])
+    brands = sorted(list(set(item["make"] for item in items if item.get("make"))))
+    featured = items[0] if items else None
+
     return render_template(
-        "reviews.html"
+        "reviews.html",
+        reviews=items[:24],
+        featured=featured,
+        brands=brands,
+        total_count=len(items)
     )
+
+
+@app.route(
+    "/api/reviews"
+)
+def api_reviews():
+
+    query = request.args.get("q", "").strip().lower()
+    make = request.args.get("make", "").strip().lower()
+    min_rating = request.args.get("rating", "").strip()
+    limit = request.args.get("limit", "24").strip()
+    offset = int(request.args.get("offset", "0"))
+
+    nr_data = get_news_and_reviews()
+    items = nr_data.get("items", [])
+
+    results = []
+    for item in items:
+        if make and item.get("make", "").lower() != make:
+            continue
+        if min_rating:
+            try:
+                r_val = float(str(item.get("rating", "0")).split("/")[0])
+                if r_val < float(min_rating):
+                    continue
+            except (ValueError, IndexError):
+                pass
+        if query:
+            match_txt = f"{item.get('make', '')} {item.get('model', '')} {item.get('trim', '')} {item.get('review', '')} {' '.join(item.get('pros', []))} {' '.join(item.get('cons', []))}".lower()
+            if query not in match_txt:
+                continue
+        results.append(item)
+
+    total_matched = len(results)
+    if limit and limit.isdigit() and int(limit) > 0:
+        paged_results = results[offset : offset + int(limit)]
+    else:
+        paged_results = results[offset:]
+
+    return jsonify({
+        "count": len(paged_results),
+        "total": total_matched,
+        "offset": offset,
+        "has_more": (offset + len(paged_results)) < total_matched,
+        "reviews": paged_results
+    })
 
 
 # ============================================================
@@ -1219,9 +1344,71 @@ def reviews():
 )
 def news():
 
+    nr_data = get_news_and_reviews()
+    items = nr_data.get("items", [])
+    brands = sorted(list(set(item["make"] for item in items if item.get("make"))))
+    featured = items[0] if items else None
+
     return render_template(
-        "news.html"
+        "news.html",
+        news_items=items[:24],
+        featured=featured,
+        brands=brands,
+        total_count=len(items)
     )
+
+
+@app.route(
+    "/api/news"
+)
+def api_news():
+
+    query = request.args.get("q", "").strip().lower()
+    make = request.args.get("make", "").strip().lower()
+    body_type = request.args.get("bodyType", "").strip().lower()
+    limit = request.args.get("limit", "24").strip()
+    offset = int(request.args.get("offset", "0"))
+
+    nr_data = get_news_and_reviews()
+    items = nr_data.get("items", [])
+
+    results = []
+    for item in items:
+        if make and item.get("make", "").lower() != make:
+            continue
+        if body_type and item.get("body_type", "").lower() != body_type:
+            continue
+        if query:
+            match_txt = f"{item.get('make', '')} {item.get('model', '')} {item.get('headline', '')} {item.get('article', '')}".lower()
+            if query not in match_txt:
+                continue
+        results.append(item)
+
+    total_matched = len(results)
+    if limit and limit.isdigit() and int(limit) > 0:
+        paged_results = results[offset : offset + int(limit)]
+    else:
+        paged_results = results[offset:]
+
+    return jsonify({
+        "count": len(paged_results),
+        "total": total_matched,
+        "offset": offset,
+        "has_more": (offset + len(paged_results)) < total_matched,
+        "news": paged_results
+    })
+
+
+@app.route(
+    "/api/news/<int:car_id>"
+)
+def api_news_item(car_id):
+
+    nr_data = get_news_and_reviews()
+    item = nr_data.get("by_id", {}).get(str(car_id))
+    if not item:
+        return jsonify({"error": "Article not found"}), 404
+    return jsonify(item)
 
 
 # ============================================================

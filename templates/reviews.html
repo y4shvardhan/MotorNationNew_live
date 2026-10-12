@@ -1,458 +1,377 @@
 {% extends "base.html" %}
 
 {% block title %}
-MotorNation — Reviews
+MotorNation — Expert Road Test Reviews & In-Depth Evaluations
 {% endblock %}
 
 {% block content %}
 
 <section class="reviews-page">
 
-    <div class="reviews-hero">
+    <div class="container" style="max-width: 1320px; margin: 0 auto; padding: 40px 24px;">
 
-        <div class="reviews-hero-content">
-
-            <span class="reviews-eyebrow">
-                MOTOR NATION REVIEWS
+        <!-- PAGE HEADER -->
+        <div class="page-header" style="text-align: center; max-width: 860px; margin: 0 auto 36px auto;">
+            <span class="eyebrow" style="color: var(--primary, #e11d2e); font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.82rem;">
+                MOTOR NATION ROAD TEST REVIEWS
             </span>
-
-            <h1>
-                Car Reviews & Insights
+            <h1 style="font-size: 2.75rem; font-weight: 900; margin: 12px 0; color: #0f172a; line-height: 1.15;">
+                In-Depth Vehicle Reviews & Test Scores
             </h1>
-
-            <p>
-                Explore expert vehicle information, specifications,
-                strengths, weaknesses and important things to know
-                before choosing your next car.
+            <p style="font-size: 1.12rem; color: #64748b; line-height: 1.6;">
+                Structured 5-point driving dynamics assessments, Car and Driver instrumented test ratings, key strengths, and real-world compromises across {{ total_count or '455' }} 2026–2027 vehicles.
             </p>
+        </div>
 
+        <!-- SEARCH & FILTER BAR -->
+        <div class="news-search-filter-bar">
+            <div style="display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between;">
+                <div class="news-search-input-wrap" style="flex: 1; min-width: 300px;">
+                    <span class="news-search-icon">🔍</span>
+                    <input
+                        type="text"
+                        id="reviewSearchInput"
+                        class="news-search-input"
+                        placeholder="Search reviews by model, chassis dynamics, or features..."
+                        aria-label="Search reviews"
+                    >
+                </div>
+
+                <!-- RATING FILTER CHIPS -->
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button type="button" class="news-chip-btn rating-btn active" data-rating="0">All Ratings</button>
+                    <button type="button" class="news-chip-btn rating-btn" data-rating="9.0">★ 9.0+ Top Tier</button>
+                    <button type="button" class="news-chip-btn rating-btn" data-rating="8.0">★ 8.0+ Recommended</button>
+                </div>
+            </div>
+
+            <!-- BRAND CHIPS -->
+            <div class="news-brand-chips" id="reviewBrandChips">
+                <button type="button" class="news-chip-btn active" data-brand="">All Brands ({{ total_count or '455' }})</button>
+                {% for brand in brands %}
+                    <button type="button" class="news-chip-btn" data-brand="{{ brand }}">{{ brand }}</button>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- COUNT STATUS -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin: 20px 0;">
+            <div id="reviewsCountDisplay" style="font-weight: 700; color: #475569; font-size: 0.95rem;">
+                Showing {{ reviews|length }} of {{ total_count or '455' }} reviews
+            </div>
+        </div>
+
+        <!-- REVIEWS GRID -->
+        <div class="mn-reviews-grid" id="reviewsGrid">
+            {% for item in reviews %}
+            <article
+                class="mn-review-card"
+                data-id="{{ item.id }}"
+                data-brand="{{ item.make|lower }}"
+            >
+                <div class="mn-review-card-media">
+                    <img
+                        src="{{ item.image }}"
+                        alt="{{ item.year }} {{ item.make }} {{ item.model }}"
+                        loading="lazy"
+                        onerror="this.src='https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=800&q=80'"
+                    >
+                    {% if item.rating %}
+                        <div class="mn-review-rating-badge">
+                            <span class="star">★</span>
+                            <span>{{ item.rating }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mn-review-card-content">
+                    <h3 class="mn-review-card-title">
+                        {{ item.year }} {{ item.make }} {{ item.model }}
+                        {% if item.trim %}
+                            <span style="font-size: 0.88rem; font-weight: 600; color: #64748b; display: block;">{{ item.trim }}</span>
+                        {% endif %}
+                    </h3>
+
+                    <div class="mn-review-card-msrp">
+                        {% if item.msrp %}
+                            Starting MSRP: ${{ "{:,.0f}".format(item.msrp|float) }}
+                        {% else %}
+                            Starting MSRP: Consult Dealer
+                        {% endif %}
+                    </div>
+
+                    <!-- 5-POINT ROAD TEST VERDICT -->
+                    <div class="mn-review-5point-box">
+                        <div class="mn-review-5point-title">
+                            <span>⚡</span> 5-Point In-Depth Road Test
+                        </div>
+                        <ul class="mn-review-points-list">
+                            {% for line in item.review_lines %}
+                                <li class="mn-review-point-row">
+                                    <span class="mn-review-point-bullet">{{ loop.index }}.</span>
+                                    <span>{{ line.lstrip('0123456789. ') }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <!-- PROS & CONS COMPACT SUMMARY -->
+                    {% if item.pros or item.cons %}
+                    <div class="mn-review-pros-cons-compact">
+                        {% if item.pros %}
+                        <div class="mn-compact-pros">
+                            <div class="mn-compact-label">Key Strengths</div>
+                            {% for pro in item.pros[:2] %}
+                                <div class="mn-compact-item">+ {{ pro }}</div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        {% if item.cons %}
+                        <div class="mn-compact-cons">
+                            <div class="mn-compact-label">Compromises</div>
+                            {% for con in item.cons[:2] %}
+                                <div class="mn-compact-item">- {{ con }}</div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    <!-- CARD ACTIONS -->
+                    <div class="mn-review-card-actions">
+                        <a href="/car/{{ item.id }}" class="primary-btn" style="flex: 1; text-align: center; text-decoration: none; padding: 10px 14px; font-size: 0.88rem;">
+                            Vehicle Details →
+                        </a>
+
+                        {% if item.cd_url %}
+                            <a href="{{ item.cd_url }}" target="_blank" rel="noopener noreferrer" class="secondary-btn" title="Car and Driver Full Road Test" style="padding: 10px 14px; font-size: 0.88rem;">
+                                C&D ↗
+                            </a>
+                        {% endif %}
+
+                        <button
+                            type="button"
+                            class="compare-button"
+                            data-compare-id="{{ item.id }}"
+                            onclick="window.MotorNationCompare && window.MotorNationCompare.toggle('{{ item.id }}')"
+                            style="padding: 10px 14px; font-size: 0.88rem;"
+                        >
+                            + Compare
+                        </button>
+                    </div>
+
+                </div>
+
+            </article>
+            {% endfor %}
+        </div>
+
+        <!-- LOAD MORE BUTTON -->
+        <div id="reviewLoadMoreWrap" style="text-align: center; margin: 40px 0;">
+            <button
+                type="button"
+                id="reviewLoadMoreBtn"
+                class="secondary-btn"
+                style="padding: 14px 32px; font-weight: 700; cursor: pointer; border-radius: 12px;"
+            >
+                Load More Reviews (24 More) ↓
+            </button>
         </div>
 
     </div>
 
-
-    <section class="reviews-section">
-
-        <div class="section-heading">
-
-            <div>
-
-                <span class="section-eyebrow">
-                    EXPLORE
-                </span>
-
-                <h2>
-                    Vehicle Reviews
-                </h2>
-
-                <p>
-                    Browse vehicles from the MotorNation database
-                    and explore their specifications, pros, cons
-                    and final verdict.
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <div
-            class="car-grid"
-            id="reviews-cars"
-        >
-
-            <div class="reviews-loading">
-                Loading reviews...
-            </div>
-
-        </div>
-
-    </section>
-
 </section>
 
-
-<style>
-
-.reviews-page {
-    width: 100%;
-}
-
-.reviews-hero {
-    min-height: 360px;
-    display: flex;
-    align-items: center;
-    padding: 70px 6%;
-    background:
-        linear-gradient(
-            135deg,
-            #0b0d10,
-            #181d23
-        );
-}
-
-.reviews-hero-content {
-    max-width: 850px;
-}
-
-.reviews-eyebrow,
-.section-eyebrow {
-    display: inline-block;
-    margin-bottom: 12px;
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: #e11d2e;
-}
-
-.reviews-hero h1 {
-    margin: 0 0 18px;
-    font-size: clamp(
-        40px,
-        6vw,
-        72px
-    );
-    line-height: 1.05;
-    color: #fff;
-}
-
-.reviews-hero p {
-    max-width: 700px;
-    margin: 0;
-    font-size: 18px;
-    line-height: 1.7;
-    color: #cbd5e1;
-}
-
-.reviews-section {
-    width: min(
-        1200px,
-        calc(100% - 40px)
-    );
-    margin: 0 auto;
-    padding: 70px 0;
-}
-
-.section-heading {
-    margin-bottom: 35px;
-}
-
-.section-heading h2 {
-    margin: 0 0 10px;
-    font-size: 38px;
-    color: #111827;
-}
-
-.section-heading p {
-    max-width: 700px;
-    margin: 0;
-    color: #6b7280;
-    line-height: 1.7;
-}
-
-#reviews-cars {
-    display: grid;
-    grid-template-columns:
-        repeat(
-            3,
-            minmax(0, 1fr)
-        );
-    gap: 24px;
-}
-
-.review-car-card {
-    overflow: hidden;
-    border: 1px solid #e5e7eb;
-    border-radius: 16px;
-    background: #fff;
-    box-shadow:
-        0 8px 25px
-        rgba(
-            0,
-            0,
-            0,
-            0.07
-        );
-}
-
-.review-car-image {
-    width: 100%;
-    height: 220px;
-    object-fit: cover;
-    display: block;
-    background: #f3f4f6;
-}
-
-.review-car-content {
-    padding: 22px;
-}
-
-.review-car-year {
-    font-size: 13px;
-    font-weight: 700;
-    color: #6b7280;
-}
-
-.review-car-title {
-    margin: 5px 0 10px;
-    font-size: 22px;
-    font-weight: 800;
-    color: #111827;
-}
-
-.review-car-price {
-    margin-bottom: 16px;
-    font-size: 19px;
-    font-weight: 800;
-    color: #e11d2e;
-}
-
-.review-car-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    min-height: 44px;
-    border-radius: 8px;
-    background: #111827;
-    color: #fff;
-    text-decoration: none;
-    font-weight: 700;
-    transition: 0.2s ease;
-}
-
-.review-car-button:hover {
-    background: #e11d2e;
-}
-
-.reviews-loading {
-    grid-column: 1 / -1;
-    padding: 50px;
-    text-align: center;
-    color: #6b7280;
-}
-
-@media (
-    max-width: 900px
-) {
-
-    #reviews-cars {
-        grid-template-columns:
-            repeat(
-                2,
-                minmax(0, 1fr)
-            );
-    }
-
-}
-
-@media (
-    max-width: 600px
-) {
-
-    .reviews-hero {
-        min-height: 300px;
-        padding: 50px 25px;
-    }
-
-    .reviews-section {
-        width: min(
-            100% - 30px,
-            1200px
-        );
-        padding: 50px 0;
-    }
-
-    #reviews-cars {
-        grid-template-columns:
-            1fr;
-    }
-
-}
-
-</style>
-
-
+<!-- CLIENT JAVASCRIPT FOR FAST PAGINATION & DYNAMIC SEARCH -->
 <script>
+(function() {
+    const searchInput = document.getElementById("reviewSearchInput");
+    const brandChips = document.getElementById("reviewBrandChips");
+    const ratingBtns = document.querySelectorAll(".rating-btn");
+    const reviewsGrid = document.getElementById("reviewsGrid");
+    const countDisplay = document.getElementById("reviewsCountDisplay");
+    const loadMoreBtn = document.getElementById("reviewLoadMoreBtn");
+    const loadMoreWrap = document.getElementById("reviewLoadMoreWrap");
 
-document.addEventListener(
-    "DOMContentLoaded",
-    async function () {
+    let currentOffset = {{ reviews|length }};
+    let currentBrand = "";
+    let minRating = "0";
+    let currentQuery = "";
+    let searchDebounceTimer = null;
 
-        const container =
-            document.getElementById(
-                "reviews-cars"
-            );
+    function renderReviewCardHTML(item) {
+        const formattedMsrp = item.msrp ? `$${Number(item.msrp).toLocaleString()}` : 'Consult Dealer';
+        const ratingBadge = item.rating ? `
+            <div class="mn-review-rating-badge">
+                <span class="star">★</span>
+                <span>${item.rating}</span>
+            </div>
+        ` : '';
 
-        if (!container) {
-            return;
+        const pointsHTML = (item.review_lines || []).map((line, idx) => `
+            <li class="mn-review-point-row">
+                <span class="mn-review-point-bullet">${idx + 1}.</span>
+                <span>${line.replace(/^[0-9]+\.\s*/, '')}</span>
+            </li>
+        `).join('');
+
+        const prosHTML = (item.pros && item.pros.length) ? `
+            <div class="mn-compact-pros">
+                <div class="mn-compact-label">Key Strengths</div>
+                ${item.pros.slice(0, 2).map(p => `<div class="mn-compact-item">+ ${p}</div>`).join('')}
+            </div>
+        ` : '';
+
+        const consHTML = (item.cons && item.cons.length) ? `
+            <div class="mn-compact-cons">
+                <div class="mn-compact-label">Compromises</div>
+                ${item.cons.slice(0, 2).map(c => `<div class="mn-compact-item">- ${c}</div>`).join('')}
+            </div>
+        ` : '';
+
+        const prosConsRow = (prosHTML || consHTML) ? `
+            <div class="mn-review-pros-cons-compact">
+                ${prosHTML}
+                ${consHTML}
+            </div>
+        ` : '';
+
+        const cdBtn = item.cd_url ? `
+            <a href="${item.cd_url}" target="_blank" rel="noopener noreferrer" class="secondary-btn" title="Car and Driver Full Road Test" style="padding: 10px 14px; font-size: 0.88rem;">
+                C&D ↗
+            </a>
+        ` : '';
+
+        return `
+            <article class="mn-review-card" data-id="${item.id}" data-brand="${(item.make || '').toLowerCase()}">
+                <div class="mn-review-card-media">
+                    <img
+                        src="${item.image || 'https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=800&q=80'}"
+                        alt="${item.year || 2026} ${item.make || ''} ${item.model || ''}"
+                        loading="lazy"
+                        onerror="this.src='https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=800&q=80'"
+                    >
+                    ${ratingBadge}
+                </div>
+                <div class="mn-review-card-content">
+                    <h3 class="mn-review-card-title">
+                        ${item.year || 2026} ${item.make || ''} ${item.model || ''}
+                        ${item.trim ? `<span style="font-size: 0.88rem; font-weight: 600; color: #64748b; display: block;">${item.trim}</span>` : ''}
+                    </h3>
+                    <div class="mn-review-card-msrp">
+                        Starting MSRP: ${formattedMsrp}
+                    </div>
+                    <div class="mn-review-5point-box">
+                        <div class="mn-review-5point-title">
+                            <span>⚡</span> 5-Point In-Depth Road Test
+                        </div>
+                        <ul class="mn-review-points-list">
+                            ${pointsHTML}
+                        </ul>
+                    </div>
+                    ${prosConsRow}
+                    <div class="mn-review-card-actions">
+                        <a href="/car/${item.id}" class="primary-btn" style="flex: 1; text-align: center; text-decoration: none; padding: 10px 14px; font-size: 0.88rem;">
+                            Vehicle Details →
+                        </a>
+                        ${cdBtn}
+                        <button
+                            type="button"
+                            class="compare-button"
+                            data-compare-id="${item.id}"
+                            onclick="window.MotorNationCompare && window.MotorNationCompare.toggle('${item.id}')"
+                            style="padding: 10px 14px; font-size: 0.88rem;"
+                        >
+                            + Compare
+                        </button>
+                    </div>
+                </div>
+            </article>
+        `;
+    }
+
+    async function fetchReviews(isAppend = false) {
+        if (!isAppend) {
+            currentOffset = 0;
         }
 
+        const params = new URLSearchParams();
+        if (currentQuery) params.append("q", currentQuery);
+        if (currentBrand) params.append("make", currentBrand);
+        if (minRating && minRating !== "0") params.append("rating", minRating);
+        params.append("offset", String(currentOffset));
+        params.append("limit", "24");
+
         try {
+            const resp = await fetch(`/api/reviews?${params.toString()}`);
+            const data = await resp.json();
 
-            const response =
-                await fetch(
-                    "/api/cars"
-                );
-
-            if (!response.ok) {
-                throw new Error(
-                    "Unable to load vehicles"
-                );
+            const items = data.reviews || [];
+            if (!isAppend) {
+                reviewsGrid.innerHTML = items.map(renderReviewCardHTML).join("");
+            } else {
+                reviewsGrid.insertAdjacentHTML("beforeend", items.map(renderReviewCardHTML).join(""));
             }
 
-            const data =
-                await response.json();
-
-            const cars =
-                Array.isArray(data.cars)
-                    ? data.cars
-                    : [];
-
-            if (!cars.length) {
-
-                container.innerHTML =
-                    `
-                    <div class="reviews-loading">
-                        No vehicle reviews available.
-                    </div>
-                    `;
-
-                return;
+            currentOffset += items.length;
+            const displayed = reviewsGrid.querySelectorAll(".mn-review-card").length;
+            if (countDisplay) {
+                countDisplay.textContent = `Showing ${displayed} of ${data.total} reviews`;
             }
 
-            container.innerHTML =
-                cars
-                    .slice(0, 12)
-                    .map(
-                        function (car) {
-
-                            const image =
-                                car.image
-                                    ? car.image
-                                    : "";
-
-                            const year =
-                                car.year || "";
-
-                            const make =
-                                car.make || "";
-
-                            const model =
-                                car.model || "";
-
-                            const price =
-                                car?.price?.msrp ||
-                                car?.msrp ||
-                                0;
-
-                            const formattedPrice =
-                                price
-                                    ? "$" +
-                                      Number(
-                                          price
-                                      ).toLocaleString(
-                                          "en-US"
-                                      )
-                                    : "Price unavailable";
-
-                            return `
-                                <article
-                                    class="review-car-card"
-                                >
-
-                                    ${
-                                        image
-                                        ?
-                                        `
-                                        <img
-                                            class="review-car-image"
-                                            src="${image}"
-                                            alt="${make} ${model}"
-                                            loading="lazy"
-                                            onerror="this.style.display='none'"
-                                        >
-                                        `
-                                        :
-                                        `
-                                        <div
-                                            class="review-car-image"
-                                        ></div>
-                                        `
-                                    }
-
-                                    <div
-                                        class="review-car-content"
-                                    >
-
-                                        <div
-                                            class="review-car-year"
-                                        >
-                                            ${year}
-                                        </div>
-
-                                        <h3
-                                            class="review-car-title"
-                                        >
-                                            ${make}
-                                            ${model}
-                                        </h3>
-
-                                        <div
-                                            class="review-car-price"
-                                        >
-                                            ${formattedPrice}
-                                        </div>
-
-                                        <a
-                                            class="review-car-button"
-                                            href="/car/${car.id}"
-                                        >
-                                            Read Review
-                                        </a>
-
-                                        <button
-                                            type="button"
-                                            class="compare-button"
-                                            data-compare-id="${car.id}"
-                                            onclick="window.MotorNationCompare && window.MotorNationCompare.toggle('${car.id}')"
-                                        >
-                                            + Compare
-                                        </button>
-
-                                    </div>
-
-                                </article>
-                            `;
-
-                        }
-                    )
-                    .join("");
+            if (loadMoreWrap) {
+                loadMoreWrap.style.display = data.has_more ? "block" : "none";
+            }
 
             if (window.MotorNationCompare) {
                 window.MotorNationCompare.updateAllButtons();
             }
-
-        } catch (error) {
-
-            console.error(
-                "Reviews error:",
-                error
-            );
-
-            container.innerHTML =
-                `
-                <div class="reviews-loading">
-                    Unable to load reviews.
-                </div>
-                `;
-
+        } catch (e) {
+            console.error("Error fetching reviews:", e);
         }
-
     }
-);
 
+    if (searchInput) {
+        searchInput.addEventListener("input", function() {
+            clearTimeout(searchDebounceTimer);
+            searchDebounceTimer = setTimeout(() => {
+                currentQuery = this.value.trim().toLowerCase();
+                fetchReviews(false);
+            }, 250);
+        });
+    }
+
+    if (brandChips) {
+        brandChips.addEventListener("click", function(e) {
+            const btn = e.target.closest(".news-chip-btn");
+            if (!btn) return;
+            brandChips.querySelectorAll(".news-chip-btn").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            currentBrand = btn.getAttribute("data-brand") || "";
+            fetchReviews(false);
+        });
+    }
+
+    ratingBtns.forEach(btn => {
+        btn.addEventListener("click", function() {
+            ratingBtns.forEach(b => b.classList.remove("active"));
+            this.classList.add("active");
+            minRating = this.getAttribute("data-rating") || "0";
+            fetchReviews(false);
+        });
+    });
+
+    if (loadMoreBtn) {
+        loadMoreBtn.addEventListener("click", function() {
+            fetchReviews(true);
+        });
+    }
+
+    if (window.MotorNationCompare) {
+        window.MotorNationCompare.updateAllButtons();
+    }
+})();
 </script>
 
 {% endblock %}
