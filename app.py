@@ -1400,6 +1400,60 @@ def api_news():
 
 
 @app.route(
+    "/reviews/<int:car_id>"
+)
+def review_detail(car_id):
+
+    car = find_car_by_id(car_id)
+    if not car:
+        return "Vehicle review not found", 404
+
+    nr_data = get_news_and_reviews()
+    nr_item = nr_data.get("by_id", {}).get(str(car_id)) or nr_data.get("by_key", {}).get(f"{car.get('make','')}_{car.get('model','')}".lower()) or {}
+    rivals = find_rivals_for_car(car, limit=3)
+
+    return render_template(
+        "review-detail.html",
+        car=car,
+        review_item=nr_item,
+        rivals=rivals
+    )
+
+
+@app.route(
+    "/news/<int:car_id>"
+)
+def news_detail(car_id):
+
+    car = find_car_by_id(car_id)
+    if not car:
+        return "Vehicle news not found", 404
+
+    nr_data = get_news_and_reviews()
+    nr_item = nr_data.get("by_id", {}).get(str(car_id)) or nr_data.get("by_key", {}).get(f"{car.get('make','')}_{car.get('model','')}".lower()) or {}
+    rivals = find_rivals_for_car(car, limit=3)
+
+    return render_template(
+        "news-detail.html",
+        car=car,
+        news_item=nr_item,
+        rivals=rivals
+    )
+
+
+@app.route(
+    "/api/reviews/<int:car_id>"
+)
+def api_review_item(car_id):
+
+    nr_data = get_news_and_reviews()
+    item = nr_data.get("by_id", {}).get(str(car_id))
+    if not item:
+        return jsonify({"error": "Review not found"}), 404
+    return jsonify(item)
+
+
+@app.route(
     "/api/news/<int:car_id>"
 )
 def api_news_item(car_id):

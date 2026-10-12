@@ -45,15 +45,14 @@ MotorNation — Automotive News & Journalistic Coverage
                     {{ featured.article[:320] }}...
                 </p>
                 <div class="news-featured-btns">
-                    <button
-                        type="button"
+                    <a
+                        href="/news/{{ featured.id }}"
                         class="primary-btn"
-                        style="cursor: pointer;"
-                        onclick="openArticleModal({{ featured.id }})"
+                        style="text-decoration: none; display: inline-flex; align-items: center;"
                     >
-                        Read Full Story ↗
-                    </button>
-                    <a href="/car/{{ featured.id }}" class="secondary-btn" style="color: #ffffff; border-color: rgba(255,255,255,0.3);">
+                        Read Full Story →
+                    </a>
+                    <a href="/car/{{ featured.id }}" class="secondary-btn" style="color: #ffffff; border-color: rgba(255,255,255,0.3); text-decoration: none;">
                         View {{ featured.make }} {{ featured.model }} Specs →
                     </a>
                 </div>
@@ -61,24 +60,20 @@ MotorNation — Automotive News & Journalistic Coverage
         </section>
         {% endif %}
 
-        <!-- SEARCH & BRAND FILTERS -->
-        <div class="news-search-filter-bar">
-            <div class="news-search-input-wrap">
-                <span class="news-search-icon">🔍</span>
-                <input
-                    type="text"
-                    id="newsSearchInput"
-                    class="news-search-input"
-                    placeholder="Search news headlines, car models, or keywords..."
-                    aria-label="Search automotive news"
-                >
-            </div>
-
-            <div class="news-brand-chips" id="newsBrandChips">
-                <button type="button" class="news-chip-btn active" data-brand="">All Brands ({{ total_count or '455' }})</button>
-                {% for brand in brands %}
-                    <button type="button" class="news-chip-btn" data-brand="{{ brand }}">{{ brand }}</button>
-                {% endfor %}
+        <!-- BRAND DROPDOWN FILTER BAR -->
+        <div class="mn-filter-bar-clean">
+            <div class="mn-brand-select-group">
+                <label for="newsBrandSelect" class="mn-brand-select-label">
+                    <span style="font-size: 1.25rem;">📰</span> Select Brand:
+                </label>
+                <div class="mn-select-wrapper">
+                    <select id="newsBrandSelect" class="mn-brand-select" aria-label="Select Car Brand">
+                        <option value="">All Car Brands ({{ total_count or '455' }} Vehicle Coverage)</option>
+                        {% for brand in brands %}
+                            <option value="{{ brand }}">{{ brand }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
         </div>
 
@@ -124,13 +119,13 @@ MotorNation — Automotive News & Journalistic Coverage
                     </p>
 
                     <div class="mn-news-card-footer">
-                        <button
-                            type="button"
+                        <a
+                            href="/news/{{ item.id }}"
                             class="mn-news-read-btn"
-                            onclick="openArticleModal({{ item.id }})"
+                            style="text-decoration: none; text-align: center; display: inline-flex; align-items: center; justify-content: center;"
                         >
                             Read Full Article →
-                        </button>
+                        </a>
                         <a href="/car/{{ item.id }}" style="font-size: 0.82rem; color: #64748b; font-weight: 700; text-decoration: none;">
                             Specs ↗
                         </a>
@@ -204,8 +199,7 @@ MotorNation — Automotive News & Journalistic Coverage
     };
     {% endfor %}
 
-    const searchInput = document.getElementById("newsSearchInput");
-    const brandChips = document.getElementById("newsBrandChips");
+    const brandSelect = document.getElementById("newsBrandSelect");
     const newsGrid = document.getElementById("newsGrid");
     const countDisplay = document.getElementById("newsCountDisplay");
     const loadMoreBtn = document.getElementById("loadMoreBtn");
@@ -213,8 +207,6 @@ MotorNation — Automotive News & Journalistic Coverage
 
     let currentOffset = {{ news_items|length }};
     let currentBrand = "";
-    let currentQuery = "";
-    let searchDebounceTimer = null;
 
     function renderCardHTML(item) {
         cachedArticles[String(item.id)] = item;
@@ -239,9 +231,13 @@ MotorNation — Automotive News & Journalistic Coverage
                     <h3 class="mn-news-card-title">${item.headline || ''}</h3>
                     <p class="mn-news-card-excerpt">${excerpt}</p>
                     <div class="mn-news-card-footer">
-                        <button type="button" class="mn-news-read-btn" onclick="openArticleModal(${item.id})">
+                        <a
+                            href="/news/${item.id}"
+                            class="mn-news-read-btn"
+                            style="text-decoration: none; text-align: center; display: inline-flex; align-items: center; justify-content: center;"
+                        >
                             Read Full Article →
-                        </button>
+                        </a>
                         <a href="/car/${item.id}" style="font-size: 0.82rem; color: #64748b; font-weight: 700; text-decoration: none;">
                             Specs ↗
                         </a>
@@ -257,7 +253,6 @@ MotorNation — Automotive News & Journalistic Coverage
         }
 
         const params = new URLSearchParams();
-        if (currentQuery) params.append("q", currentQuery);
         if (currentBrand) params.append("make", currentBrand);
         params.append("offset", String(currentOffset));
         params.append("limit", "24");
@@ -287,23 +282,9 @@ MotorNation — Automotive News & Journalistic Coverage
         }
     }
 
-    if (searchInput) {
-        searchInput.addEventListener("input", function() {
-            clearTimeout(searchDebounceTimer);
-            searchDebounceTimer = setTimeout(() => {
-                currentQuery = this.value.trim().toLowerCase();
-                fetchNews(false);
-            }, 250);
-        });
-    }
-
-    if (brandChips) {
-        brandChips.addEventListener("click", function(e) {
-            const btn = e.target.closest(".news-chip-btn");
-            if (!btn) return;
-            brandChips.querySelectorAll(".news-chip-btn").forEach(b => b.classList.remove("active"));
-            btn.classList.add("active");
-            currentBrand = btn.getAttribute("data-brand") || "";
+    if (brandSelect) {
+        brandSelect.addEventListener("change", function() {
+            currentBrand = this.value;
             fetchNews(false);
         });
     }

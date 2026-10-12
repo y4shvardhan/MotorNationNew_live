@@ -278,6 +278,7 @@ function createFeaturedCard(car) {
     const year = getText(car?.year, "2026");
     const price = formatPrice(getPrice(car));
     const body = getBodyType(car);
+    const seating = car?.seating ? `${car.seating} Seats` : (car?.sourceData?.Seating ? `${car.sourceData.Seating} Seats` : "5 Seats");
     const fuel = getFuelType(car);
     const horsepower = getHorsepower(car);
     const url = getVehicleUrl(car);
@@ -339,7 +340,7 @@ function createFeaturedCard(car) {
                     }
 
                     <span>
-                        ${escapeHTML(body)}
+                        ${escapeHTML(seating)}
                     </span>
 
                 </div>

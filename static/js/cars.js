@@ -444,6 +444,10 @@ function createCarCard(car) {
         car.body ??
         "Vehicle";
 
+    const seating =
+        car.seating ? `${car.seating} Seats` :
+        (car.sourceData?.Seating ? `${car.sourceData.Seating} Seats` : "5 Seats");
+
     const fuel =
         car.fuelType ??
         car.fuel ??
@@ -551,7 +555,7 @@ function createCarCard(car) {
                     </span>
 
                     <span>
-                        ${escapeHTML(body)}
+                        ${escapeHTML(seating)}
                     </span>
 
                 </div>

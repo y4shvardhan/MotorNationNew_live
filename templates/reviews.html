@@ -23,34 +23,27 @@ MotorNation — Expert Road Test Reviews & In-Depth Evaluations
             </p>
         </div>
 
-        <!-- SEARCH & FILTER BAR -->
-        <div class="news-search-filter-bar">
-            <div style="display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between;">
-                <div class="news-search-input-wrap" style="flex: 1; min-width: 300px;">
-                    <span class="news-search-icon">🔍</span>
-                    <input
-                        type="text"
-                        id="reviewSearchInput"
-                        class="news-search-input"
-                        placeholder="Search reviews by model, chassis dynamics, or features..."
-                        aria-label="Search reviews"
-                    >
-                </div>
-
-                <!-- RATING FILTER CHIPS -->
-                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <button type="button" class="news-chip-btn rating-btn active" data-rating="0">All Ratings</button>
-                    <button type="button" class="news-chip-btn rating-btn" data-rating="9.0">★ 9.0+ Top Tier</button>
-                    <button type="button" class="news-chip-btn rating-btn" data-rating="8.0">★ 8.0+ Recommended</button>
+        <!-- CLEAN BRAND DROPDOWN & RATING FILTER BAR -->
+        <div class="mn-filter-bar-clean">
+            <div class="mn-brand-select-group">
+                <label for="reviewBrandSelect" class="mn-brand-select-label">
+                    <span style="font-size: 1.25rem;">🏎️</span> Select Brand:
+                </label>
+                <div class="mn-select-wrapper">
+                    <select id="reviewBrandSelect" class="mn-brand-select" aria-label="Select Car Brand">
+                        <option value="">All Car Brands ({{ total_count or '455' }} Vehicles)</option>
+                        {% for brand in brands %}
+                            <option value="{{ brand }}">{{ brand }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
             </div>
 
-            <!-- BRAND CHIPS -->
-            <div class="news-brand-chips" id="reviewBrandChips">
-                <button type="button" class="news-chip-btn active" data-brand="">All Brands ({{ total_count or '455' }})</button>
-                {% for brand in brands %}
-                    <button type="button" class="news-chip-btn" data-brand="{{ brand }}">{{ brand }}</button>
-                {% endfor %}
+            <!-- RATING FILTER CHIPS -->
+            <div class="mn-rating-chips-wrap">
+                <button type="button" class="news-chip-btn rating-btn active" data-rating="0">All Ratings</button>
+                <button type="button" class="news-chip-btn rating-btn" data-rating="9.0">★ 9.0+ Top Tier</button>
+                <button type="button" class="news-chip-btn rating-btn" data-rating="8.0">★ 8.0+ Recommended</button>
             </div>
         </div>
 
@@ -140,15 +133,13 @@ MotorNation — Expert Road Test Reviews & In-Depth Evaluations
 
                     <!-- CARD ACTIONS -->
                     <div class="mn-review-card-actions">
-                        <a href="/car/{{ item.id }}" class="primary-btn" style="flex: 1; text-align: center; text-decoration: none; padding: 10px 14px; font-size: 0.88rem;">
-                            Vehicle Details →
+                        <a href="/reviews/{{ item.id }}" class="primary-btn" style="flex: 1; text-align: center; text-decoration: none; padding: 10px 14px; font-size: 0.88rem;">
+                            5-Point Verdict & Review →
                         </a>
 
-                        {% if item.cd_url %}
-                            <a href="{{ item.cd_url }}" target="_blank" rel="noopener noreferrer" class="secondary-btn" title="Car and Driver Full Road Test" style="padding: 10px 14px; font-size: 0.88rem;">
-                                C&D ↗
-                            </a>
-                        {% endif %}
+                        <a href="/car/{{ item.id }}" class="secondary-btn" style="text-align: center; text-decoration: none; padding: 10px 14px; font-size: 0.88rem;">
+                            Specs ↗
+                        </a>
 
                         <button
                             type="button"
@@ -186,8 +177,7 @@ MotorNation — Expert Road Test Reviews & In-Depth Evaluations
 <!-- CLIENT JAVASCRIPT FOR FAST PAGINATION & DYNAMIC SEARCH -->
 <script>
 (function() {
-    const searchInput = document.getElementById("reviewSearchInput");
-    const brandChips = document.getElementById("reviewBrandChips");
+    const brandSelect = document.getElementById("reviewBrandSelect");
     const ratingBtns = document.querySelectorAll(".rating-btn");
     const reviewsGrid = document.getElementById("reviewsGrid");
     const countDisplay = document.getElementById("reviewsCountDisplay");
@@ -197,8 +187,6 @@ MotorNation — Expert Road Test Reviews & In-Depth Evaluations
     let currentOffset = {{ reviews|length }};
     let currentBrand = "";
     let minRating = "0";
-    let currentQuery = "";
-    let searchDebounceTimer = null;
 
     function renderReviewCardHTML(item) {
         const formattedMsrp = item.msrp ? `$${Number(item.msrp).toLocaleString()}` : 'Consult Dealer';
@@ -272,10 +260,12 @@ MotorNation — Expert Road Test Reviews & In-Depth Evaluations
                     </div>
                     ${prosConsRow}
                     <div class="mn-review-card-actions">
-                        <a href="/car/${item.id}" class="primary-btn" style="flex: 1; text-align: center; text-decoration: none; padding: 10px 14px; font-size: 0.88rem;">
-                            Vehicle Details →
+                        <a href="/reviews/${item.id}" class="primary-btn" style="flex: 1; text-align: center; text-decoration: none; padding: 10px 14px; font-size: 0.88rem;">
+                            5-Point Verdict & Review →
                         </a>
-                        ${cdBtn}
+                        <a href="/car/${item.id}" class="secondary-btn" style="text-align: center; text-decoration: none; padding: 10px 14px; font-size: 0.88rem;">
+                            Specs ↗
+                        </a>
                         <button
                             type="button"
                             class="compare-button"
@@ -297,7 +287,6 @@ MotorNation — Expert Road Test Reviews & In-Depth Evaluations
         }
 
         const params = new URLSearchParams();
-        if (currentQuery) params.append("q", currentQuery);
         if (currentBrand) params.append("make", currentBrand);
         if (minRating && minRating !== "0") params.append("rating", minRating);
         params.append("offset", String(currentOffset));
@@ -332,23 +321,9 @@ MotorNation — Expert Road Test Reviews & In-Depth Evaluations
         }
     }
 
-    if (searchInput) {
-        searchInput.addEventListener("input", function() {
-            clearTimeout(searchDebounceTimer);
-            searchDebounceTimer = setTimeout(() => {
-                currentQuery = this.value.trim().toLowerCase();
-                fetchReviews(false);
-            }, 250);
-        });
-    }
-
-    if (brandChips) {
-        brandChips.addEventListener("click", function(e) {
-            const btn = e.target.closest(".news-chip-btn");
-            if (!btn) return;
-            brandChips.querySelectorAll(".news-chip-btn").forEach(b => b.classList.remove("active"));
-            btn.classList.add("active");
-            currentBrand = btn.getAttribute("data-brand") || "";
+    if (brandSelect) {
+        brandSelect.addEventListener("change", function() {
+            currentBrand = this.value;
             fetchReviews(false);
         });
     }

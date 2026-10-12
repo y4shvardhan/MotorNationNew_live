@@ -1,0 +1,282 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ car.year|default('2026') }} {{ car.make }} {{ car.model }} — Expert 5-Point Road Test Review | MotorNation
+{% endblock %}
+
+{% block content %}
+
+<main class="review-detail-page">
+
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 40px 24px;">
+
+        <!-- BREADCRUMBS -->
+        <nav class="mn-breadcrumbs" style="margin-bottom: 24px; font-size: 0.88rem; font-weight: 700; color: #64748b;">
+            <a href="/" style="color: #64748b; text-decoration: none;">Home</a>
+            <span style="margin: 0 8px;">/</span>
+            <a href="/reviews" style="color: #64748b; text-decoration: none;">Reviews</a>
+            <span style="margin: 0 8px;">/</span>
+            <span style="color: #0f172a;">{{ car.year|default('2026') }} {{ car.make }} {{ car.model }}</span>
+        </nav>
+
+        <!-- REVIEW HERO -->
+        <section class="mn-review-hero-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 40px;">
+            <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 36px; align-items: center; padding: 36px;">
+                
+                <div style="position: relative; border-radius: 14px; overflow: hidden; background: #0f172a; height: 380px;">
+                    <img
+                        src="{{ car.image or (car.gallery[0].url if car.gallery else '') }}"
+                        alt="{{ car.year }} {{ car.make }} {{ car.model }}"
+                        style="width: 100%; height: 100%; object-fit: cover;"
+                    >
+                    {% if car.rating or review_item.rating %}
+                    <div style="position: absolute; top: 16px; right: 16px; background: rgba(15, 23, 42, 0.92); backdrop-filter: blur(8px); border: 1px solid rgba(245, 158, 11, 0.4); color: #ffffff; padding: 8px 16px; border-radius: 12px; font-size: 1.05rem; font-weight: 800; display: flex; align-items: center; gap: 6px;">
+                        <span style="color: #f59e0b;">★</span>
+                        <span>{{ car.rating or review_item.rating }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <span style="display: inline-block; background: rgba(225, 29, 46, 0.1); color: var(--primary, #e11d2e); font-size: 0.78rem; font-weight: 800; letter-spacing: 0.08em; padding: 5px 12px; border-radius: 999px; text-transform: uppercase; margin-bottom: 12px;">
+                        ROAD TEST VERDICT · {{ car.bodyType|default('VEHICLE') }}
+                    </span>
+
+                    <h1 style="font-size: 2.3rem; font-weight: 900; color: #0f172a; line-height: 1.2; margin-bottom: 6px;">
+                        {{ car.year|default('2026') }} {{ car.make }} {{ car.model }}
+                    </h1>
+
+                    {% if car.trim %}
+                        <div style="font-size: 1.1rem; color: #64748b; font-weight: 600; margin-bottom: 16px;">
+                            {{ car.trim }}
+                        </div>
+                    {% endif %}
+
+                    <!-- Starting MSRP with $ in black and amount in red -->
+                    <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 24px;">
+                        <span style="color: #64748b; font-size: 0.92rem; display: block; margin-bottom: 4px;">Starting MSRP</span>
+                        {% if car.msrp %}
+                            <span style="color: #0f172a;">$</span><span style="color: #e11d2e; font-weight: 900; font-size: 1.6rem;">{{ "{:,.0f}".format(car.msrp|float) }}</span>
+                        {% else %}
+                            <span style="color: #0f172a;">Price unavailable</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Quick Specs Pills -->
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px;">
+                        {% if car.horsepower %}
+                            <span class="mn-spec-pill">⚡ {{ car.horsepower|int }} hp</span>
+                        {% endif %}
+                        {% if car.drivetrain %}
+                            <span class="mn-spec-pill">🔄 {{ car.drivetrain }}</span>
+                        {% endif %}
+                        {% if car.transmission %}
+                            <span class="mn-spec-pill">⚙️ {{ car.transmission }}</span>
+                        {% endif %}
+                        {% if car.seating %}
+                            <span class="mn-spec-pill">🪑 {{ car.seating }} Seats</span>
+                        {% endif %}
+                        {% if car.mpg %}
+                            <span class="mn-spec-pill">⛽ {{ car.mpg }} MPG</span>
+                        {% endif %}
+                    </div>
+
+                    <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+                        <a href="/car/{{ car.id }}" class="primary-btn" style="text-decoration: none; padding: 12px 22px; font-weight: 800;">
+                            Full Specifications & Photos →
+                        </a>
+                        <a href="/news/{{ car.id }}" class="secondary-btn" style="text-decoration: none; padding: 12px 22px; font-weight: 800;">
+                            Official News Dispatch ↗
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 5-POINT ROAD TEST VERDICT -->
+        <section class="mn-roadtest-review-card" style="margin-bottom: 40px;">
+            <div class="mn-roadtest-header">
+                {% if car.rating or review_item.rating %}
+                <div class="mn-roadtest-rating">
+                    <span class="mn-star">★</span>
+                    <span class="mn-score">{{ car.rating or review_item.rating }}</span>
+                    <span class="mn-score-sub">Tested Score</span>
+                </div>
+                {% endif %}
+                <div class="mn-roadtest-headline">
+                    <h3>5-Point In-Depth Road Test Evaluation</h3>
+                    <p class="mn-roadtest-subtitle">Instrumented dynamic road testing, chassis balance, powertrain feedback, and ergonomics analysis</p>
+                </div>
+            </div>
+
+            <ol class="mn-roadtest-list">
+                {% set lines = car.roadTestReviewLines or review_item.review_lines or [] %}
+                {% if lines %}
+                    {% for line in lines %}
+                        <li class="mn-roadtest-item">
+                            <span class="mn-item-num">{{ loop.index }}</span>
+                            <span class="mn-item-content">{{ line.lstrip('0123456789. ') }}</span>
+                        </li>
+                    {% endfor %}
+                {% else %}
+                    <li class="mn-roadtest-item">
+                        <span class="mn-item-num">1</span>
+                        <span class="mn-item-content">{{ car.finalWord or car.reviewSummary or 'Road test assessment is being prepared.' }}</span>
+                    </li>
+                {% endif %}
+            </ol>
+        </section>
+
+        <!-- PROS & CONS EXPANDED -->
+        {% set pros = car.pros or review_item.pros or [] %}
+        {% set cons = car.cons or review_item.cons or [] %}
+        {% if pros or cons %}
+        <section style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 40px;">
+            {% if pros %}
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-top: 4px solid #10b981; border-radius: 16px; padding: 28px; box-shadow: 0 4px 16px rgba(0,0,0,0.03);">
+                <h3 style="font-size: 1.15rem; font-weight: 800; color: #065f46; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                    <span>✓</span> Key Strengths (Highs)
+                </h3>
+                <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px;">
+                    {% for p in pros %}
+                        <li style="display: flex; align-items: flex-start; gap: 10px; font-size: 0.95rem; color: #334155; line-height: 1.5;">
+                            <span style="color: #10b981; font-weight: 800;">+</span>
+                            <span>{{ p }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            {% if cons %}
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-top: 4px solid #f43f5e; border-radius: 16px; padding: 28px; box-shadow: 0 4px 16px rgba(0,0,0,0.03);">
+                <h3 style="font-size: 1.15rem; font-weight: 800; color: #9f1239; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                    <span>✗</span> Key Compromises (Lows)
+                </h3>
+                <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px;">
+                    {% for c in cons %}
+                        <li style="display: flex; align-items: flex-start; gap: 10px; font-size: 0.95rem; color: #334155; line-height: 1.5;">
+                            <span style="color: #f43f5e; font-weight: 800;">−</span>
+                            <span>{{ c }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </section>
+        {% endif %}
+
+        <!-- OFFICIAL YOUTUBE VIDEO COVERAGE FROM @motornationofficial -->
+        <section class="mn-section mn-video-section" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 20px; padding: 36px; box-shadow: 0 6px 24px rgba(0,0,0,0.04); margin-bottom: 40px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 22px;">
+                <div>
+                    <span style="color: var(--primary, #e11d2e); font-size: 0.78rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;">
+                        MOTOR NATION VIDEO COVERAGE
+                    </span>
+                    <h2 style="font-size: 1.7rem; font-weight: 900; color: #0f172a; margin: 4px 0 0 0;">
+                        {{ car.year|default('2026') }} {{ car.make }} {{ car.model }} — Watch on YouTube
+                    </h2>
+                </div>
+                <a href="https://www.youtube.com/@motornationofficial/search?query={{ car.make }}+{{ car.model }}" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 8px; background: #e11d2e; color: #ffffff; padding: 8px 16px; border-radius: 999px; font-weight: 700; font-size: 0.88rem; text-decoration: none;">
+                    <span>▶</span>
+                    <span>@motornationofficial</span>
+                </a>
+            </div>
+
+            <div style="position: relative; width: 100%; padding-top: 56.25%; background: #0f172a; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+                <iframe
+                    src="https://www.youtube.com/embed?listType=search&list=MotorNation+{{ car.make }}+{{ car.model }}"
+                    title="MotorNation Video Review: {{ car.make }} {{ car.model }}"
+                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen
+                    loading="lazy"
+                ></iframe>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 18px; padding-top: 14px; border-top: 1px solid #f1f5f9; font-size: 0.88rem; color: #64748b;">
+                <span>Watch in-depth walkarounds, exhaust sound clips, and road test analysis.</span>
+                <a href="https://www.youtube.com/@motornationofficial/search?query={{ car.make }}+{{ car.model }}" target="_blank" rel="noopener noreferrer" style="color: var(--primary, #e11d2e); font-weight: 700; text-decoration: none;">
+                    Search on Channel ↗
+                </a>
+            </div>
+        </section>
+
+        <!-- DIRECT COMPETITORS & ALTERNATIVES (RIVALS) -->
+        {% if rivals and rivals|length > 0 %}
+        <section class="mn-section mn-rivals-section" style="margin-bottom: 40px;">
+            <div class="mn-section-inner">
+                <span class="mn-label">HEAD TO HEAD</span>
+                <h2>Direct Competitors & Alternatives</h2>
+                <p class="section-description" style="margin-bottom: 25px;">
+                    Compare similar vehicles against the {{ car.year|default('2026') }} {{ car.make }} {{ car.model }}.
+                </p>
+
+                <div class="car-grid">
+                    {% for rival in rivals %}
+                    <article class="car-card">
+                        <a href="{{ url_for('car_details', car_id=rival.id) }}" class="car-card-image-wrapper">
+                            {% if rival.image %}
+                            <img src="{{ rival.image }}" alt="{{ rival.make }} {{ rival.model }}" class="car-card-image" loading="lazy">
+                            {% else %}
+                            <div class="car-image-placeholder"><span>{{ rival.make }} {{ rival.model }}</span></div>
+                            {% endif %}
+                            <span class="car-card-year">{{ rival.year|default('2026') }}</span>
+                        </a>
+
+                        <div class="car-card-content">
+                            <span class="car-card-category">{{ rival.bodyType|default('Vehicle') }}</span>
+                            <h3 class="car-card-title">
+                                <a href="{{ url_for('car_details', car_id=rival.id) }}">
+                                    {{ rival.make }} {{ rival.model }}
+                                </a>
+                            </h3>
+
+                            <div class="car-card-price">
+                                {% if rival.msrp %}
+                                    ${{ "{:,.0f}".format(rival.msrp|float) }}
+                                {% else %}
+                                    Price unavailable
+                                {% endif %}
+                            </div>
+
+                            <!-- 3rd cell shows Seating -->
+                            <div class="car-card-specs">
+                                <span>{{ rival.fuelType|default('Gasoline') }}</span>
+                                <span>{{ rival.horsepower|default('—') }} hp</span>
+                                <span>{{ rival.seating|default(5) }} Seats</span>
+                            </div>
+
+                            <a href="{{ url_for('car_details', car_id=rival.id) }}" class="car-card-link">
+                                View Details →
+                            </a>
+
+                            <button
+                                type="button"
+                                class="compare-button"
+                                data-compare-id="{{ rival.id }}"
+                                onclick="window.MotorNationCompare && window.MotorNationCompare.toggle('{{ rival.id }}')"
+                            >
+                                + Compare
+                            </button>
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- BACK ACTION -->
+        <div style="text-align: center; margin: 40px 0;">
+            <a href="/reviews" class="secondary-btn" style="text-decoration: none; padding: 12px 28px; font-weight: 700;">
+                ← Back to All Vehicle Reviews
+            </a>
+        </div>
+
+    </div>
+
+</main>
+
+{% endblock %}

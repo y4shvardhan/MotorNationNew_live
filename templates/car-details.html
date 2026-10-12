@@ -196,11 +196,11 @@
                     <span>Starting MSRP</span>
                     {% if car.msrp is not none and car.msrp != '' %}
                         <strong>
-                            ${{ "{:,.0f}".format(car.msrp|float) }}
+                            <span style="color: #0f172a;">$</span><span style="color: #e11d2e;">{{ "{:,.0f}".format(car.msrp|float) }}</span>
                         </strong>
                     {% elif car.price and car.price.msrp is not none %}
                         <strong>
-                            ${{ "{:,.0f}".format(car.price.msrp|float) }}
+                            <span style="color: #0f172a;">$</span><span style="color: #e11d2e;">{{ "{:,.0f}".format(car.price.msrp|float) }}</span>
                         </strong>
                     {% else %}
                         <strong>
@@ -642,11 +642,11 @@
 
                         {% if car.msrp is not none and car.msrp != '' %}
 
-                            ${{ "{:,.0f}".format(car.msrp|float) }}
+                            <span style="color: #0f172a;">$</span><span style="color: #e11d2e; font-weight: 800;">{{ "{:,.0f}".format(car.msrp|float) }}</span>
 
                         {% elif car.price and car.price.msrp is not none %}
 
-                            ${{ "{:,.0f}".format(car.price.msrp|float) }}
+                            <span style="color: #0f172a;">$</span><span style="color: #e11d2e; font-weight: 800;">{{ "{:,.0f}".format(car.price.msrp|float) }}</span>
 
                         {% else %}
 
@@ -664,9 +664,87 @@
     </section>
 
 
-    <!-- DIRECT COMPETITORS & ALTERNATIVES -->
+    <!-- MOTOR NATION OFFICIAL YOUTUBE VIDEO COVERAGE -->
+    <section class="mn-section mn-video-section" id="video-coverage">
+        <div class="mn-section-inner">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 22px;">
+                <div>
+                    <span class="mn-label">MOTOR NATION VIDEO COVERAGE</span>
+                    <h2 style="font-size: 1.85rem; font-weight: 900; color: #0f172a; margin: 4px 0 0 0;">{{ car.year|default('2026') }} {{ car.make }} {{ car.model }} — Watch on YouTube</h2>
+                    <p class="section-description" style="margin-top: 4px;">
+                        Watch road test drives, walkarounds, interior highlights, and performance deep dives on <strong>@motornationofficial</strong>.
+                    </p>
+                </div>
+                <a href="https://www.youtube.com/@motornationofficial/search?query={{ car.make }}+{{ car.model }}" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 8px; background: #e11d2e; color: #ffffff; padding: 10px 20px; border-radius: 999px; font-weight: 800; font-size: 0.88rem; text-decoration: none; box-shadow: 0 4px 14px rgba(225, 29, 46, 0.35);">
+                    <span>▶</span>
+                    <span>@motornationofficial</span>
+                </a>
+            </div>
+
+            <div style="position: relative; width: 100%; padding-top: 56.25%; background: #0f172a; border-radius: 16px; overflow: hidden; box-shadow: 0 12px 35px rgba(0,0,0,0.18);">
+                <iframe
+                    src="https://www.youtube.com/embed?listType=search&list=MotorNation+{{ car.make }}+{{ car.model }}"
+                    title="MotorNation Video Review: {{ car.make }} {{ car.model }}"
+                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen
+                    loading="lazy"
+                ></iframe>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 16px; padding-top: 14px; border-top: 1px solid #e2e8f0; font-size: 0.9rem; color: #64748b;">
+                <span>Official video production by MotorNation Automotive Media</span>
+                <a href="https://www.youtube.com/@motornationofficial/search?query={{ car.make }}+{{ car.model }}" target="_blank" rel="noopener noreferrer" style="color: var(--primary, #e11d2e); font-weight: 800; text-decoration: none;">
+                    Search on Channel ↗
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FINAL VERDICT (OUR TAKE ONLY) -->
+    <section class="mn-final-word" id="verdict">
+
+        <div class="mn-section-inner">
+
+            <span class="mn-label">
+                THE FINAL WORD
+            </span>
+
+            <h2>
+                Our Take
+            </h2>
+
+            {% if car.finalWord %}
+                <p class="mn-verdict-text">
+                    {{ car.finalWord }}
+                </p>
+            {% elif car.sourceData and car.sourceData.get('Review Summary / Verdict') %}
+                <p class="mn-verdict-text">
+                    {{ car.sourceData.get('Review Summary / Verdict') }}
+                </p>
+            {% else %}
+                <p class="mn-verdict-text">
+                    {{ car.description or 'A thoroughly engineered vehicle delivering distinctive styling and competitive driving dynamics in its segment.' }}
+                </p>
+            {% endif %}
+
+            <!-- ACTION BUTTONS: 5-POINT VERDICT & NEWS COVERAGE -->
+            <div style="display: flex; flex-wrap: wrap; gap: 14px; margin-top: 28px;">
+                <a href="/reviews/{{ car.vehicle_id or car.id }}" class="mn-primary-btn" style="text-decoration: none; padding: 14px 26px; font-weight: 800; display: inline-flex; align-items: center; gap: 8px;">
+                    <span>⚡ Read 5-Point Expert Road Test Verdict →</span>
+                </a>
+                <a href="/news/{{ car.vehicle_id or car.id }}" class="mn-secondary-btn" style="text-decoration: none; padding: 14px 26px; font-weight: 800; display: inline-flex; align-items: center; gap: 8px;">
+                    <span>📰 Read Official {{ car.make }} Newsroom Coverage →</span>
+                </a>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- DIRECT COMPETITORS & ALTERNATIVES (BELOW VERDICT) -->
     {% if rivals and rivals|length > 0 %}
-    <section class="mn-section mn-rivals-section">
+    <section class="mn-section mn-rivals-section" id="competitors">
 
         <div class="mn-section-inner">
 
@@ -712,10 +790,11 @@
                             {% endif %}
                         </div>
 
+                        <!-- 3rd cell shows Seating -->
                         <div class="car-card-specs">
                             <span>{{ rival.fuelType|default('Gasoline') }}</span>
                             <span>{{ rival.horsepower|default('—') }} hp</span>
-                            <span>{{ rival.bodyType|default('—') }}</span>
+                            <span>{{ rival.seating|default(5) }} Seats</span>
                         </div>
 
                         <a href="{{ url_for('car_details', car_id=rival.id) }}" class="car-card-link">
@@ -739,110 +818,6 @@
 
         </div>
 
-    </section>
-    {% endif %}
-
-
-    <!-- FINAL WORD & ROAD TEST REVIEW -->
-    <section class="mn-final-word" id="road-test-review">
-
-        <div class="mn-section-inner">
-
-            <span class="mn-label">
-                IN-DEPTH ROAD TEST EVALUATION
-            </span>
-
-            <h2>
-                5-Point Expert Verdict
-            </h2>
-
-            {% if car.roadTestReviewLines and car.roadTestReviewLines|length > 0 %}
-                <div class="mn-roadtest-review-card">
-                    <div class="mn-roadtest-header">
-                        {% if car.rating %}
-                            <div class="mn-roadtest-rating">
-                                <span class="mn-star">★</span>
-                                <span class="mn-score">{{ car.rating }}</span>
-                                <span class="mn-score-sub">C&D Tested Score</span>
-                            </div>
-                        {% endif %}
-                        <div class="mn-roadtest-headline">
-                            <h3>{{ car.year|default('2026') }} {{ car.make }} {{ car.model }} {% if car.trim %}{{ car.trim }}{% endif %}</h3>
-                            <p class="mn-roadtest-subtitle">Comprehensive dynamic road evaluation and engineering assessment</p>
-                        </div>
-                    </div>
-
-                    <ol class="mn-roadtest-list">
-                        {% for line in car.roadTestReviewLines %}
-                            <li class="mn-roadtest-item">
-                                <span class="mn-item-num">{{ loop.index }}</span>
-                                <span class="mn-item-content">{{ line.lstrip('0123456789. ') }}</span>
-                            </li>
-                        {% endfor %}
-                    </ol>
-
-                    {% if car.reviewUrl %}
-                        <div class="mn-roadtest-actions">
-                            <a href="{{ car.reviewUrl }}" target="_blank" rel="noopener noreferrer" class="mn-secondary-btn">
-                                View Full Car and Driver Road Test Report ↗
-                            </a>
-                        </div>
-                    {% endif %}
-                </div>
-            {% elif car.finalWord %}
-                <p class="mn-verdict-text">
-                    {{ car.finalWord }}
-                </p>
-            {% elif car.sourceData and car.sourceData.get('Review Summary / Verdict') %}
-                <p class="mn-verdict-text">
-                    {{ car.sourceData.get('Review Summary / Verdict') }}
-                </p>
-            {% else %}
-                <p class="mn-verdict-text">
-                    Our detailed assessment for this vehicle will be added as the MotorNation database is expanded.
-                </p>
-            {% endif %}
-
-        </div>
-
-    </section>
-
-    <!-- AUTOMOTIVE NEWS & OEM PRESS COVERAGE -->
-    {% if car.newsHeadline or car.newsArticle %}
-    <section class="mn-car-news-section" id="news-coverage">
-        <div class="mn-section-inner">
-            <span class="mn-label">PRESS & AUTOMOTIVE JOURNALISM</span>
-            <h2 class="mn-news-detail-headline">{{ car.newsHeadline or (car.make ~ ' ' ~ car.model ~ ' Newsroom Dispatch') }}</h2>
-            
-            <div class="mn-news-article-card">
-                <div class="mn-news-meta-row">
-                    <span class="mn-news-badge">OFFICIAL COVERAGE</span>
-                    <span class="mn-news-brand-tag">{{ car.make }} Media Room</span>
-                    {% if car.msrp %}
-                        <span class="mn-news-msrp">Base MSRP: ${{ "{:,.0f}".format(car.msrp|float) }}</span>
-                    {% endif %}
-                </div>
-
-                <div class="mn-news-full-body">
-                    {% for paragraph in car.newsArticle.split('\n\n') %}
-                        {% if paragraph.strip() %}
-                            <p>{{ paragraph.strip() }}</p>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-
-                <div class="mn-news-links-bar">
-                    {% if car.oemNewsroomUrl %}
-                        <a href="{{ car.oemNewsroomUrl }}" target="_blank" rel="noopener noreferrer" class="mn-primary-btn">
-                            Official {{ car.make }} Press Release ↗
-                        </a>
-                    {% endif %}
-                    <a href="{{ url_for('news') }}" class="mn-secondary-btn">
-                        Browse All Industry News →
-                    </a>
-                </div>
-            </div>
-        </div>
     </section>
     {% endif %}
 
