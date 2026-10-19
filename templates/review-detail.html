@@ -1,69 +1,56 @@
 {% extends "base.html" %}
 
 {% block title %}
-{{ car.year|default('2026') }} {{ car.make }} {{ car.model }} — Expert 5-Point Road Test Review | MotorNation
+{{ review.car_name|default(car.year|default('2026') ~ ' ' ~ car.make ~ ' ' ~ car.model ~ ' Review') }} — MotorNation
 {% endblock %}
 
 {% block content %}
 
 <main class="review-detail-page">
 
-    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 40px 24px;">
+    <div class="container review-container">
 
         <!-- BREADCRUMBS -->
-        <nav class="mn-breadcrumbs" style="margin-bottom: 24px; font-size: 0.88rem; font-weight: 700; color: var(--text-muted);">
-            <a href="/" style="color: var(--text-muted); text-decoration: none;">Home</a>
-            <span style="margin: 0 8px;">/</span>
-            <a href="/reviews" style="color: var(--text-muted); text-decoration: none;">Reviews</a>
-            <span style="margin: 0 8px;">/</span>
-            <span style="color: var(--text-primary);">{{ car.year|default('2026') }} {{ car.make }} {{ car.model }}</span>
+        <nav class="mn-breadcrumbs">
+            <a href="/">Home</a>
+            <span class="mn-crumb-sep">/</span>
+            <a href="/reviews">Reviews</a>
+            <span class="mn-crumb-sep">/</span>
+            <span class="mn-crumb-active">{{ car.year|default('2026') }} {{ car.make }} {{ car.model }}</span>
         </nav>
 
-        <!-- REVIEW HERO -->
-        <section class="mn-review-hero-card" style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow-md); margin-bottom: 40px;">
-            <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 36px; align-items: center; padding: 36px;">
-                
-                <div style="position: relative; border-radius: 14px; overflow: hidden; background: #0f172a; height: 380px;">
-                    <img
-                        src="{{ car.image or (car.gallery[0].url if car.gallery else '') }}"
-                        alt="{{ car.year }} {{ car.make }} {{ car.model }}"
-                        style="width: 100%; height: 100%; object-fit: cover;"
-                    >
-                    {% if car.rating or review_item.rating %}
-                    <div style="position: absolute; top: 16px; right: 16px; background: rgba(15, 23, 42, 0.92); backdrop-filter: blur(8px); border: 1px solid rgba(245, 158, 11, 0.4); color: #ffffff; padding: 8px 16px; border-radius: 12px; font-size: 1.05rem; font-weight: 800; display: flex; align-items: center; gap: 6px;">
-                        <span style="color: #f59e0b;">★</span>
-                        <span>{{ car.rating or review_item.rating }}</span>
-                    </div>
-                    {% endif %}
-                </div>
+        <!-- REVIEW ARTICLE WRAPPER -->
+        <article class="news-article review-article">
+            <div class="article-content">
 
-                <div>
-                    <span style="display: inline-block; background: rgba(225, 29, 46, 0.1); color: var(--primary, #e11d2e); font-size: 0.78rem; font-weight: 800; letter-spacing: 0.08em; padding: 5px 12px; border-radius: 999px; text-transform: uppercase; margin-bottom: 12px;">
-                        ROAD TEST VERDICT · {{ car.bodyType|default('VEHICLE') }}
+                <!-- REVIEW HEADER / TITLE -->
+                <div class="article-text review-header-block">
+                    <span class="review-badge-category">
+                        MOTOR NATION OFFICIAL ROAD TEST REVIEW · {{ car.bodyType|default('VEHICLE')|upper }}
                     </span>
-
-                    <h1 style="font-size: 2.3rem; font-weight: 900; color: var(--text-primary); line-height: 1.2; margin-bottom: 6px;">
-                        {{ car.year|default('2026') }} {{ car.make }} {{ car.model }}
+                    <h1 id="review-title" class="review-main-heading">
+                        {{ review.car_name|upper }}
                     </h1>
-
                     {% if car.trim %}
-                        <div style="font-size: 1.1rem; color: var(--text-secondary); font-weight: 600; margin-bottom: 16px;">
+                        <div class="review-trim-subtitle">
                             {{ car.trim }}
                         </div>
                     {% endif %}
 
-                    <!-- Starting MSRP with $ and red amount -->
-                    <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 24px;">
-                        <span style="color: var(--text-muted); font-size: 0.92rem; display: block; margin-bottom: 4px;">Starting MSRP</span>
+                    <!-- Starting MSRP with black/theme $ and red price -->
+                    <div class="review-msrp-strip">
+                        <span class="review-msrp-label">Starting MSRP:</span>
                         {% if car.msrp %}
-                            <span style="color: var(--price-currency);">$</span><span style="color: #e11d2e; font-weight: 900; font-size: 1.6rem;">{{ "{:,.0f}".format(car.msrp|float) }}</span>
+                            <span class="review-msrp-val">
+                                <span class="review-currency-symbol">$</span><span class="review-price-digits">{{ "{:,.0f}".format(car.msrp|float) }}</span>
+                            </span>
                         {% else %}
-                            <span style="color: var(--text-muted);">Price unavailable</span>
+                            <span class="review-msrp-unavailable">Pricing varies by trim & configuration</span>
                         {% endif %}
                     </div>
 
-                    <!-- Quick Specs Pills -->
-                    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px;">
+                    <!-- Quick Specs Ribbon -->
+                    <div class="review-specs-ribbon">
                         {% if car.horsepower %}
                             <span class="mn-spec-pill">⚡ {{ car.horsepower|int }} hp</span>
                         {% endif %}
@@ -76,137 +63,195 @@
                         {% if car.seating %}
                             <span class="mn-spec-pill">🪑 {{ car.seating }} Seats</span>
                         {% endif %}
-                        {% if car.mpg %}
+                        {% if car.evRange %}
+                            <span class="mn-spec-pill">🔋 {{ car.evRange }} mi range</span>
+                        {% elif car.mpg %}
                             <span class="mn-spec-pill">⛽ {{ car.mpg }} MPG</span>
                         {% endif %}
                     </div>
+                </div>
 
-                    <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
-                        <a href="/car/{{ car.id }}" class="primary-btn" style="text-decoration: none; padding: 12px 22px; font-weight: 800;">
-                            Full Specifications & Photos →
-                        </a>
-                        <button
-                            type="button"
-                            class="compare-button"
-                            data-compare-id="{{ car.id }}"
-                            onclick="window.MotorNationCompare && window.MotorNationCompare.instantCompare('{{ car.id }}')"
-                            style="padding: 12px 22px; font-weight: 800; font-size: 0.95rem;"
+                <!-- STICKY SECTION NAVIGATION -->
+                <nav class="section-nav" id="reviewSectionNav">
+                    <a href="#overview" class="section-link">Overview</a>
+                    <a href="#pricing" class="section-link">Pricing</a>
+                    <a href="#drivetrain" class="section-link">Powertrain</a>
+                    <a href="#interior" class="section-link">Interior</a>
+                    <a href="#technology" class="section-link">Technology</a>
+                    <a href="#safety" class="section-link">Safety</a>
+                    <a href="#warranty" class="section-link">Warranty</a>
+                </nav>
+
+                <!-- INTERACTIVE PHOTO SLIDER -->
+                <div class="article-image review-gallery-showcase">
+                    <div class="main-image-container" id="mainImageContainer">
+                        <button type="button" class="slider-btn prev-btn" onclick="prevImage()" aria-label="Previous image">‹</button>
+                        <img
+                            src="{{ review.main_image if review.main_image else (car.image or '') }}"
+                            alt="{{ review.car_name }}"
+                            id="mainImage"
                         >
-                            + Instant Compare
-                        </button>
-                        <a href="/news/{{ car.id }}" class="secondary-btn" style="text-decoration: none; padding: 12px 22px; font-weight: 800;">
-                            Official News Dispatch ↗
-                        </a>
+                        <button type="button" class="slider-btn next-btn" onclick="nextImage()" aria-label="Next image">›</button>
+                    </div>
+                    <div class="image-gallery-container">
+                        <div class="image-gallery" id="imageGallery">
+                            {% for img_url in review.images %}
+                            <img
+                                src="{{ img_url }}"
+                                class="thumbnail {% if loop.first %}active{% endif %}"
+                                data-index="{{ loop.index0 }}"
+                                alt="{{ review.car_name }} Photo {{ loop.index }}"
+                                onclick="setMainImage({{ loop.index0 }})"
+                                loading="lazy"
+                            >
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
 
-            </div>
-        </section>
-
-        <!-- 5-POINT ROAD TEST VERDICT -->
-        <section class="mn-roadtest-review-card" style="margin-bottom: 40px;">
-            <div class="mn-roadtest-header">
-                {% if car.rating or review_item.rating %}
-                <div class="mn-roadtest-rating">
-                    <span class="mn-star">★</span>
-                    <span class="mn-score">{{ car.rating or review_item.rating }}</span>
-                    <span class="mn-score-sub">Tested Score</span>
+                <!-- 3-COLUMN SUMMARY ROW (PROS, CONS, MOTORNATION'S TAKE) -->
+                <div class="summary-row">
+                    <div class="summary-item summary-item-pros">
+                        <h2 id="pros">PROS</h2>
+                        <div id="pros-text" class="summary-content">
+                            {{ review.pros|safe }}
+                        </div>
+                    </div>
+                    <div class="summary-item summary-item-cons">
+                        <h2 id="cons">CONS</h2>
+                        <div id="cons-text" class="summary-content">
+                            {{ review.cons|safe }}
+                        </div>
+                    </div>
+                    <div class="summary-item summary-item-take">
+                        <h2 id="mn_take">MOTORNATION'S TAKE</h2>
+                        <div id="mn_take-text" class="summary-content">
+                            {{ review.mn_take|safe }}
+                        </div>
+                    </div>
                 </div>
-                {% endif %}
-                <div class="mn-roadtest-headline">
-                    <h3>5-Point In-Depth Road Test Evaluation</h3>
-                    <p class="mn-roadtest-subtitle">Instrumented dynamic road testing, chassis balance, powertrain feedback, and ergonomics analysis</p>
+
+                <!-- DETAILED EDITORIAL SECTIONS -->
+                <div class="article-text editorial-sections">
+
+                    <!-- OVERVIEW -->
+                    <h2 id="overview">OVERVIEW</h2>
+                    <div id="overview-text" class="editorial-body">
+                        {{ review.overview|safe }}
+                    </div>
+
+                    <!-- PRICING -->
+                    <h2 id="pricing">PRICING</h2>
+                    <div id="pricing-text" class="editorial-body">
+                        {{ review.pricing|safe }}
+                    </div>
+
+                    <!-- POWERTRAIN -->
+                    <h2 id="drivetrain">POWERTRAIN</h2>
+                    {% if review.drivetrain_image %}
+                    <div class="article-image section-article-image">
+                        <img id="drivetrainImage" src="{{ review.drivetrain_image }}" alt="{{ review.car_name }} Powertrain" loading="lazy">
+                    </div>
+                    {% endif %}
+                    <div id="drivetrain-text" class="editorial-body">
+                        {{ review.drivetrain|safe }}
+                    </div>
+
+                    <!-- INTERIOR -->
+                    <h2 id="interior">INTERIOR</h2>
+                    {% if review.interior_image %}
+                    <div class="article-image section-article-image">
+                        <img id="interiorImage" src="{{ review.interior_image }}" alt="{{ review.car_name }} Interior" loading="lazy">
+                    </div>
+                    {% endif %}
+                    <div id="interior-text" class="editorial-body">
+                        {{ review.interior|safe }}
+                    </div>
+
+                    <!-- TECHNOLOGY -->
+                    <h2 id="technology">TECHNOLOGY</h2>
+                    {% if review.technology_image %}
+                    <div class="article-image section-article-image">
+                        <img id="technologyImage" src="{{ review.technology_image }}" alt="{{ review.car_name }} Technology" loading="lazy">
+                    </div>
+                    {% endif %}
+                    <div id="technology-text" class="editorial-body">
+                        {{ review.technology|safe }}
+                    </div>
+
+                    <!-- SAFETY -->
+                    <h2 id="safety">SAFETY</h2>
+                    {% if review.safety_image %}
+                    <div class="article-image section-article-image">
+                        <img id="safetyImage" src="{{ review.safety_image }}" alt="{{ review.car_name }} Safety" loading="lazy">
+                    </div>
+                    {% endif %}
+                    <div id="safety-text" class="editorial-body">
+                        {{ review.safety|safe }}
+                    </div>
+
+                    <!-- WARRANTY -->
+                    <h2 id="warranty">WARRANTY</h2>
+                    {% if review.warranty_image %}
+                    <div class="article-image section-article-image">
+                        <img id="warrantyImage" src="{{ review.warranty_image }}" alt="{{ review.car_name }} Warranty" loading="lazy">
+                    </div>
+                    {% endif %}
+                    <div id="warranty-text" class="editorial-body">
+                        {{ review.warranty|safe }}
+                    </div>
+
                 </div>
-            </div>
 
-            <ol class="mn-roadtest-list">
-                {% set lines = car.roadTestReviewLines or review_item.review_lines or [] %}
-                {% if lines %}
-                    {% for line in lines %}
-                        <li class="mn-roadtest-item">
-                            <span class="mn-item-num">{{ loop.index }}</span>
-                            <span class="mn-item-content">{{ line.lstrip('0123456789. ') }}</span>
-                        </li>
-                    {% endfor %}
-                {% else %}
-                    <li class="mn-roadtest-item">
-                        <span class="mn-item-num">1</span>
-                        <span class="mn-item-content">{{ car.finalWord or car.reviewSummary or 'Road test assessment is being prepared.' }}</span>
-                    </li>
-                {% endif %}
-            </ol>
-        </section>
+                <!-- ACTION BUTTONS RIBBON -->
+                <div class="review-action-ribbon">
+                    <a href="/car/{{ car.id }}" class="primary-btn review-btn">
+                        Full Specifications & Photos →
+                    </a>
+                    <button
+                        type="button"
+                        class="compare-button review-btn"
+                        data-compare-id="{{ car.id }}"
+                        onclick="window.MotorNationCompare && window.MotorNationCompare.instantCompare('{{ car.id }}')"
+                    >
+                        + Instant Compare
+                    </button>
+                    <a href="/news/{{ car.id }}" class="secondary-btn review-btn">
+                        Official News Dispatch ↗
+                    </a>
+                </div>
 
-        <!-- PROS & CONS EXPANDED -->
-        {% set pros = car.pros or review_item.pros or [] %}
-        {% set cons = car.cons or review_item.cons or [] %}
-        {% if pros or cons %}
-        <section style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 40px;">
-            {% if pros %}
-            <div style="background: var(--bg-card); border: 1px solid var(--border); border-top: 4px solid #10b981; border-radius: 16px; padding: 28px; box-shadow: var(--shadow-sm);">
-                <h3 style="font-size: 1.15rem; font-weight: 800; color: #10b981; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-                    <span>✓</span> Key Strengths (Highs)
-                </h3>
-                <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px;">
-                    {% for p in pros %}
-                        <li style="display: flex; align-items: flex-start; gap: 10px; font-size: 0.95rem; color: var(--text-primary); line-height: 1.5;">
-                            <span style="color: #10b981; font-weight: 800;">+</span>
-                            <span>{{ p }}</span>
-                        </li>
-                    {% endfor %}
-                </ul>
             </div>
-            {% endif %}
-
-            {% if cons %}
-            <div style="background: var(--bg-card); border: 1px solid var(--border); border-top: 4px solid #f43f5e; border-radius: 16px; padding: 28px; box-shadow: var(--shadow-sm);">
-                <h3 style="font-size: 1.15rem; font-weight: 800; color: #f43f5e; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-                    <span>✗</span> Key Compromises (Lows)
-                </h3>
-                <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px;">
-                    {% for c in cons %}
-                        <li style="display: flex; align-items: flex-start; gap: 10px; font-size: 0.95rem; color: var(--text-primary); line-height: 1.5;">
-                            <span style="color: #f43f5e; font-weight: 800;">−</span>
-                            <span>{{ c }}</span>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
-            {% endif %}
-        </section>
-        {% endif %}
+        </article>
 
         <!-- OFFICIAL YOUTUBE VIDEO COVERAGE FROM @motornationofficial -->
-        <section class="mn-section mn-video-section" style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 36px; box-shadow: var(--shadow-md); margin-bottom: 40px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 22px;">
+        <section class="mn-section mn-video-section review-video-card">
+            <div class="review-video-header">
                 <div>
-                    <span style="color: var(--primary, #e11d2e); font-size: 0.78rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;">
-                        MOTOR NATION VIDEO COVERAGE
-                    </span>
-                    <h2 style="font-size: 1.7rem; font-weight: 900; color: var(--text-primary); margin: 4px 0 0 0;">
+                    <span class="video-section-badge">MOTOR NATION VIDEO COVERAGE</span>
+                    <h2 class="video-section-title">
                         {{ video_info.title if video_info else (car.year|default('2026') ~ ' ' ~ car.make ~ ' ' ~ car.model ~ ' — Watch on YouTube') }}
                     </h2>
                 </div>
-                <a href="https://www.youtube.com/@motornationofficial" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 8px; background: #e11d2e; color: #ffffff; padding: 8px 16px; border-radius: 999px; font-weight: 700; font-size: 0.88rem; text-decoration: none;">
+                <a href="https://www.youtube.com/@motornationofficial" target="_blank" rel="noopener noreferrer" class="youtube-channel-pill">
                     <span>▶</span>
                     <span>@motornationofficial</span>
                 </a>
             </div>
 
-            <div style="position: relative; width: 100%; padding-top: 56.25%; background: #0f172a; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+            <div class="review-video-embed-wrap">
                 <iframe
                     src="https://www.youtube-nocookie.com/embed/{{ video_info.video_id if video_info else 'Z0I64NzsFNQ' }}?rel=0"
                     title="{{ video_info.title if video_info else 'MotorNation Video Review' }}"
-                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowfullscreen
                     loading="lazy"
                 ></iframe>
             </div>
 
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 0.88rem; color: var(--text-muted);">
-                <span>Watch in-depth walkarounds, exhaust sound clips, and road test analysis.</span>
-                <a href="{{ video_info.url if video_info and video_info.url else ('https://www.youtube.com/watch?v=' ~ (video_info.video_id if video_info else 'Z0I64NzsFNQ')) }}" target="_blank" rel="noopener noreferrer" style="color: var(--primary, #e11d2e); font-weight: 700; text-decoration: none;">
+            <div class="review-video-footer">
+                <span>Watch comprehensive walkarounds, exhaust sound clips, and road test analysis.</span>
+                <a href="{{ video_info.url if video_info and video_info.url else ('https://www.youtube.com/watch?v=' ~ (video_info.video_id if video_info else 'Z0I64NzsFNQ')) }}" target="_blank" rel="noopener noreferrer" class="review-yt-link">
                     Watch on YouTube ↗
                 </a>
             </div>
@@ -214,12 +259,12 @@
 
         <!-- DIRECT COMPETITORS & ALTERNATIVES (RIVALS) -->
         {% if rivals and rivals|length > 0 %}
-        <section class="mn-section mn-rivals-section" style="margin-bottom: 40px;">
+        <section class="mn-section mn-rivals-section review-rivals-block">
             <div class="mn-section-inner">
                 <span class="mn-label">HEAD TO HEAD</span>
                 <h2>Direct Competitors & Alternatives</h2>
                 <p class="section-description" style="margin-bottom: 25px;">
-                    Compare similar vehicles against the {{ car.year|default('2026') }} {{ car.make }} {{ car.model }}.
+                    Compare direct segment rivals and alternatives against the {{ car.year|default('2026') }} {{ car.make }} {{ car.model }}.
                 </p>
 
                 <div class="car-grid">
@@ -277,9 +322,9 @@
         </section>
         {% endif %}
 
-        <!-- BACK ACTION -->
-        <div style="text-align: center; margin: 40px 0;">
-            <a href="/reviews" class="secondary-btn" style="text-decoration: none; padding: 12px 28px; font-weight: 700;">
+        <!-- BACK TO REVIEWS -->
+        <div class="review-back-footer">
+            <a href="/reviews" class="secondary-btn review-back-btn">
                 ← Back to All Vehicle Reviews
             </a>
         </div>
@@ -287,5 +332,96 @@
     </div>
 
 </main>
+
+<!-- GALLERY AND SECTION NAV SCRIPTS -->
+<script>
+    // Gallery State & Navigation
+    window.galleryImages = {{ review.images|tojson|safe }} || [];
+    window.currentImageIndex = 0;
+
+    function setMainImage(index) {
+        if (!window.galleryImages || window.galleryImages.length === 0) return;
+        if (index < 0) index = 0;
+        if (index >= window.galleryImages.length) index = window.galleryImages.length - 1;
+        window.currentImageIndex = index;
+
+        const mainImageEl = document.getElementById('mainImage');
+        if (mainImageEl) {
+            mainImageEl.src = window.galleryImages[index];
+        }
+
+        // Update active class on thumbnails
+        const thumbs = document.querySelectorAll('.image-gallery .thumbnail');
+        thumbs.forEach((thumb, idx) => {
+            thumb.classList.toggle('active', idx === index);
+            if (idx === index) {
+                thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            }
+        });
+        updateArrowsVisibility();
+    }
+
+    function nextImage() {
+        if (!window.galleryImages || window.galleryImages.length === 0) return;
+        let next = window.currentImageIndex + 1;
+        if (next >= window.galleryImages.length) next = 0;
+        setMainImage(next);
+    }
+
+    function prevImage() {
+        if (!window.galleryImages || window.galleryImages.length === 0) return;
+        let prev = window.currentImageIndex - 1;
+        if (prev < 0) prev = window.galleryImages.length - 1;
+        setMainImage(prev);
+    }
+
+    function updateArrowsVisibility() {
+        const prevBtn = document.querySelector('.prev-btn');
+        const nextBtn = document.querySelector('.next-btn');
+        const count = window.galleryImages ? window.galleryImages.length : 0;
+        if (count <= 1) {
+            if (prevBtn) prevBtn.style.display = 'none';
+            if (nextBtn) nextBtn.style.display = 'none';
+        } else {
+            if (prevBtn) prevBtn.style.display = '';
+            if (nextBtn) nextBtn.style.display = '';
+        }
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') prevImage();
+        if (e.key === 'ArrowRight') nextImage();
+    });
+
+    // Sticky Section Navigation Smooth Scroll with Offset
+    document.addEventListener('DOMContentLoaded', () => {
+        updateArrowsVisibility();
+
+        const sectionLinks = document.querySelectorAll('.section-link');
+        function calculateOffset() {
+            const sectionNav = document.querySelector('.section-nav');
+            const navHeight = sectionNav ? sectionNav.offsetHeight : 50;
+            const stickyTop = parseInt(window.getComputedStyle(sectionNav).top) || 70;
+            return stickyTop + navHeight + 15;
+        }
+
+        sectionLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    const offset = calculateOffset();
+                    const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - offset;
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    });
+</script>
 
 {% endblock %}

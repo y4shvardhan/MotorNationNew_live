@@ -490,6 +490,9 @@ function createCarCard(car) {
     const name =
         getVehicleName(car);
 
+    const trim =
+        getVehicleTrim(car);
+
     const url =
         `/car/${encodeURIComponent(
             car.id ??
@@ -580,9 +583,23 @@ function createCarCard(car) {
 
             <div class="car-card-content">
 
-                <span class="car-card-category">
-                    ${escapeHTML(body)}
-                </span>
+                <div class="car-card-meta-row">
+                    <span class="car-card-category">
+                        ${escapeHTML(body)}
+                    </span>
+                    ${
+                        trim
+                            ? `
+                                <span
+                                    class="car-card-trim-badge"
+                                    title="Trim: ${escapeHTML(trim)}"
+                                >
+                                    ${escapeHTML(trim)}
+                                </span>
+                            `
+                            : ""
+                    }
+                </div>
 
                 <h3 class="car-card-title">
 
@@ -767,23 +784,19 @@ function getVehicleName(car) {
     const model =
         String(car?.model || "").trim();
 
-    const variant =
-        String(
-            car?.variant ??
-            car?.trim ??
-            ""
-        ).trim();
+    return [make, model]
+        .filter(Boolean)
+        .join(" ") || "Vehicle";
+}
 
-    let name =
-        [make, model]
-            .filter(Boolean)
-            .join(" ");
 
-    if (variant) {
-        name += ` ${variant}`;
-    }
+function getVehicleTrim(car) {
 
-    return name || "Vehicle";
+    return String(
+        car?.variant ??
+        car?.trim ??
+        ""
+    ).trim();
 }
 
 
