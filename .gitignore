@@ -72,7 +72,6 @@ logs/
 
 *.tmp
 *.bak
-*_455_backup.*
 
 # =========================================================
 # Local databases
@@ -82,6 +81,7 @@ logs/
 *.sqlite3
 *.db
 !database/motornation.db
+!database/motornation_455_backup.db
 
 # =========================================================
 # Generated archives
