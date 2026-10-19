@@ -403,6 +403,8 @@ CURATED_EXTRA_TRIMS = {
     ]
 }
 
+_TRIMS_CACHE = {}
+
 
 def get_trims_and_range_for_car(car):
     """
@@ -416,6 +418,18 @@ def get_trims_and_range_for_car(car):
     year = str(car.get("year") or "2026").strip()
     current_id = car.get("id") or car.get("vehicle_id")
     current_trim = str(car.get("trim") or "").strip().lower()
+
+    cache_key = (make.lower(), model.lower())
+    if cache_key in _TRIMS_CACHE:
+        cached_trims, cached_rng, cached_min, cached_max = _TRIMS_CACHE[cache_key]
+        result_trims = []
+        for t in cached_trims:
+            t_copy = dict(t)
+            t_copy["is_current"] = (t["trim"].lower() == current_trim) or (t.get("id") == current_id)
+            result_trims.append(t_copy)
+        if not any(t["is_current"] for t in result_trims) and result_trims:
+            result_trims[0]["is_current"] = True
+        return result_trims, cached_rng, cached_min, cached_max
 
     trims = []
     seen_trims = set()
@@ -537,6 +551,9 @@ def get_trims_and_range_for_car(car):
         min_m = car.get("msrp")
         max_m = car.get("msrp")
         msrp_range_str = f"${min_m:,.0f}" if min_m else "Pricing unavailable"
+
+    if cache_key and cache_key != ("", ""):
+        _TRIMS_CACHE[cache_key] = (trims, msrp_range_str, min_m, max_m)
 
     return trims, msrp_range_str, min_m, max_m
 
@@ -1567,6 +1584,17 @@ def row_to_car(row):
 
         "sourceData": raw
     }
+
+    try:
+        _, msrp_range_str, min_m, max_m = get_trims_and_range_for_car(car)
+        car["msrp_range_str"] = msrp_range_str
+        car["msrp_min"] = min_m
+        car["msrp_max"] = max_m
+    except Exception as e:
+        app.logger.warning(f"Error computing msrp_range_str in row_to_car: {e}")
+        car["msrp_range_str"] = f"${car.get('msrp'):,.0f}" if car.get('msrp') else "Pricing unavailable"
+        car["msrp_min"] = car.get("msrp")
+        car["msrp_max"] = car.get("msrp")
 
     return car
 
@@ -3376,6 +3404,7 @@ def admin_add_vehicle():
             )
 
             connection.commit()
+            _TRIMS_CACHE.clear()
 
             connection.close()
 
@@ -3530,6 +3559,7 @@ def admin_edit_vehicle(
             )
 
             connection.commit()
+            _TRIMS_CACHE.clear()
 
             connection.close()
 
@@ -3617,6 +3647,7 @@ def admin_delete_vehicle(
     )
 
     connection.commit()
+    _TRIMS_CACHE.clear()
 
     connection.close()
 

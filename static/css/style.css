@@ -5513,3 +5513,52 @@ button, input, select, textarea {
 .mn-trim-see-icon {
     font-size: 1.05rem;
 }
+
+
+/* ============================================================
+   MSRP RANGE BADGE & PRICING WRAP (HOMEPAGE & CARDS)
+============================================================ */
+
+.car-card-price-wrap,
+.review-price-wrap {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.car-price-range-label,
+.review-price-range-label {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #94a3b8;
+}
+
+[data-theme="light"] .car-price-range-label,
+[data-theme="light"] .review-price-range-label {
+    color: #64748b;
+}
+
+.dark-homepage-section .car-price-range-label,
+.dark-homepage-section .review-price-range-label {
+    color: #94a3b8 !important;
+}
+
+.dark-homepage-section .car-card-price,
+.dark-homepage-section .review-price {
+    margin-bottom: 0 !important;
+}
+
+.car-card-price {
+    font-size: clamp(1.15rem, 2.2vw, 1.35rem) !important;
+    line-height: 1.25;
+}
+
+.hero-dropdown-range-lbl {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    font-weight: 700;
+}

@@ -603,13 +603,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         html += createRow(
-            "Starting MSRP",
+            "MSRP Range",
             cars,
             function (car) {
+                if (car && typeof car.msrp_range_str === "string" && car.msrp_range_str.trim() && car.msrp_range_str !== "Price unavailable" && car.msrp_range_str !== "Pricing unavailable") {
+                    return car.msrp_range_str.trim();
+                }
 
                 const price =
                     getPrice(car);
-
 
                 return price
                     ? "$" +

@@ -139,6 +139,26 @@ function formatPrice(value) {
 }
 
 
+function getMsrpRange(car) {
+    if (
+        car &&
+        typeof car.msrp_range_str === "string" &&
+        car.msrp_range_str.trim() !== "" &&
+        car.msrp_range_str !== "Price unavailable" &&
+        car.msrp_range_str !== "Pricing unavailable"
+    ) {
+        return car.msrp_range_str.trim();
+    }
+
+    const price = getPrice(car);
+    if (price > 0) {
+        return formatPrice(price);
+    }
+
+    return "Price unavailable";
+}
+
+
 function getText(value, fallback = "") {
     if (
         value === undefined ||
@@ -277,7 +297,7 @@ function createFeaturedCard(car) {
     const carId = car?.id ?? car?.vehicle_id ?? "";
     const name = getVehicleName(car);
     const year = getText(car?.year, "2026");
-    const price = formatPrice(getPrice(car));
+    const msrpRange = getMsrpRange(car);
     const body = getBodyType(car);
     const seating = car?.seating ? `${car.seating} Seats` : (car?.sourceData?.Seating ? `${car.sourceData.Seating} Seats` : "5 Seats");
     const fuel = getFuelType(car);
@@ -324,8 +344,11 @@ function createFeaturedCard(car) {
                     </a>
                 </h3>
 
-                <div class="car-card-price">
-                    ${escapeHTML(price)}
+                <div class="car-card-price-wrap">
+                    <span class="car-price-range-label">MSRP Range</span>
+                    <div class="car-card-price">
+                        ${escapeHTML(msrpRange)}
+                    </div>
                 </div>
 
                 <div class="car-card-specs">
@@ -369,7 +392,7 @@ function createReviewCard(car) {
     const reviewUrl = `/reviews/${encodeURIComponent(carId)}`;
     const body = getBodyType(car);
     const fuel = getFuelType(car);
-    const price = formatPrice(getPrice(car));
+    const msrpRange = getMsrpRange(car);
 
     const description =
         getText(
@@ -411,8 +434,11 @@ function createReviewCard(car) {
                     </a>
                 </h3>
 
-                <div class="review-price">
-                    ${escapeHTML(price)}
+                <div class="review-price-wrap">
+                    <span class="review-price-range-label">MSRP Range</span>
+                    <div class="review-price">
+                        ${escapeHTML(msrpRange)}
+                    </div>
                 </div>
 
                 <p>
@@ -444,7 +470,7 @@ function createEVCard(car) {
     const carId = car?.id ?? car?.vehicle_id ?? "";
     const name = getVehicleName(car);
     const year = getText(car?.year, "2026");
-    const price = formatPrice(getPrice(car));
+    const msrpRange = getMsrpRange(car);
     const horsepower = getHorsepower(car);
     const body = getBodyType(car);
     const url = getVehicleUrl(car);
@@ -493,8 +519,11 @@ function createEVCard(car) {
                     </a>
                 </h3>
 
-                <div class="car-card-price" style="color: var(--primary); font-weight: 900;">
-                    ${escapeHTML(price)}
+                <div class="car-card-price-wrap">
+                    <span class="car-price-range-label">MSRP Range</span>
+                    <div class="car-card-price" style="color: var(--primary); font-weight: 900;">
+                        ${escapeHTML(msrpRange)}
+                    </div>
                 </div>
 
                 <div class="car-card-specs">
@@ -611,7 +640,7 @@ function initHeroSearch() {
                 const name = getVehicleName(car);
                 const url = getVehicleUrl(car);
                 const img = getImage(car);
-                const price = formatPrice(getPrice(car));
+                const msrpRange = getMsrpRange(car);
                 const year = getText(car.year, "2026");
                 const body = getBodyType(car);
                 const fuel = getFuelType(car);
@@ -628,7 +657,7 @@ function initHeroSearch() {
                                 ${fuel ? `<span>·</span><span>${escapeHTML(fuel)}</span>` : ""}
                             </div>
                         </div>
-                        <div class="hero-dropdown-price">${escapeHTML(price)}</div>
+                        <div class="hero-dropdown-price"><span class="hero-dropdown-range-lbl">MSRP: </span>${escapeHTML(msrpRange)}</div>
                     </a>
                 `;
             }).join("");

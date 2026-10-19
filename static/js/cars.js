@@ -612,14 +612,17 @@ function createCarCard(car) {
                 </h3>
 
 
-                <div class="car-card-price">
-
-                    ${
-                        price > 0
-                            ? formatPrice(price)
-                            : "Price unavailable"
-                    }
-
+                <div class="car-card-price-wrap">
+                    <span class="car-price-range-label">MSRP Range</span>
+                    <div class="car-card-price">
+                        ${
+                            escapeHTML(
+                                (car && typeof car.msrp_range_str === "string" && car.msrp_range_str.trim() && car.msrp_range_str !== "Price unavailable" && car.msrp_range_str !== "Pricing unavailable")
+                                    ? car.msrp_range_str.trim()
+                                    : (price > 0 ? formatPrice(price) : "Price unavailable")
+                            )
+                        }
+                    </div>
                 </div>
 
 
