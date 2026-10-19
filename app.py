@@ -358,6 +358,190 @@ def build_review_data(car):
 
 
 # ============================================================
+# VEHICLE TRIMS & MSRP RANGE ENGINE
+# ============================================================
+
+BACKUP_DATABASE_FILE = DATABASE_DIR / "motornation_455_backup.db"
+
+CURATED_EXTRA_TRIMS = {
+    ("bmw", "m2"): [
+        {"trim": "Coupe 6MT", "msrp": 66075, "hp": 473, "fuel": "Gasoline", "trans": "6-Speed Manual", "engine": "3.0L Twin-Turbo I6 (S58)", "drivetrain": "Rear-Wheel Drive"},
+        {"trim": "Coupe Steptronic", "msrp": 66075, "hp": 473, "fuel": "Gasoline", "trans": "8-Speed M Sport Auto", "engine": "3.0L Twin-Turbo I6 (S58)", "drivetrain": "Rear-Wheel Drive"},
+        {"trim": "CS Track Edition", "msrp": 82000, "hp": 523, "fuel": "Gasoline", "trans": "8-Speed M Sport Auto", "engine": "3.0L Twin-Turbo I6 (S58)", "drivetrain": "Rear-Wheel Drive"}
+    ],
+    ("porsche", "718 boxster"): [
+        {"trim": "Boxster Base", "msrp": 72800, "hp": 300, "fuel": "Gasoline", "trans": "6-Speed Manual", "engine": "2.0L Turbo Boxer-4", "drivetrain": "Rear-Wheel Drive"},
+        {"trim": "Boxster S", "msrp": 84400, "hp": 350, "fuel": "Gasoline", "trans": "7-Speed PDK Dual-Clutch", "engine": "2.5L Turbo Boxer-4", "drivetrain": "Rear-Wheel Drive"},
+        {"trim": "GTS 4.0 6MT", "msrp": 99500, "hp": 394, "fuel": "Gasoline", "trans": "6-Speed Manual", "engine": "4.0L NA Boxer-6", "drivetrain": "Rear-Wheel Drive"},
+        {"trim": "Spyder RS", "msrp": 160700, "hp": 493, "fuel": "Gasoline", "trans": "7-Speed PDK Dual-Clutch", "engine": "4.0L Flat-6", "drivetrain": "Rear-Wheel Drive"}
+    ],
+    ("cadillac", "escalade"): [
+        {"trim": "Luxury 2WD", "msrp": 89595, "hp": 420, "fuel": "Gasoline", "trans": "10-Speed Auto", "engine": "6.2L V8", "drivetrain": "Rear-Wheel Drive"},
+        {"trim": "Premium Luxury 4WD", "msrp": 98595, "hp": 420, "fuel": "Gasoline", "trans": "10-Speed Auto", "engine": "6.2L V8", "drivetrain": "Four-Wheel Drive"},
+        {"trim": "Sport Platinum 4WD", "msrp": 118595, "hp": 420, "fuel": "Gasoline", "trans": "10-Speed Auto", "engine": "6.2L V8", "drivetrain": "Four-Wheel Drive"},
+        {"trim": "V-Series 4WD", "msrp": 154290, "hp": 682, "fuel": "Gasoline", "trans": "10-Speed Auto", "engine": "6.2L Supercharged V8", "drivetrain": "All-Wheel Drive"}
+    ],
+    ("aston martin", "vantage"): [
+        {"trim": "Coupe Base", "msrp": 194400, "hp": 656, "fuel": "Gasoline", "trans": "8-Speed ZF Auto", "engine": "4.0L Twin-Turbo V8", "drivetrain": "Rear-Wheel Drive"},
+        {"trim": "Roadster", "msrp": 209000, "hp": 656, "fuel": "Gasoline", "trans": "8-Speed ZF Auto", "engine": "4.0L Twin-Turbo V8", "drivetrain": "Rear-Wheel Drive"}
+    ],
+    ("audi", "rs6 avant"): [
+        {"trim": "Performance GT", "msrp": 128895, "hp": 621, "fuel": "Gasoline", "trans": "8-Speed Tiptronic", "engine": "4.0L Twin-Turbo V8", "drivetrain": "quattro All-Wheel Drive"},
+        {"trim": "GT Limited Edition", "msrp": 175000, "hp": 621, "fuel": "Gasoline", "trans": "8-Speed Tiptronic", "engine": "4.0L Twin-Turbo V8", "drivetrain": "quattro All-Wheel Drive"}
+    ],
+    ("kia", "carnival"): [
+        {"trim": "LX 8-Passenger", "msrp": 36800, "hp": 287, "fuel": "Gasoline", "trans": "8-Speed Auto", "engine": "3.5L V6", "drivetrain": "Front-Wheel Drive"},
+        {"trim": "EX 8-Passenger", "msrp": 41000, "hp": 287, "fuel": "Gasoline", "trans": "8-Speed Auto", "engine": "3.5L V6", "drivetrain": "Front-Wheel Drive"},
+        {"trim": "SX Prestige", "msrp": 46000, "hp": 287, "fuel": "Gasoline", "trans": "8-Speed Auto", "engine": "3.5L V6", "drivetrain": "Front-Wheel Drive"},
+        {"trim": "SX Prestige Hybrid", "msrp": 54000, "hp": 242, "fuel": "Gas-Electric Hybrid", "trans": "6-Speed Auto", "engine": "1.6L Turbo I4 Hybrid", "drivetrain": "Front-Wheel Drive"}
+    ],
+    ("hyundai", "ioniq 5 n"): [
+        {"trim": "SE Standard Range RWD", "msrp": 42500, "hp": 168, "fuel": "Electric", "trans": "Direct-Drive", "engine": "Single Rear Motor", "drivetrain": "Rear-Wheel Drive"},
+        {"trim": "SEL AWD", "msrp": 51000, "hp": 320, "fuel": "Electric", "trans": "Direct-Drive", "engine": "Dual Motors AWD", "drivetrain": "All-Wheel Drive"},
+        {"trim": "Limited AWD", "msrp": 55000, "hp": 320, "fuel": "Electric", "trans": "Direct-Drive", "engine": "Dual Motors AWD", "drivetrain": "All-Wheel Drive"},
+        {"trim": "Base N AWD", "msrp": 67475, "hp": 641, "fuel": "Electric", "trans": "Direct-Drive", "engine": "Dual High-Output Motors", "drivetrain": "All-Wheel Drive"}
+    ]
+}
+
+
+def get_trims_and_range_for_car(car):
+    """
+    Retrieve all available factory trims for a vehicle model and compute the MSRP range.
+    """
+    if not car:
+        return [], "Price unavailable", None, None
+
+    make = str(car.get("make") or "").strip()
+    model = str(car.get("model") or "").strip()
+    year = str(car.get("year") or "2026").strip()
+    current_id = car.get("id") or car.get("vehicle_id")
+    current_trim = str(car.get("trim") or "").strip().lower()
+
+    trims = []
+    seen_trims = set()
+
+    # 1. Query backup 455-vehicles database
+    if BACKUP_DATABASE_FILE.exists():
+        try:
+            conn = sqlite3.connect(BACKUP_DATABASE_FILE)
+            c = conn.cursor()
+            c.execute(
+                'SELECT vehicle_id, Year, Make, "Model / Model Group", "Trim / Variant", MSRP, Horsepower, "Fuel Type", Engine, Transmission, Drivetrain '
+                'FROM vehicles WHERE LOWER(Make) = LOWER(?) AND LOWER("Model / Model Group") = LOWER(?) ORDER BY MSRP ASC',
+                (make, model)
+            )
+            rows = c.fetchall()
+            for r in rows:
+                t_name = str(r[4] or "").strip()
+                if t_name and t_name.lower() not in seen_trims:
+                    seen_trims.add(t_name.lower())
+                    hp_val = f"{int(r[6])} hp" if r[6] else ""
+                    fuel_val = str(r[7] or "").strip()
+                    trans_val = str(r[9] or "").strip()
+                    eng_val = str(r[8] or "").strip()
+                    feats = " • ".join([f for f in [hp_val, fuel_val, trans_val] if f])
+                    trims.append({
+                        "id": r[0],
+                        "year": r[1] or year,
+                        "make": r[2] or make,
+                        "model": r[3] or model,
+                        "trim": t_name,
+                        "full_name": f"{r[2]} {r[3]} {r[1] or year} {t_name}",
+                        "msrp": r[5],
+                        "msrp_formatted": f"${r[5]:,.0f}" if r[5] else "Price unavailable",
+                        "horsepower": r[6],
+                        "fuel_type": r[7],
+                        "engine": r[8],
+                        "transmission": r[9],
+                        "drivetrain": r[10] if len(r) > 10 else "",
+                        "key_features": feats or eng_val or "Standard Equipment",
+                        "is_current": (t_name.lower() == current_trim) or (r[0] == current_id)
+                    })
+            conn.close()
+        except Exception as e:
+            app.logger.warning(f"Could not load trims from backup DB: {e}")
+
+    # 2. Curated fallback trims if fewer than 2 trims exist
+    if len(trims) < 2:
+        for (m_k, mod_k), cur_list in CURATED_EXTRA_TRIMS.items():
+            if m_k.lower() == make.lower() and mod_k.lower() == model.lower():
+                for item in cur_list:
+                    t_name = item["trim"]
+                    if t_name.lower() not in seen_trims:
+                        seen_trims.add(t_name.lower())
+                        hp_val = f"{item['hp']} hp" if item.get('hp') else ""
+                        fuel_val = item.get('fuel', '')
+                        trans_val = item.get('trans', '')
+                        feats = " • ".join([f for f in [hp_val, fuel_val, trans_val] if f])
+                        trims.append({
+                            "id": current_id,
+                            "year": year,
+                            "make": make,
+                            "model": model,
+                            "trim": t_name,
+                            "full_name": f"{make} {model} {year} {t_name}",
+                            "msrp": item.get('msrp'),
+                            "msrp_formatted": f"${item['msrp']:,.0f}" if item.get('msrp') else "Price unavailable",
+                            "horsepower": item.get('hp'),
+                            "fuel_type": item.get('fuel'),
+                            "engine": item.get('engine'),
+                            "transmission": item.get('trans'),
+                            "drivetrain": item.get('drivetrain', ''),
+                            "key_features": feats,
+                            "is_current": (t_name.lower() == current_trim)
+                        })
+
+    # Ensure at least the current car exists in trims if trims list is empty
+    if not trims:
+        hp_val = f"{int(car.get('horsepower'))} hp" if car.get('horsepower') else ""
+        fuel_val = str(car.get('fuelType') or "").strip()
+        trans_val = str(car.get('transmission') or "").strip()
+        feats = " • ".join([f for f in [hp_val, fuel_val, trans_val] if f])
+        t_name = str(car.get('trim') or "Standard").strip()
+        msrp_val = car.get('msrp')
+        trims.append({
+            "id": current_id,
+            "year": year,
+            "make": make,
+            "model": model,
+            "trim": t_name,
+            "full_name": f"{make} {model} {year} {t_name}",
+            "msrp": msrp_val,
+            "msrp_formatted": f"${msrp_val:,.0f}" if msrp_val else "Price unavailable",
+            "horsepower": car.get('horsepower'),
+            "fuel_type": car.get('fuelType'),
+            "engine": car.get('engine'),
+            "transmission": car.get('transmission'),
+            "drivetrain": car.get('drivetrain', ''),
+            "key_features": feats or "Standard Equipment",
+            "is_current": True
+        })
+
+    # If none marked as current, mark the first
+    if not any(t["is_current"] for t in trims):
+        trims[0]["is_current"] = True
+
+    # Sort trims by MSRP ascending
+    trims.sort(key=lambda t: t.get("msrp") or 0)
+
+    # Compute MSRP range
+    msrps = [t["msrp"] for t in trims if t.get("msrp") and isinstance(t["msrp"], (int, float))]
+    if msrps:
+        min_m = min(msrps)
+        max_m = max(msrps)
+        if min_m != max_m:
+            msrp_range_str = f"${min_m:,.0f} – ${max_m:,.0f}"
+        else:
+            msrp_range_str = f"${min_m:,.0f}"
+    else:
+        min_m = car.get("msrp")
+        max_m = car.get("msrp")
+        msrp_range_str = f"${min_m:,.0f}" if min_m else "Pricing unavailable"
+
+    return trims, msrp_range_str, min_m, max_m
+
+
+# ============================================================
 # ADMIN SETTINGS
 # ============================================================
 
@@ -1618,9 +1802,9 @@ def car_details(car_id):
     )
 
     if car is None:
-
         return "Vehicle not found", 404
 
+    trims, msrp_range_str, min_m, max_m = get_trims_and_range_for_car(car)
     rivals = find_rivals_for_car(car, limit=3)
     video_info = get_motornation_video_for_car(car)
 
@@ -1629,6 +1813,10 @@ def car_details(car_id):
         car=car,
         vehicle=car,
         car_id=car_id,
+        trims=trims,
+        msrp_range_str=msrp_range_str,
+        msrp_min=min_m,
+        msrp_max=max_m,
         rivals=rivals,
         video_info=video_info
     )
@@ -1848,6 +2036,7 @@ def review_detail(car_id=None, car_slug=None):
         return "Vehicle review not found", 404
 
     review = build_review_data(car)
+    trims, msrp_range_str, min_m, max_m = get_trims_and_range_for_car(car)
     nr_data = get_news_and_reviews()
     nr_item = nr_data.get("by_id", {}).get(str(car.get('id', ''))) or nr_data.get("by_key", {}).get(f"{car.get('make','')}_{car.get('model','')}".lower()) or {}
     rivals = find_rivals_for_car(car, limit=3)
@@ -1858,6 +2047,8 @@ def review_detail(car_id=None, car_slug=None):
         car=car,
         review=review,
         review_item=nr_item,
+        trims=trims,
+        msrp_range_str=msrp_range_str,
         rivals=rivals,
         video_info=video_info
     )

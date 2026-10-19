@@ -193,14 +193,18 @@
 
                 <!-- PRICE -->
                 <div class="mn-car-price">
-                    <span>Starting MSRP</span>
-                    {% if car.msrp is not none and car.msrp != '' %}
+                    <span>MSRP Range</span>
+                    {% if msrp_range_str and msrp_range_str != 'Price unavailable' and msrp_range_str != 'Pricing unavailable' %}
                         <strong>
-                            <span style="color: var(--price-currency);">$</span><span style="color: #e11d2e;">{{ "{:,.0f}".format(car.msrp|float) }}</span>
+                            <span style="color: var(--price-currency);">$</span><span style="color: #e11d2e;" id="heroCarPrice">{{ msrp_range_str.lstrip('$') }}</span>
+                        </strong>
+                    {% elif car.msrp is not none and car.msrp != '' %}
+                        <strong>
+                            <span style="color: var(--price-currency);">$</span><span style="color: #e11d2e;" id="heroCarPrice">{{ "{:,.0f}".format(car.msrp|float) }}</span>
                         </strong>
                     {% elif car.price and car.price.msrp is not none %}
                         <strong>
-                            <span style="color: var(--price-currency);">$</span><span style="color: #e11d2e;">{{ "{:,.0f}".format(car.price.msrp|float) }}</span>
+                            <span style="color: var(--price-currency);">$</span><span style="color: #e11d2e;" id="heroCarPrice">{{ "{:,.0f}".format(car.price.msrp|float) }}</span>
                         </strong>
                     {% else %}
                         <strong>
@@ -210,9 +214,18 @@
                 </div>
 
                 <div class="mn-car-actions">
+                    {% if trims and trims|length > 0 %}
+                    <a href="#trims" class="mn-primary-btn">
+                        Explore Trims & Pricing ({{ trims|length }})
+                    </a>
+                    <a href="#specifications" class="mn-secondary-btn" style="text-decoration: none;">
+                        Specifications
+                    </a>
+                    {% else %}
                     <a href="#specifications" class="mn-primary-btn">
                         View Specifications
                     </a>
+                    {% endif %}
 
                     <button
                         type="button"
@@ -292,6 +305,53 @@
         </div>
 
     </section>
+
+
+    <!-- =========================================================
+         AVAILABLE TRIMS & PRICING (MATCHING OFFICIAL MOTORNATION UI)
+    ========================================================= -->
+    {% if trims and trims|length > 0 %}
+    <section class="mn-section mn-trims-section" id="trims">
+        <div class="mn-section-inner">
+            <span class="mn-label">AVAILABLE CONFIGURATIONS</span>
+            <h2>Trims & Pricing</h2>
+            <p class="section-description" style="margin-bottom: 24px;">
+                Explore all available factory trim levels, powertrain outputs, and MSRP pricing for the {{ car.year|default('2026') }} {{ car.make }} {{ car.model }}.
+            </p>
+
+            <div class="mn-trims-grid">
+                {% for trim_item in trims %}
+                <article class="mn-trim-card {% if trim_item.is_current %}active-trim-card{% endif %}" id="trim-card-{{ loop.index }}">
+                    <h3 class="mn-trim-title">
+                        {{ trim_item.full_name }}
+                    </h3>
+
+                    <div class="mn-trim-price">
+                        {{ trim_item.msrp_formatted }}
+                    </div>
+
+                    <div class="mn-trim-features-box">
+                        <span class="mn-trim-features-label">KEY FEATURES</span>
+                        <div class="mn-trim-features-val">
+                            {{ trim_item.key_features }}
+                        </div>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="mn-trim-see-btn"
+                        data-trim-index="{{ loop.index }}"
+                        onclick="activateVehicleTrim({{ trim_item|tojson|safe }}, this)"
+                    >
+                        <span class="mn-trim-see-icon">👁</span>
+                        <span class="mn-trim-btn-text">{% if trim_item.is_current %}Currently Viewing{% else %}See Trim{% endif %}</span>
+                    </button>
+                </article>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {% endif %}
 
 
     <!-- OVERVIEW -->
@@ -846,6 +906,55 @@
 
 {% block extra_js %}
 <script>
+window.activateVehicleTrim = function(trimData, btnEl) {
+    if (!trimData) return;
+
+    // 1. Update Hero trim subtitle
+    const heroTrimEl = document.querySelector('.mn-car-trim');
+    if (heroTrimEl) {
+        heroTrimEl.textContent = trimData.trim;
+    }
+
+    // 2. Update Hero Price
+    const heroPriceEl = document.getElementById('heroCarPrice');
+    if (heroPriceEl) {
+        heroPriceEl.textContent = trimData.msrp_formatted.replace('$', '');
+    }
+
+    // 3. Update quick specs if available
+    const quickGrid = document.querySelector('.mn-quick-grid');
+    if (quickGrid) {
+        const hpEl = quickGrid.querySelector('.mn-quick-card:nth-child(1) strong');
+        if (hpEl && trimData.horsepower) hpEl.textContent = trimData.horsepower + ' hp';
+        const fuelEl = quickGrid.querySelector('.mn-quick-card:nth-child(2) strong');
+        if (fuelEl && trimData.fuel_type) fuelEl.textContent = trimData.fuel_type;
+        const transEl = quickGrid.querySelector('.mn-quick-card:nth-child(3) strong');
+        if (transEl && trimData.transmission) transEl.textContent = trimData.transmission;
+        const driveEl = quickGrid.querySelector('.mn-quick-card:nth-child(4) strong');
+        if (driveEl && trimData.drivetrain) driveEl.textContent = trimData.drivetrain;
+    }
+
+    // 4. Update active cards
+    document.querySelectorAll('.mn-trim-card').forEach(c => {
+        c.classList.remove('active-trim-card');
+        const textSpan = c.querySelector('.mn-trim-btn-text');
+        if (textSpan) textSpan.textContent = 'See Trim';
+    });
+
+    const parentCard = btnEl ? btnEl.closest('.mn-trim-card') : null;
+    if (parentCard) {
+        parentCard.classList.add('active-trim-card');
+        const textSpan = parentCard.querySelector('.mn-trim-btn-text');
+        if (textSpan) textSpan.textContent = 'Currently Viewing';
+    }
+
+    // 5. Scroll smoothly up to Hero
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+};
+
 (function() {
     const galleryItems = [
         {% if car.gallery %}

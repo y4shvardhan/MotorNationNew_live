@@ -5369,3 +5369,147 @@ button, input, select, textarea {
         text-align: center;
     }
 }
+
+
+/* ============================================================
+   CAR DETAILS — TRIMS SECTION (MATCHING USER SCREENSHOT)
+============================================================ */
+
+.mn-trims-section {
+    padding: 30px 0 50px 0;
+    border-top: 1px solid var(--border);
+}
+
+.mn-trims-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.mn-trim-card {
+    background: #12161f;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 24px 28px;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    position: relative;
+}
+
+[data-theme="light"] .mn-trim-card {
+    background: #ffffff;
+    border-color: #e2e8f0;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.mn-trim-card.active-trim-card {
+    border-color: #38bdf8;
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+}
+
+.mn-trim-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 6px 0;
+    line-height: 1.3;
+}
+
+[data-theme="light"] .mn-trim-title {
+    color: #0f172a;
+}
+
+.mn-trim-price {
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: #38bdf8;
+    margin: 0 0 16px 0;
+}
+
+[data-theme="light"] .mn-trim-price {
+    color: #0284c7;
+}
+
+.mn-trim-features-box {
+    background: #18202d;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 18px;
+}
+
+[data-theme="light"] .mn-trim-features-box {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+}
+
+.mn-trim-features-label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #94a3b8;
+    margin-bottom: 4px;
+}
+
+[data-theme="light"] .mn-trim-features-label {
+    color: #64748b;
+}
+
+.mn-trim-features-val {
+    font-size: 0.96rem;
+    font-weight: 600;
+    color: #e2e8f0;
+    line-height: 1.5;
+}
+
+[data-theme="light"] .mn-trim-features-val {
+    color: #334155;
+}
+
+.mn-trim-see-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: transparent;
+    border: 1px solid rgba(56, 189, 248, 0.45);
+    border-radius: 8px;
+    color: #38bdf8;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.mn-trim-see-btn:hover {
+    background: rgba(56, 189, 248, 0.12);
+    border-color: #38bdf8;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+[data-theme="light"] .mn-trim-see-btn {
+    border-color: #0284c7;
+    color: #0284c7;
+}
+
+[data-theme="light"] .mn-trim-see-btn:hover {
+    background: #0284c7;
+    color: #ffffff;
+}
+
+.active-trim-card .mn-trim-see-btn {
+    background: rgba(56, 189, 248, 0.18);
+    border-color: #38bdf8;
+    color: #38bdf8;
+}
+
+.mn-trim-see-icon {
+    font-size: 1.05rem;
+}

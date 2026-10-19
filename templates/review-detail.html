@@ -10,24 +10,12 @@
 
     <div class="container review-container">
 
-        <!-- BREADCRUMBS -->
-        <nav class="mn-breadcrumbs">
-            <a href="/">Home</a>
-            <span class="mn-crumb-sep">/</span>
-            <a href="/reviews">Reviews</a>
-            <span class="mn-crumb-sep">/</span>
-            <span class="mn-crumb-active">{{ car.year|default('2026') }} {{ car.make }} {{ car.model }}</span>
-        </nav>
-
         <!-- REVIEW ARTICLE WRAPPER -->
         <article class="news-article review-article">
             <div class="article-content">
 
                 <!-- REVIEW HEADER / TITLE -->
                 <div class="article-text review-header-block">
-                    <span class="review-badge-category">
-                        MOTOR NATION OFFICIAL ROAD TEST REVIEW · {{ car.bodyType|default('VEHICLE')|upper }}
-                    </span>
                     <h1 id="review-title" class="review-main-heading">
                         {{ review.car_name|upper }}
                     </h1>
@@ -37,16 +25,12 @@
                         </div>
                     {% endif %}
 
-                    <!-- Starting MSRP with black/theme $ and red price -->
+                    <!-- MSRP Range with black/theme $ and red price -->
                     <div class="review-msrp-strip">
-                        <span class="review-msrp-label">Starting MSRP:</span>
-                        {% if car.msrp %}
-                            <span class="review-msrp-val">
-                                <span class="review-currency-symbol">$</span><span class="review-price-digits">{{ "{:,.0f}".format(car.msrp|float) }}</span>
-                            </span>
-                        {% else %}
-                            <span class="review-msrp-unavailable">Pricing varies by trim & configuration</span>
-                        {% endif %}
+                        <span class="review-msrp-label">MSRP Range:</span>
+                        <span class="review-msrp-val">
+                            <span class="review-currency-symbol">$</span><span class="review-price-digits">{{ msrp_range_str.lstrip('$') }}</span>
+                        </span>
                     </div>
 
                     <!-- Quick Specs Ribbon -->
