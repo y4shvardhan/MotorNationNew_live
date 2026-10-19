@@ -31,13 +31,20 @@
         {% endblock %}
     </title>
 
+    <script>
+        (function() {
+            var saved = localStorage.getItem("mn_theme") || "dark";
+            document.documentElement.setAttribute("data-theme", saved);
+        })();
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600;1,700&display=swap" rel="stylesheet">
 
     <link
         rel="stylesheet"
-        href="{{ url_for('static', filename='css/style.css') }}?v=20261012"
+        href="{{ url_for('static', filename='css/style.css') }}?v=20261019"
     >
 
     {% block extra_css %}
@@ -77,17 +84,6 @@
             </a>
 
 
-            <!-- MOBILE BUTTON -->
-
-            <button
-                class="menu-toggle"
-                id="menuToggle"
-                aria-label="Open navigation"
-            >
-                ☰
-            </button>
-
-
             <!-- NAVIGATION -->
 
             <nav
@@ -96,7 +92,7 @@
             >
 
                 <a href="{{ url_for('cars') }}">
-                    New Cars
+                    Research Cars
                 </a>
 
                 <a href="{{ url_for('compare') }}">
@@ -118,14 +114,45 @@
             </nav>
 
 
-            <!-- SEARCH -->
+            <!-- NAVBAR ACTIONS (THEME TOGGLE & ALWAYS-VISIBLE SEARCH) -->
 
-            <a
-                href="{{ url_for('cars') }}"
-                class="search-button"
+            <div class="navbar-actions">
+
+                <button
+                    type="button"
+                    class="theme-toggle-btn"
+                    id="themeToggleBtn"
+                    aria-label="Toggle dark and light mode"
+                    title="Toggle theme"
+                >
+                    <span class="theme-icon sun-icon">☀️</span>
+                    <span class="theme-icon moon-icon">🌙</span>
+                </button>
+
+                <a
+                    href="{{ url_for('cars') }}"
+                    class="search-button"
+                    aria-label="Search all vehicles"
+                >
+                    <svg class="search-btn-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <span>Search</span>
+                </a>
+
+            </div>
+
+
+            <!-- MOBILE MENU TOGGLE BUTTON -->
+
+            <button
+                class="menu-toggle"
+                id="menuToggle"
+                aria-label="Open navigation"
             >
-                Search
-            </a>
+                ☰
+            </button>
 
         </div>
 
@@ -172,7 +199,7 @@
                 </h4>
 
                 <a href="{{ url_for('cars') }}">
-                    New Cars
+                    Research Cars
                 </a>
 
                 <a href="{{ url_for('compare') }}">
@@ -275,7 +302,7 @@
                 localStorage.setItem(this.KEY, "[]");
                 this.updateAllButtons();
             },
-            toggle: function (id) {
+            remove: function (id) {
                 let ids = this.getIds();
                 const strId = String(id);
                 const idx = ids.indexOf(strId);
@@ -283,17 +310,24 @@
                     ids.splice(idx, 1);
                     localStorage.setItem(this.KEY, JSON.stringify(ids));
                     this.updateAllButtons();
-                    return false;
-                } else {
-                    if (ids.length >= this.MAX) {
-                        alert(`You can compare up to ${this.MAX} cars at once. Remove one to add another.`);
-                        return false;
-                    }
-                    ids.push(strId);
-                    localStorage.setItem(this.KEY, JSON.stringify(ids));
-                    this.updateAllButtons();
-                    return true;
                 }
+            },
+            instantCompare: function (id) {
+                if (!id) return;
+                const strId = String(id);
+                let ids = this.getIds();
+                if (!ids.includes(strId)) {
+                    if (ids.length >= this.MAX) {
+                        ids.pop();
+                    }
+                    ids.unshift(strId);
+                    localStorage.setItem(this.KEY, JSON.stringify(ids));
+                }
+                window.location.href = "/compare?car1=" + encodeURIComponent(strId);
+            },
+            toggle: function (id) {
+                // Instant compare: clicking any compare button navigates straight to comparison
+                return this.instantCompare(id);
             },
             updateAllButtons: async function () {
                 const ids = this.getIds();
@@ -343,7 +377,7 @@
                             <div class="mn-dock-chip">
                                 ${img ? `<img src="${img}" alt="${title}">` : `<span class="mn-dock-chip-icon">🚗</span>`}
                                 <span class="mn-dock-chip-name" title="${title}">${car.make} ${car.model}</span>
-                                <button type="button" class="mn-dock-chip-remove" onclick="window.MotorNationCompare.toggle('${id}')" title="Remove">✕</button>
+                                <button type="button" class="mn-dock-chip-remove" onclick="event.stopPropagation(); window.MotorNationCompare.remove('${id}')" title="Remove">✕</button>
                             </div>
                         `;
                     }).join("");
@@ -403,6 +437,18 @@
                     nav.classList.toggle("active");
                 });
             }
+
+            // Theme Toggle Handler
+            const themeBtn = document.getElementById("themeToggleBtn");
+            if (themeBtn) {
+                themeBtn.addEventListener("click", function () {
+                    const current = document.documentElement.getAttribute("data-theme") || "dark";
+                    const next = current === "light" ? "dark" : "light";
+                    document.documentElement.setAttribute("data-theme", next);
+                    localStorage.setItem("mn_theme", next);
+                });
+            }
+
             window.MotorNationCompare.updateAllButtons();
             window.MotorNationFavorites.updateAllButtons();
         });

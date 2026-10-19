@@ -43,42 +43,50 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     function getCompareIds() {
-
+        let storedList = [];
         try {
+            const value = JSON.parse(
+                localStorage.getItem(STORAGE_KEY) || "[]"
+            );
+            if (Array.isArray(value)) {
+                storedList = value.map(String);
+            }
+        } catch (error) {
+            console.warn("MotorNation: invalid comparison storage.", error);
+        }
 
-            const value =
-                JSON.parse(
-                    localStorage.getItem(
-                        STORAGE_KEY
-                    ) || "[]"
-                );
-
-
-            if (
-                !Array.isArray(value)
-            ) {
-                return [];
+        // Support direct comparison links via query params: ?car1=<id>&car2=<id>
+        try {
+            const params = new URLSearchParams(window.location.search);
+            const urlIds = [];
+            ["car1", "car2", "car3", "id"].forEach(function(k) {
+                const val = params.get(k);
+                if (val && val.trim()) urlIds.push(val.trim());
+            });
+            const carsParam = params.get("cars");
+            if (carsParam) {
+                carsParam.split(",").forEach(function(s) {
+                    if (s.trim()) urlIds.push(s.trim());
+                });
             }
 
-
-            return [
-                ...new Set(
-                    value.map(String)
-                )
-            ].slice(
-                0,
-                MAX_COMPARE
-            );
-
-        } catch (error) {
-
-            console.warn(
-                "MotorNation: invalid comparison storage.",
-                error
-            );
-
-            return [];
+            if (urlIds.length > 0) {
+                urlIds.forEach(function(id) {
+                    if (!storedList.includes(id)) {
+                        storedList.unshift(id);
+                    }
+                });
+                storedList = [...new Set(storedList)].slice(0, MAX_COMPARE);
+                saveCompareIds(storedList);
+                if (window.history && window.history.replaceState) {
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
+            }
+        } catch (e) {
+            console.warn("MotorNation: URL compare parameter read failed.", e);
         }
+
+        return [...new Set(storedList)].slice(0, MAX_COMPARE);
     }
 
 

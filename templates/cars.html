@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-MotorNation — Explore Cars
+MotorNation — Research Cars
 {% endblock %}
 
 {% block content %}
@@ -19,11 +19,11 @@ MotorNation — Explore Cars
             <div>
 
                 <span class="eyebrow">
-                    MOTOR NATION CATALOG
+                    RESEARCH CARS
                 </span>
 
                 <h1>
-                    Explore Cars
+                    Research Cars
                 </h1>
 
                 <p>
@@ -33,10 +33,7 @@ MotorNation — Explore Cars
 
             </div>
 
-            <div class="cars-page-stat">
-                <strong id="results-count">0</strong>
-                <span>Vehicles</span>
-            </div>
+            <span id="results-count" hidden>0</span>
 
         </div>
 
@@ -141,7 +138,7 @@ MotorNation — Explore Cars
                 </div>
 
 
-                <!-- BODY TYPE -->
+                <!-- BODY TYPE (10 SPECIFIC CATEGORIES) -->
 
                 <div class="filter-group">
 
@@ -153,6 +150,46 @@ MotorNation — Explore Cars
 
                         <option value="">
                             All Body Types
+                        </option>
+
+                        <option value="SUV">
+                            SUV
+                        </option>
+
+                        <option value="Sedans">
+                            Sedans
+                        </option>
+
+                        <option value="Hatchback">
+                            Hatchback
+                        </option>
+
+                        <option value="MUV">
+                            MUV
+                        </option>
+
+                        <option value="Luxury">
+                            Luxury
+                        </option>
+
+                        <option value="Convertible">
+                            Convertible
+                        </option>
+
+                        <option value="Pickup">
+                            Pickup
+                        </option>
+
+                        <option value="Coupe">
+                            Coupe
+                        </option>
+
+                        <option value="Minivan">
+                            Minivan
+                        </option>
+
+                        <option value="Wagon">
+                            Wagon
                         </option>
 
                     </select>
@@ -179,45 +216,48 @@ MotorNation — Explore Cars
                 </div>
 
 
-                <!-- PRICE -->
+                <!-- PRICE RANGE (MANUAL SELECTABLE + BUDGET CHIPS) -->
 
-                <div class="filter-group">
+                <div class="filter-group filter-price-manual">
 
-                    <label for="price-filter">
-                        Maximum Price
+                    <label>
+                        Price Range (USD)
                     </label>
 
-                    <select id="price-filter">
+                    <div class="price-inputs-grid">
+                        <div class="price-input-wrap">
+                            <span class="price-symbol">$</span>
+                            <input
+                                type="number"
+                                id="min-price-input"
+                                placeholder="Min Price"
+                                min="0"
+                                step="1000"
+                                aria-label="Minimum price in dollars"
+                            >
+                        </div>
+                        <span class="price-range-sep">to</span>
+                        <div class="price-input-wrap">
+                            <span class="price-symbol">$</span>
+                            <input
+                                type="number"
+                                id="max-price-input"
+                                placeholder="Max Price"
+                                min="0"
+                                step="1000"
+                                aria-label="Maximum price in dollars"
+                            >
+                        </div>
+                    </div>
 
-                        <option value="">
-                            Any Price
-                        </option>
+                    <div class="budget-chips-wrap">
+                        <button type="button" class="budget-chip" data-min="0" data-max="35000">Under $35k</button>
+                        <button type="button" class="budget-chip" data-min="35000" data-max="60000">$35k–$60k</button>
+                        <button type="button" class="budget-chip" data-min="60000" data-max="100000">$60k–$100k</button>
+                        <button type="button" class="budget-chip" data-min="100000" data-max="">$100k+</button>
+                    </div>
 
-                        <option value="30000">
-                            Under $30,000
-                        </option>
-
-                        <option value="40000">
-                            Under $40,000
-                        </option>
-
-                        <option value="50000">
-                            Under $50,000
-                        </option>
-
-                        <option value="75000">
-                            Under $75,000
-                        </option>
-
-                        <option value="100000">
-                            Under $100,000
-                        </option>
-
-                        <option value="150000">
-                            Under $150,000
-                        </option>
-
-                    </select>
+                    <input type="hidden" id="price-filter" value="">
 
                 </div>
 

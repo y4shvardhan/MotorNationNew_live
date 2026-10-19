@@ -16,11 +16,11 @@
             <span style="margin: 0 8px;">/</span>
             <a href="/news" style="color: #64748b; text-decoration: none;">News</a>
             <span style="margin: 0 8px;">/</span>
-            <span style="color: #0f172a;">{{ car.make }} {{ car.model }}</span>
+            <span style="color: var(--text-primary);">{{ car.make }} {{ car.model }}</span>
         </nav>
 
         <!-- ARTICLE CARD -->
-        <article style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 40px;">
+        <article style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow-md); margin-bottom: 40px;">
             
             <!-- HEADER -->
             <div style="padding: 40px 44px 28px 44px;">
@@ -28,21 +28,21 @@
                     <span style="background: var(--primary, #e11d2e); color: #ffffff; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; padding: 5px 12px; border-radius: 999px; text-transform: uppercase;">
                         PRESSROOM DISPATCH
                     </span>
-                    <span style="background: #f1f5f9; color: #334155; font-size: 0.82rem; font-weight: 700; padding: 5px 12px; border-radius: 999px;">
+                    <span style="background: var(--bg-surface); color: var(--text-secondary); font-size: 0.82rem; font-weight: 700; padding: 5px 12px; border-radius: 999px;">
                         {{ car.make }} Media Room
                     </span>
                     {% if car.msrp %}
                     <span style="margin-left: auto; font-size: 1.05rem; font-weight: 700;">
-                        Starting MSRP: <span style="color: #0f172a;">$</span><span style="color: #e11d2e; font-weight: 900;">{{ "{:,.0f}".format(car.msrp|float) }}</span>
+                        Starting MSRP: <span style="color: var(--price-currency);">$</span><span style="color: #e11d2e; font-weight: 900;">{{ "{:,.0f}".format(car.msrp|float) }}</span>
                     </span>
                     {% endif %}
                 </div>
 
-                <h1 style="font-size: 2.35rem; font-weight: 900; color: #0f172a; line-height: 1.25; margin-bottom: 14px;">
+                <h1 style="font-size: 2.35rem; font-weight: 900; color: var(--text-primary); line-height: 1.25; margin-bottom: 14px;">
                     {{ car.newsHeadline or (car.year|default('2026') ~ ' ' ~ car.make ~ ' ' ~ car.model ~ ' Official Launch & Engineering Overview') }}
                 </h1>
 
-                <div style="font-size: 0.95rem; color: #64748b; font-weight: 600;">
+                <div style="font-size: 0.95rem; color: var(--text-muted); font-weight: 600;">
                     Documented Vehicle: <strong>{{ car.year|default('2026') }} {{ car.make }} {{ car.model }} {% if car.trim %}{{ car.trim }}{% endif %}</strong>
                     {% if car.bodyType %} · {{ car.bodyType }}{% endif %}
                     {% if car.fuelType %} · {{ car.fuelType }}{% endif %}
@@ -59,7 +59,7 @@
             </div>
 
             <!-- ARTICLE BODY -->
-            <div style="padding: 44px; font-size: 1.1rem; line-height: 1.85; color: #334155;">
+            <div style="padding: 44px; font-size: 1.1rem; line-height: 1.85; color: var(--text-secondary);">
                 {% set article_text = car.newsArticle or news_item.article or '' %}
                 {% if article_text %}
                     {% for p in article_text.split('\n\n') %}
@@ -74,10 +74,10 @@
                 <!-- EXTERNAL OEM LINK -->
                 {% set oem_url = car.oemNewsroomUrl or news_item.oem_url or '' %}
                 {% if oem_url %}
-                <div style="margin: 36px 0 20px 0; padding: 22px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
+                <div style="margin: 36px 0 20px 0; padding: 22px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 14px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
                     <div>
-                        <strong style="color: #0f172a; display: block; font-size: 1.05rem;">Official Manufacturer Newsroom Release</strong>
-                        <span style="color: #64748b; font-size: 0.9rem;">View complete OEM press photos, executive quotes, and spec sheets.</span>
+                        <strong style="color: var(--text-primary); display: block; font-size: 1.05rem;">Official Manufacturer Newsroom Release</strong>
+                        <span style="color: var(--text-muted); font-size: 0.9rem;">View complete OEM press photos, executive quotes, and spec sheets.</span>
                     </div>
                     <a href="{{ oem_url }}" target="_blank" rel="noopener noreferrer" class="primary-btn" style="text-decoration: none; padding: 10px 20px; font-weight: 800; font-size: 0.9rem;">
                         Official {{ car.make }} Pressroom ↗
@@ -86,7 +86,7 @@
                 {% endif %}
 
                 <!-- CTAS TO SPECS & REVIEW -->
-                <div style="display: flex; flex-wrap: wrap; gap: 14px; margin-top: 32px; padding-top: 24px; border-top: 1px solid #f1f5f9;">
+                <div style="display: flex; flex-wrap: wrap; gap: 14px; margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border);">
                     <a href="/car/{{ car.id }}" class="primary-btn" style="text-decoration: none; padding: 12px 24px; font-weight: 800;">
                         View Specifications & 7-Photo Gallery →
                     </a>
@@ -99,13 +99,13 @@
         </article>
 
         <!-- OFFICIAL YOUTUBE VIDEO COVERAGE FROM @motornationofficial -->
-        <section class="mn-section mn-video-section" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 20px; padding: 36px; box-shadow: 0 6px 24px rgba(0,0,0,0.04); margin-bottom: 40px;">
+        <section class="mn-section mn-video-section" style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 36px; box-shadow: var(--shadow-md); margin-bottom: 40px;">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 22px;">
                 <div>
                     <span style="color: var(--primary, #e11d2e); font-size: 0.78rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;">
                         MOTOR NATION VIDEO COVERAGE
                     </span>
-                    <h2 style="font-size: 1.7rem; font-weight: 900; color: #0f172a; margin: 4px 0 0 0;">
+                    <h2 style="font-size: 1.7rem; font-weight: 900; color: var(--text-primary); margin: 4px 0 0 0;">
                         {{ video_info.title if video_info else (car.year|default('2026') ~ ' ' ~ car.make ~ ' ' ~ car.model ~ ' — Watch on YouTube') }}
                     </h2>
                 </div>

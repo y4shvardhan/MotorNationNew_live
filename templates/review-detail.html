@@ -11,16 +11,16 @@
     <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 40px 24px;">
 
         <!-- BREADCRUMBS -->
-        <nav class="mn-breadcrumbs" style="margin-bottom: 24px; font-size: 0.88rem; font-weight: 700; color: #64748b;">
-            <a href="/" style="color: #64748b; text-decoration: none;">Home</a>
+        <nav class="mn-breadcrumbs" style="margin-bottom: 24px; font-size: 0.88rem; font-weight: 700; color: var(--text-muted);">
+            <a href="/" style="color: var(--text-muted); text-decoration: none;">Home</a>
             <span style="margin: 0 8px;">/</span>
-            <a href="/reviews" style="color: #64748b; text-decoration: none;">Reviews</a>
+            <a href="/reviews" style="color: var(--text-muted); text-decoration: none;">Reviews</a>
             <span style="margin: 0 8px;">/</span>
-            <span style="color: #0f172a;">{{ car.year|default('2026') }} {{ car.make }} {{ car.model }}</span>
+            <span style="color: var(--text-primary);">{{ car.year|default('2026') }} {{ car.make }} {{ car.model }}</span>
         </nav>
 
         <!-- REVIEW HERO -->
-        <section class="mn-review-hero-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 40px;">
+        <section class="mn-review-hero-card" style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow-md); margin-bottom: 40px;">
             <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 36px; align-items: center; padding: 36px;">
                 
                 <div style="position: relative; border-radius: 14px; overflow: hidden; background: #0f172a; height: 380px;">
@@ -42,23 +42,23 @@
                         ROAD TEST VERDICT · {{ car.bodyType|default('VEHICLE') }}
                     </span>
 
-                    <h1 style="font-size: 2.3rem; font-weight: 900; color: #0f172a; line-height: 1.2; margin-bottom: 6px;">
+                    <h1 style="font-size: 2.3rem; font-weight: 900; color: var(--text-primary); line-height: 1.2; margin-bottom: 6px;">
                         {{ car.year|default('2026') }} {{ car.make }} {{ car.model }}
                     </h1>
 
                     {% if car.trim %}
-                        <div style="font-size: 1.1rem; color: #64748b; font-weight: 600; margin-bottom: 16px;">
+                        <div style="font-size: 1.1rem; color: var(--text-secondary); font-weight: 600; margin-bottom: 16px;">
                             {{ car.trim }}
                         </div>
                     {% endif %}
 
-                    <!-- Starting MSRP with $ in black and amount in red -->
+                    <!-- Starting MSRP with $ and red amount -->
                     <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 24px;">
-                        <span style="color: #64748b; font-size: 0.92rem; display: block; margin-bottom: 4px;">Starting MSRP</span>
+                        <span style="color: var(--text-muted); font-size: 0.92rem; display: block; margin-bottom: 4px;">Starting MSRP</span>
                         {% if car.msrp %}
-                            <span style="color: #0f172a;">$</span><span style="color: #e11d2e; font-weight: 900; font-size: 1.6rem;">{{ "{:,.0f}".format(car.msrp|float) }}</span>
+                            <span style="color: var(--price-currency);">$</span><span style="color: #e11d2e; font-weight: 900; font-size: 1.6rem;">{{ "{:,.0f}".format(car.msrp|float) }}</span>
                         {% else %}
-                            <span style="color: #0f172a;">Price unavailable</span>
+                            <span style="color: var(--text-muted);">Price unavailable</span>
                         {% endif %}
                     </div>
 
@@ -81,10 +81,19 @@
                         {% endif %}
                     </div>
 
-                    <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+                    <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
                         <a href="/car/{{ car.id }}" class="primary-btn" style="text-decoration: none; padding: 12px 22px; font-weight: 800;">
                             Full Specifications & Photos →
                         </a>
+                        <button
+                            type="button"
+                            class="compare-button"
+                            data-compare-id="{{ car.id }}"
+                            onclick="window.MotorNationCompare && window.MotorNationCompare.instantCompare('{{ car.id }}')"
+                            style="padding: 12px 22px; font-weight: 800; font-size: 0.95rem;"
+                        >
+                            + Instant Compare
+                        </button>
                         <a href="/news/{{ car.id }}" class="secondary-btn" style="text-decoration: none; padding: 12px 22px; font-weight: 800;">
                             Official News Dispatch ↗
                         </a>
@@ -134,13 +143,13 @@
         {% if pros or cons %}
         <section style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 40px;">
             {% if pros %}
-            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-top: 4px solid #10b981; border-radius: 16px; padding: 28px; box-shadow: 0 4px 16px rgba(0,0,0,0.03);">
-                <h3 style="font-size: 1.15rem; font-weight: 800; color: #065f46; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+            <div style="background: var(--bg-card); border: 1px solid var(--border); border-top: 4px solid #10b981; border-radius: 16px; padding: 28px; box-shadow: var(--shadow-sm);">
+                <h3 style="font-size: 1.15rem; font-weight: 800; color: #10b981; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
                     <span>✓</span> Key Strengths (Highs)
                 </h3>
                 <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px;">
                     {% for p in pros %}
-                        <li style="display: flex; align-items: flex-start; gap: 10px; font-size: 0.95rem; color: #334155; line-height: 1.5;">
+                        <li style="display: flex; align-items: flex-start; gap: 10px; font-size: 0.95rem; color: var(--text-primary); line-height: 1.5;">
                             <span style="color: #10b981; font-weight: 800;">+</span>
                             <span>{{ p }}</span>
                         </li>
@@ -150,13 +159,13 @@
             {% endif %}
 
             {% if cons %}
-            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-top: 4px solid #f43f5e; border-radius: 16px; padding: 28px; box-shadow: 0 4px 16px rgba(0,0,0,0.03);">
-                <h3 style="font-size: 1.15rem; font-weight: 800; color: #9f1239; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+            <div style="background: var(--bg-card); border: 1px solid var(--border); border-top: 4px solid #f43f5e; border-radius: 16px; padding: 28px; box-shadow: var(--shadow-sm);">
+                <h3 style="font-size: 1.15rem; font-weight: 800; color: #f43f5e; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
                     <span>✗</span> Key Compromises (Lows)
                 </h3>
                 <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px;">
                     {% for c in cons %}
-                        <li style="display: flex; align-items: flex-start; gap: 10px; font-size: 0.95rem; color: #334155; line-height: 1.5;">
+                        <li style="display: flex; align-items: flex-start; gap: 10px; font-size: 0.95rem; color: var(--text-primary); line-height: 1.5;">
                             <span style="color: #f43f5e; font-weight: 800;">−</span>
                             <span>{{ c }}</span>
                         </li>
@@ -168,13 +177,13 @@
         {% endif %}
 
         <!-- OFFICIAL YOUTUBE VIDEO COVERAGE FROM @motornationofficial -->
-        <section class="mn-section mn-video-section" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 20px; padding: 36px; box-shadow: 0 6px 24px rgba(0,0,0,0.04); margin-bottom: 40px;">
+        <section class="mn-section mn-video-section" style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 36px; box-shadow: var(--shadow-md); margin-bottom: 40px;">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 22px;">
                 <div>
                     <span style="color: var(--primary, #e11d2e); font-size: 0.78rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;">
                         MOTOR NATION VIDEO COVERAGE
                     </span>
-                    <h2 style="font-size: 1.7rem; font-weight: 900; color: #0f172a; margin: 4px 0 0 0;">
+                    <h2 style="font-size: 1.7rem; font-weight: 900; color: var(--text-primary); margin: 4px 0 0 0;">
                         {{ video_info.title if video_info else (car.year|default('2026') ~ ' ' ~ car.make ~ ' ' ~ car.model ~ ' — Watch on YouTube') }}
                     </h2>
                 </div>
@@ -195,7 +204,7 @@
                 ></iframe>
             </div>
 
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 18px; padding-top: 14px; border-top: 1px solid #f1f5f9; font-size: 0.88rem; color: #64748b;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 0.88rem; color: var(--text-muted);">
                 <span>Watch in-depth walkarounds, exhaust sound clips, and road test analysis.</span>
                 <a href="{{ video_info.url if video_info and video_info.url else ('https://www.youtube.com/watch?v=' ~ (video_info.video_id if video_info else 'Z0I64NzsFNQ')) }}" target="_blank" rel="noopener noreferrer" style="color: var(--primary, #e11d2e); font-weight: 700; text-decoration: none;">
                     Watch on YouTube ↗
@@ -235,7 +244,7 @@
 
                             <div class="car-card-price">
                                 {% if rival.msrp %}
-                                    ${{ "{:,.0f}".format(rival.msrp|float) }}
+                                    <span style="color: var(--price-currency);">$</span><span style="color: #e11d2e; font-weight: 800;">{{ "{:,.0f}".format(rival.msrp|float) }}</span>
                                 {% else %}
                                     Price unavailable
                                 {% endif %}
@@ -256,7 +265,7 @@
                                 type="button"
                                 class="compare-button"
                                 data-compare-id="{{ rival.id }}"
-                                onclick="window.MotorNationCompare && window.MotorNationCompare.toggle('{{ rival.id }}')"
+                                onclick="window.MotorNationCompare && window.MotorNationCompare.instantCompare('{{ rival.id }}')"
                             >
                                 + Compare
                             </button>

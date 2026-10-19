@@ -196,11 +196,11 @@
                     <span>Starting MSRP</span>
                     {% if car.msrp is not none and car.msrp != '' %}
                         <strong>
-                            <span style="color: #0f172a;">$</span><span style="color: #e11d2e;">{{ "{:,.0f}".format(car.msrp|float) }}</span>
+                            <span style="color: var(--price-currency);">$</span><span style="color: #e11d2e;">{{ "{:,.0f}".format(car.msrp|float) }}</span>
                         </strong>
                     {% elif car.price and car.price.msrp is not none %}
                         <strong>
-                            <span style="color: #0f172a;">$</span><span style="color: #e11d2e;">{{ "{:,.0f}".format(car.price.msrp|float) }}</span>
+                            <span style="color: var(--price-currency);">$</span><span style="color: #e11d2e;">{{ "{:,.0f}".format(car.price.msrp|float) }}</span>
                         </strong>
                     {% else %}
                         <strong>
@@ -642,11 +642,11 @@
 
                         {% if car.msrp is not none and car.msrp != '' %}
 
-                            <span style="color: #0f172a;">$</span><span style="color: #e11d2e; font-weight: 800;">{{ "{:,.0f}".format(car.msrp|float) }}</span>
+                            <span style="color: var(--price-currency);">$</span><span style="color: #e11d2e; font-weight: 800;">{{ "{:,.0f}".format(car.msrp|float) }}</span>
 
                         {% elif car.price and car.price.msrp is not none %}
 
-                            <span style="color: #0f172a;">$</span><span style="color: #e11d2e; font-weight: 800;">{{ "{:,.0f}".format(car.price.msrp|float) }}</span>
+                            <span style="color: var(--price-currency);">$</span><span style="color: #e11d2e; font-weight: 800;">{{ "{:,.0f}".format(car.price.msrp|float) }}</span>
 
                         {% else %}
 
@@ -670,7 +670,7 @@
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 22px;">
                 <div>
                     <span class="mn-label">MOTOR NATION VIDEO COVERAGE</span>
-                    <h2 style="font-size: 1.85rem; font-weight: 900; color: #0f172a; margin: 4px 0 0 0;">
+                    <h2 style="font-size: 1.85rem; font-weight: 900; color: var(--text-primary); margin: 4px 0 0 0;">
                         {{ video_info.title if video_info else (car.year|default('2026') ~ ' ' ~ car.make ~ ' ' ~ car.model ~ ' — Watch on YouTube') }}
                     </h2>
                     <p class="section-description" style="margin-top: 4px;">
@@ -786,7 +786,7 @@
 
                         <div class="car-card-price">
                             {% if rival.msrp %}
-                                ${{ "{:,.0f}".format(rival.msrp|float) }}
+                                <span style="color: var(--price-currency);">$</span><span style="color: #e11d2e; font-weight: 800;">{{ "{:,.0f}".format(rival.msrp|float) }}</span>
                             {% else %}
                                 Price unavailable
                             {% endif %}
@@ -807,7 +807,7 @@
                             type="button"
                             class="compare-button"
                             data-compare-id="{{ rival.id }}"
-                            onclick="window.MotorNationCompare && window.MotorNationCompare.toggle('{{ rival.id }}')"
+                            onclick="window.MotorNationCompare && window.MotorNationCompare.instantCompare('{{ rival.id }}')"
                         >
                             + Compare
                         </button>

@@ -25,6 +25,8 @@ const elements = {
     body: document.getElementById("body-filter"),
     fuel: document.getElementById("fuel-filter"),
     price: document.getElementById("price-filter"),
+    minPrice: document.getElementById("min-price-input"),
+    maxPrice: document.getElementById("max-price-input"),
     sort: document.getElementById("sort-filter"),
 
     resultCount: document.getElementById("results-count"),
@@ -86,6 +88,34 @@ function bindEvents() {
         "change",
         applyFilters
     );
+
+    elements.minPrice?.addEventListener(
+        "input",
+        () => {
+            document.querySelectorAll(".budget-chip").forEach(c => c.classList.remove("active"));
+            applyFilters();
+        }
+    );
+
+    elements.maxPrice?.addEventListener(
+        "input",
+        () => {
+            document.querySelectorAll(".budget-chip").forEach(c => c.classList.remove("active"));
+            applyFilters();
+        }
+    );
+
+    document.querySelectorAll(".budget-chip").forEach(chip => {
+        chip.addEventListener("click", () => {
+            const min = chip.getAttribute("data-min") || "";
+            const max = chip.getAttribute("data-max") || "";
+            if (elements.minPrice) elements.minPrice.value = min;
+            if (elements.maxPrice) elements.maxPrice.value = max;
+            document.querySelectorAll(".budget-chip").forEach(c => c.classList.remove("active"));
+            chip.classList.add("active");
+            applyFilters();
+        });
+    });
 
     elements.sort?.addEventListener(
         "change",
@@ -193,17 +223,62 @@ function populateFilters() {
         makes
     );
 
-    fillSelect(
-        elements.body,
-        "All Body Types",
-        bodies
-    );
+    // Keep the 10 defined body types in HTML; do not overwrite with raw DB values
 
     fillSelect(
         elements.fuel,
         "All Fuel Types",
         fuels
     );
+}
+
+
+/* =========================================================
+   BODY TYPE MATCHER (10 EXACT MOTOR NATION CATEGORIES)
+========================================================= */
+
+function matchesBodyType(car, target) {
+    if (!target) return true;
+    const t = String(target).toLowerCase().trim();
+    const rawBody = String(car?.bodyType || car?.body || car?.sourceData?.["Body Type"] || car?.sourceData?.Body_Style || "").toLowerCase();
+    const rawClass = String(car?.class || car?.sourceData?.Class || "").toLowerCase();
+    const rawTrim = String(car?.trim || car?.variant || car?.model || "").toLowerCase();
+    const full = `${rawBody} ${rawClass} ${rawTrim} ${String(car?.make || "")}`.toLowerCase();
+
+    if (t === "suv") {
+        return full.includes("suv") || full.includes("crossover") || full.includes("4x4") || full.includes("sport utility") || full.includes("off-roader");
+    }
+    if (t === "sedans" || t === "sedan") {
+        return full.includes("sedan") || full.includes("saloon") || full.includes("liftback") || full.includes("fastback") || full.includes("sportback");
+    }
+    if (t === "hatchback") {
+        return full.includes("hatch") || full.includes("hatchback");
+    }
+    if (t === "muv") {
+        return full.includes("muv") || full.includes("mpv") || full.includes("multi-utility") || full.includes("multi-purpose");
+    }
+    if (t === "luxury") {
+        const price = getPrice(car);
+        const luxuryMakes = ["porsche", "mercedes", "bmw", "audi", "lexus", "genesis", "land rover", "range rover", "bentley", "rolls-royce", "aston martin", "ferrari", "maserati", "lamborghini", "cadillac", "lincoln"];
+        const make = String(car?.make || "").toLowerCase();
+        return full.includes("luxury") || full.includes("ultra-luxury") || full.includes("pinnacle") || luxuryMakes.includes(make) || price >= 70000;
+    }
+    if (t === "convertible") {
+        return full.includes("convertible") || full.includes("cabriolet") || full.includes("roadster") || full.includes("spyder") || full.includes("targa");
+    }
+    if (t === "pickup") {
+        return full.includes("pickup") || full.includes("truck") || full.includes("cab") || full.includes("crew");
+    }
+    if (t === "coupe") {
+        return full.includes("coupe") || full.includes("coupé") || full.includes("2-door") || full.includes("supercar") || full.includes("hypercar");
+    }
+    if (t === "minivan") {
+        return full.includes("minivan") || full.includes("van") || full.includes("microbus");
+    }
+    if (t === "wagon") {
+        return full.includes("wagon") || full.includes("estate") || full.includes("touring") || full.includes("all-terrain") || full.includes("allroad");
+    }
+    return full.includes(t);
 }
 
 
@@ -305,40 +380,31 @@ function applyFilters() {
 
 
     if (body) {
-
-        filtered = filtered.filter(car => {
-
-            const value =
-                car.bodyType ??
-                car.body ??
-                "";
-
-            return String(value).toLowerCase() ===
-                body.toLowerCase();
-        });
+        filtered = filtered.filter(car => matchesBodyType(car, body));
     }
 
 
     if (fuel) {
-
         filtered = filtered.filter(car => {
-
             const value =
                 car.fuelType ??
                 car.fuel ??
                 "";
-
-            return String(value).toLowerCase() ===
-                fuel.toLowerCase();
+            return String(value).toLowerCase().includes(fuel.toLowerCase());
         });
     }
 
+    const minPrice = Number(elements.minPrice?.value || 0);
+    const maxPriceVal = Number(elements.maxPrice?.value || elements.price?.value || 0);
 
-    if (maxPrice > 0) {
+    if (minPrice > 0) {
+        filtered = filtered.filter(car => getPrice(car) >= minPrice);
+    }
 
+    if (maxPriceVal > 0) {
         filtered = filtered.filter(car =>
             getPrice(car) > 0 &&
-            getPrice(car) <= maxPrice
+            getPrice(car) <= maxPriceVal
         );
     }
 
@@ -783,10 +849,18 @@ function updateActiveFilters() {
         );
     }
 
-    if (elements.price?.value) {
+    if (elements.minPrice?.value && elements.maxPrice?.value) {
         filters.push(
-            `Under ${formatPrice(
-                Number(elements.price.value)
+            `Price: ${formatPrice(Number(elements.minPrice.value))} – ${formatPrice(Number(elements.maxPrice.value))}`
+        );
+    } else if (elements.minPrice?.value) {
+        filters.push(
+            `Price: Over ${formatPrice(Number(elements.minPrice.value))}`
+        );
+    } else if (elements.maxPrice?.value || elements.price?.value) {
+        filters.push(
+            `Price: Under ${formatPrice(
+                Number(elements.maxPrice?.value || elements.price?.value)
             )}`
         );
     }
@@ -839,6 +913,16 @@ function clearFilters() {
     if (elements.price) {
         elements.price.value = "";
     }
+
+    if (elements.minPrice) {
+        elements.minPrice.value = "";
+    }
+
+    if (elements.maxPrice) {
+        elements.maxPrice.value = "";
+    }
+
+    document.querySelectorAll(".budget-chip").forEach(c => c.classList.remove("active"));
 
     if (elements.sort) {
         elements.sort.value = "";

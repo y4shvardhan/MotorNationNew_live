@@ -285,13 +285,9 @@ function createFeaturedCard(car) {
     const url = getVehicleUrl(car);
 
     return `
-        <article class="car-card">
+        <article class="car-card" onclick="window.location.href='${escapeHTML(url)}'" style="cursor: pointer;">
 
-            <a
-                href="${escapeHTML(url)}"
-                class="car-card-image-wrapper"
-                aria-label="View ${escapeHTML(name)}"
-            >
+            <div class="car-card-image-wrapper">
 
                 ${createImageHTML(car)}
 
@@ -300,7 +296,7 @@ function createFeaturedCard(car) {
                 </span>
 
                 <span class="car-badge-chip">
-                    ★ FEATURED
+                    ★ TOP PICK
                 </span>
 
                 <button
@@ -314,7 +310,7 @@ function createFeaturedCard(car) {
                     ♡
                 </button>
 
-            </a>
+            </div>
 
             <div class="car-card-content">
 
@@ -323,7 +319,7 @@ function createFeaturedCard(car) {
                 </span>
 
                 <h3 class="car-card-title">
-                    <a href="${escapeHTML(url)}">
+                    <a href="${escapeHTML(url)}" onclick="event.stopPropagation();">
                         ${escapeHTML(name)}
                     </a>
                 </h3>
@@ -350,21 +346,11 @@ function createFeaturedCard(car) {
 
                 </div>
 
-                <a
-                    href="${escapeHTML(url)}"
-                    class="car-card-link"
-                >
-                    View Details →
-                </a>
-
-                <button
-                    type="button"
-                    class="compare-button"
-                    data-compare-id="${escapeHTML(car?.id ?? car?.vehicle_id ?? '')}"
-                    onclick="window.MotorNationCompare && window.MotorNationCompare.toggle('${escapeHTML(car?.id ?? car?.vehicle_id ?? '')}')"
-                >
-                    + Compare
-                </button>
+                <div class="car-card-link-wrap">
+                    <span class="car-card-link">
+                        View Details →
+                    </span>
+                </div>
 
             </div>
 
@@ -378,8 +364,9 @@ function createFeaturedCard(car) {
 ========================================================= */
 
 function createReviewCard(car) {
+    const carId = car?.id ?? car?.vehicle_id ?? "";
     const name = getVehicleName(car);
-    const url = getVehicleUrl(car);
+    const reviewUrl = `/reviews/${encodeURIComponent(carId)}`;
     const body = getBodyType(car);
     const fuel = getFuelType(car);
     const price = formatPrice(getPrice(car));
@@ -404,16 +391,13 @@ function createReviewCard(car) {
     }
 
     return `
-        <article class="review-card">
+        <article class="review-card" onclick="window.location.href='${escapeHTML(reviewUrl)}'" style="cursor: pointer;">
 
-            <a
-                href="${escapeHTML(url)}"
-                class="review-image"
-            >
+            <div class="review-image">
 
                 ${createImageHTML(car, "review-card-image")}
 
-            </a>
+            </div>
 
             <div class="review-content">
 
@@ -422,7 +406,7 @@ function createReviewCard(car) {
                 </span>
 
                 <h3>
-                    <a href="${escapeHTML(url)}">
+                    <a href="${escapeHTML(reviewUrl)}" onclick="event.stopPropagation();">
                         ${escapeHTML(name)}
                     </a>
                 </h3>
@@ -439,12 +423,11 @@ function createReviewCard(car) {
                     }
                 </p>
 
-                <a
-                    href="${escapeHTML(url)}"
-                    class="review-link"
-                >
-                    Read Review →
-                </a>
+                <div class="review-link-wrap">
+                    <span class="review-link">
+                        Read Full Review →
+                    </span>
+                </div>
 
             </div>
 
@@ -753,9 +736,29 @@ function renderFeaturedCars(cars) {
     }
 
     /*
-     * Take the first 6 vehicles from the database.
+     * Randomly select 6 premier cars based on reviews/articles/news & high engagement
      */
-    const featured = cars.slice(0, 6);
+    let premierPool = cars.filter(car => {
+        const hasImg = getImage(car) !== "";
+        const hasEngagement = getText(car?.road_test_review) !== "" ||
+                              getText(car?.reviewSummary) !== "" ||
+                              getText(car?.finalWord) !== "" ||
+                              getText(car?.news_headline) !== "" ||
+                              getText(car?.news_article) !== "" ||
+                              Number(car?.rating || 0) >= 8.5;
+        const isPremier = getPrice(car) >= 38000 ||
+                          Number(car?.rating || 0) >= 8.5 ||
+                          ["Porsche", "BMW", "Mercedes-Benz", "Audi", "Corvette", "Mustang", "Lucid", "Tesla", "Cadillac", "Genesis", "Lexus", "Land Rover"].some(b => String(car?.make || "").includes(b));
+        return hasImg && (hasEngagement || isPremier);
+    });
+
+    if (premierPool.length < 6) {
+        premierPool = cars.filter(car => getImage(car) !== "");
+    }
+
+    // Shuffle and pick 6 premier vehicles
+    const shuffled = [...premierPool].sort(() => 0.5 - Math.random());
+    const featured = shuffled.slice(0, 6);
 
     if (!featured.length) {
 
