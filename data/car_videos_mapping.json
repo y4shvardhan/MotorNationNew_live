@@ -12,116 +12,6 @@
   "2": {
     "id": 2,
     "year": "2026",
-    "make": "Acura",
-    "model": "Integra",
-    "trim": "Type S",
-    "title": "2025 Toyota Corolla vs 2025 Honda Civic Compared | Sedans Clash!",
-    "url": "https://www.youtube.com/watch?v=Z0I64NzsFNQ",
-    "video_id": "Z0I64NzsFNQ"
-  },
-  "3": {
-    "id": 3,
-    "year": "2026",
-    "make": "Acura",
-    "model": "TLX",
-    "trim": "Technology",
-    "title": "2025 Toyota Corolla vs 2025 Honda Civic Compared | Sedans Clash!",
-    "url": "https://www.youtube.com/watch?v=Z0I64NzsFNQ",
-    "video_id": "Z0I64NzsFNQ"
-  },
-  "4": {
-    "id": 4,
-    "year": "2026",
-    "make": "Acura",
-    "model": "TLX",
-    "trim": "Type S SH-AWD",
-    "title": "2025 Toyota Corolla vs 2025 Honda Civic Compared | Sedans Clash!",
-    "url": "https://www.youtube.com/watch?v=Z0I64NzsFNQ",
-    "video_id": "Z0I64NzsFNQ"
-  },
-  "5": {
-    "id": 5,
-    "year": "2026",
-    "make": "Acura",
-    "model": "RDX",
-    "trim": "A-Spec Advance",
-    "title": "9 Best Compact SUVs for 2026 | Top Picks Ranked?!",
-    "url": "https://www.youtube.com/watch?v=Lztt2lVj4MU",
-    "video_id": "Lztt2lVj4MU"
-  },
-  "6": {
-    "id": 6,
-    "year": "2026",
-    "make": "Acura",
-    "model": "MDX",
-    "trim": "A-Spec Advance",
-    "title": "12 Best 7-Seater SUVs to Buy in 2026 | Top Family SUVs Reviewed",
-    "url": "https://www.youtube.com/watch?v=0dBoNdpDnPM",
-    "video_id": "0dBoNdpDnPM"
-  },
-  "7": {
-    "id": 7,
-    "year": "2026",
-    "make": "Acura",
-    "model": "MDX",
-    "trim": "Type S Advance",
-    "title": "12 Best 7-Seater SUVs to Buy in 2026 | Top Family SUVs Reviewed",
-    "url": "https://www.youtube.com/watch?v=0dBoNdpDnPM",
-    "video_id": "0dBoNdpDnPM"
-  },
-  "8": {
-    "id": 8,
-    "year": "2026",
-    "make": "Acura",
-    "model": "ZDX",
-    "trim": "Type S",
-    "title": "12 Best Compact SUVs to Buy in 2026 | Top Picks for Style, Tech, and Value",
-    "url": "https://www.youtube.com/watch?v=RRYw9EPev34",
-    "video_id": "RRYw9EPev34"
-  },
-  "9": {
-    "id": 9,
-    "year": "2026",
-    "make": "Alfa",
-    "model": "Romeo Giulia",
-    "trim": "Veloce Q4",
-    "title": "2025 Toyota Corolla vs 2025 Honda Civic Compared | Sedans Clash!",
-    "url": "https://www.youtube.com/watch?v=Z0I64NzsFNQ",
-    "video_id": "Z0I64NzsFNQ"
-  },
-  "10": {
-    "id": 10,
-    "year": "2026",
-    "make": "Alfa",
-    "model": "Romeo Giulia",
-    "trim": "Quadrifoglio",
-    "title": "2025 Toyota Corolla vs 2025 Honda Civic Compared | Sedans Clash!",
-    "url": "https://www.youtube.com/watch?v=Z0I64NzsFNQ",
-    "video_id": "Z0I64NzsFNQ"
-  },
-  "11": {
-    "id": 11,
-    "year": "2026",
-    "make": "Alfa",
-    "model": "Romeo Stelvio",
-    "trim": "Quadrifoglio",
-    "title": "12 Best Compact SUVs to Buy in 2026 | Top Picks for Style, Tech, and Value",
-    "url": "https://www.youtube.com/watch?v=RRYw9EPev34",
-    "video_id": "RRYw9EPev34"
-  },
-  "12": {
-    "id": 12,
-    "year": "2026",
-    "make": "Alfa",
-    "model": "Romeo Tonale",
-    "trim": "Veloce eAWD",
-    "title": "9 Best Compact SUVs for 2026 | Top Picks Ranked?!",
-    "url": "https://www.youtube.com/watch?v=Lztt2lVj4MU",
-    "video_id": "Lztt2lVj4MU"
-  },
-  "13": {
-    "id": 13,
-    "year": "2026",
     "make": "Aston",
     "model": "Martin Vantage",
     "trim": "Coupe Base",
@@ -129,25 +19,135 @@
     "url": "https://www.youtube.com/watch?v=dWSmhHvCSBg",
     "video_id": "dWSmhHvCSBg"
   },
-  "14": {
-    "id": 14,
+  "3": {
+    "id": 3,
     "year": "2026",
-    "make": "Aston",
-    "model": "Martin DB12",
-    "trim": "Coupe Base",
+    "make": "Audi",
+    "model": "RS6 Avant",
+    "trim": "Performance GT",
+    "title": "2025 Toyota Corolla vs 2025 Honda Civic Compared | Sedans Clash!",
+    "url": "https://www.youtube.com/watch?v=Z0I64NzsFNQ",
+    "video_id": "Z0I64NzsFNQ"
+  },
+  "4": {
+    "id": 4,
+    "year": "2026",
+    "make": "BMW",
+    "model": "M2",
+    "trim": "Coupe 6MT",
+    "title": "2026 Porsche 911 vs 2026 Chevrolet Corvette | Supercar Comparison & Review",
+    "url": "https://www.youtube.com/watch?v=dWSmhHvCSBg",
+    "video_id": "dWSmhHvCSBg"
+  },
+  "5": {
+    "id": 5,
+    "year": "2026",
+    "make": "Cadillac",
+    "model": "Escalade",
+    "trim": "V-Series 4WD",
     "title": "12 Best Compact SUVs to Buy in 2026 | Top Picks for Style, Tech, and Value",
     "url": "https://www.youtube.com/watch?v=RRYw9EPev34",
     "video_id": "RRYw9EPev34"
   },
-  "15": {
-    "id": 15,
+  "6": {
+    "id": 6,
     "year": "2026",
-    "make": "Aston",
-    "model": "Martin Vanquish",
-    "trim": "Base V12",
+    "make": "Chevrolet",
+    "model": "Corvette",
+    "trim": "Stingray 1LT Coupe",
+    "title": "2026 Porsche 911 vs 2026 Chevrolet Corvette | Supercar Comparison & Review",
+    "url": "https://www.youtube.com/watch?v=dWSmhHvCSBg",
+    "video_id": "dWSmhHvCSBg"
+  },
+  "7": {
+    "id": 7,
+    "year": "2026",
+    "make": "Ford",
+    "model": "F-150",
+    "trim": "XLT SuperCrew 4x4",
     "title": "12 Best Compact SUVs to Buy in 2026 | Top Picks for Style, Tech, and Value",
     "url": "https://www.youtube.com/watch?v=RRYw9EPev34",
     "video_id": "RRYw9EPev34"
+  },
+  "8": {
+    "id": 8,
+    "year": "2026",
+    "make": "Ford",
+    "model": "Mustang",
+    "trim": "GT Premium 6MT",
+    "title": "12 Best Compact SUVs to Buy in 2026 | Top Picks for Style, Tech, and Value",
+    "url": "https://www.youtube.com/watch?v=RRYw9EPev34",
+    "video_id": "RRYw9EPev34"
+  },
+  "9": {
+    "id": 9,
+    "year": "2026",
+    "make": "Honda",
+    "model": "Civic",
+    "trim": "Type R Touring",
+    "title": "2025 Volkswagen Jetta GLI vs 2025 Honda Civic Sport Hybrid Compared",
+    "url": "https://www.youtube.com/watch?v=YL817Bknho4",
+    "video_id": "YL817Bknho4"
+  },
+  "10": {
+    "id": 10,
+    "year": "2026",
+    "make": "Hyundai",
+    "model": "Ioniq 5 N",
+    "trim": "Base N AWD",
+    "title": "2025 Toyota Corolla vs 2025 Honda Civic Compared | Sedans Clash!",
+    "url": "https://www.youtube.com/watch?v=Z0I64NzsFNQ",
+    "video_id": "Z0I64NzsFNQ"
+  },
+  "11": {
+    "id": 11,
+    "year": "2026",
+    "make": "Kia",
+    "model": "Carnival",
+    "trim": "SX Prestige Hybrid",
+    "title": "12 Best 7-Seater SUVs to Buy in 2026 | Top Family SUVs Reviewed",
+    "url": "https://www.youtube.com/watch?v=0dBoNdpDnPM",
+    "video_id": "0dBoNdpDnPM"
+  },
+  "12": {
+    "id": 12,
+    "year": "2026",
+    "make": "Mercedes-Benz",
+    "model": "C-Class",
+    "trim": "C300 4MATIC Sedan",
+    "title": "2025 Toyota Corolla vs 2025 Honda Civic Compared | Sedans Clash!",
+    "url": "https://www.youtube.com/watch?v=Z0I64NzsFNQ",
+    "video_id": "Z0I64NzsFNQ"
+  },
+  "13": {
+    "id": 13,
+    "year": "2026",
+    "make": "Porsche",
+    "model": "718 Boxster",
+    "trim": "GTS 4.0 6MT",
+    "title": "2026 Porsche 911 vs 2026 Chevrolet Corvette | Supercar Comparison & Review",
+    "url": "https://www.youtube.com/watch?v=dWSmhHvCSBg",
+    "video_id": "dWSmhHvCSBg"
+  },
+  "14": {
+    "id": 14,
+    "year": "2026",
+    "make": "Tesla",
+    "model": "Model 3",
+    "trim": "Performance Ludicrous AWD",
+    "title": "2025 Toyota Corolla vs 2025 Honda Civic Compared | Sedans Clash!",
+    "url": "https://www.youtube.com/watch?v=Z0I64NzsFNQ",
+    "video_id": "Z0I64NzsFNQ"
+  },
+  "15": {
+    "id": 15,
+    "year": "2026",
+    "make": "Toyota",
+    "model": "Camry",
+    "trim": "XLE Hybrid",
+    "title": "2025 Toyota Corolla vs 2025 Honda Civic Compared | Sedans Clash!",
+    "url": "https://www.youtube.com/watch?v=Z0I64NzsFNQ",
+    "video_id": "Z0I64NzsFNQ"
   },
   "16": {
     "id": 16,

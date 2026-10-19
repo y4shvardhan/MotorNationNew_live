@@ -19,7 +19,7 @@ MotorNation — Expert Road Test Reviews & In-Depth Evaluations
                 In-Depth Vehicle Reviews
             </h1>
             <p style="font-size: 1.12rem; color: var(--text-secondary); line-height: 1.6;">
-                Structured 5-point driving dynamics assessments, key strengths, and real-world compromises across {{ total_count or '455' }} 2026–2027 vehicles.
+                Structured 5-point driving dynamics assessments, key strengths, and real-world compromises across {{ total_count }} 2026–2027 vehicles.
             </p>
         </div>
 
@@ -31,7 +31,7 @@ MotorNation — Expert Road Test Reviews & In-Depth Evaluations
                 </label>
                 <div class="mn-select-wrapper">
                     <select id="reviewBrandSelect" class="mn-brand-select" aria-label="Select Car Brand">
-                        <option value="">All Car Brands ({{ total_count or '455' }} Vehicles)</option>
+                        <option value="">All Car Brands ({{ total_count }} Vehicles)</option>
                         {% for brand in brands %}
                             <option value="{{ brand }}">{{ brand }}</option>
                         {% endfor %}
@@ -43,7 +43,7 @@ MotorNation — Expert Road Test Reviews & In-Depth Evaluations
         <!-- COUNT STATUS -->
         <div style="display: flex; justify-content: space-between; align-items: center; margin: 20px 0;">
             <div id="reviewsCountDisplay" style="font-weight: 700; color: var(--text-secondary); font-size: 0.95rem;">
-                Showing {{ reviews|length }} of {{ total_count or '455' }} reviews
+                Showing {{ reviews|length }} of {{ total_count }} reviews
             </div>
         </div>
 
